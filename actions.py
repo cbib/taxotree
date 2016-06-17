@@ -10,7 +10,7 @@ from misc import getValueBacteria,getValueMetadata,getValueMetadataSelection,mem
 from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
 from pearsonCorrelation import samplePearson,populationPearson,printProbabilityLawsList
-from percentage import percentageAssign
+from percentage import percentageAssign,computeSamplesInGroup
 from similarityCoefficient import similarity
 
 #@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList,#similarityMatrix]
@@ -18,8 +18,10 @@ from similarityCoefficient import similarity
 #Parsing functions
 def parseList(string):
     if not (len(string.split(",")) == 1):
+        print "\n/!\ ERROR: Do not use ',' as a separator: rather use ';'."
         raise ValueError
     elif not (len(string.split(":")) == 1):
+        print "\n/!\ ERROR: Do not use ':' as a separator: rather use ';'."
         raise ValueError
     return string.split(";")
 
@@ -33,8 +35,10 @@ def parseListNode(string):
 
 def parseIntList(string):
     if not (len(string.split(",")) == 1):
+        print "\n/!\ ERROR: Do not use ',' as a separator: rather use ';'."
         raise ValueError
     elif not (len(string.split(":")) == 1):
+        print "\n/!\ ERROR: Do not use ':' as a separator: rather use ';'."
         raise ValueError
     l = string.split(";")
     resultList = []
@@ -71,21 +75,25 @@ def listMetadata(metadataList,interval1List,interval2List):
 
 def createSampleNameList(dataArray):
     sampleIDList = dataArray[8]
-    sampleType = parseList(raw_input("Do you want to select one by one samples or to select samples matching requirements on metadata? Y/N \n"))
-    if (sampleType == "Y"):
+    answer = raw_input("Do you want to select samples one by one, or to select samples matching requirements on metadata? Y/N \n")
+    if (answer == "Y"):
         print sampleIDList
-        sampleNameList = parseList(raw_input("Input the first list of samples using the ID printed above. [ e.g. OPNA-J90;DUGA-J0;GATE-J0 ]\n"))
+        if (len(sampleIDList) < 2):
+            print "\n/!\ ERROR: List of samples is empty or only of length one!..."
+            raise ValueError
+        sampleNameList = parseList(raw_input("Input the list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
         isInDatabase(sampleNameList,sampleIDList)
-    elif (sampleType == "N"):
+    elif (answer == "N"):
         print dataArray[1]
         metadataList = parseList(raw_input("Input the list of metadata you want to consider among those written above. [ e.g. ATB_IV;ATB_Os ]\n"))
         isInDatabase(metadataList,dataArray[1])
-        interval1List = parseIntList(raw_input("Input the list of lower interval bounds corresponding to metadata above. [ Please refer to README for more details. e.g. 1;2;1;0;0 ]\n"))
+        interval1List = parseIntList(raw_input("Input the list of lower interval bounds corresponding to metadatum/metadata above. [ Please refer to README for more details. e.g. 1;2;1;0;0 ]\n"))
         assert (len(interval1List) == len(metadataList))
-        interval2List = parseIntList(raw_input("Input the list of upper interval bounds corresponding to metadata above. [ Please refer to README for more details. e.g. 3;2;1;2;0 ]\n"))
+        interval2List = parseIntList(raw_input("Input the list of upper interval bounds corresponding to metadatum/metadata above. [ Please refer to README for more details. e.g. 3;2;1;2;0 ]\n"))
         assert (len(interval2List) == len(metadataList))
-        sampleNameList = getValueMetadataSelection(dataArray[0],dataArray[1],metadataList,interval1List,interval2List)
+        sampleNameList = computeSamplesInGroup(dataArray[0],dataArray[1],metadataList,interval1List,interval2List)
     else:
+        print "\n/!\ ERROR: You need to answer Y or N and not \"",answer,"\"."
         raise ValueError
     return sampleNameList
 
@@ -93,21 +101,15 @@ def createSampleNameList(dataArray):
 def isInDatabase(parseList,dataList):
     for pl in parseList:
         if not mem(pl,dataList):
+            print "\n/!\ ERROR: This is not in the database."
             raise ValueError
 
 #____________________________________________________________________________
 
 #Actions
 def totalDiffRatioAct(dataArray):
-    sampleIDList = dataArray[8]
-    print sampleIDList
-    if (len(sampleIDList) < 2):
-        print "ERROR: List of samples is empty or only of length one!..."
-        return -1
-    sampleNameList1 = parseList(raw_input("Input the first list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
-    isInDatabase(sampleNameList1,sampleIDList)
-    sampleNameList2 = parseList(raw_input("Input the second list of samples using the ID printed above. [e.g.  " + sampleIDList[-1] + " ]\n"))
-    isInDatabase(sampleNameList2,sampleIDList)
+    sampleNameList1 = createSampleNameList(dataArray)
+    sampleNameList2 = createSampleNameList(dataArray)
     common,in1,in2,_,_,_,_,_ = compute(dataArray[7],sampleNameList1,sampleNameList2)
     commonA = countAssignmentsInCommon(common,sampleNameList1,sampleNameList2)
     numberA1 = countAssignments(in1,sampleNameList1)
@@ -117,9 +119,10 @@ def totalDiffRatioAct(dataArray):
     dratio = diffRatio(commonA)
     ndRatio = diffRatioNormalized(commonA,numberA1,numberA2)
     print "Total Ratio Distance is: " + str(tratio)
-    print "normalized Total Ratio is: " + str(ntRatio) + "\n[The more it is close to 1, the more the two groups are alike]"
+    print "normalized Total Ratio is: " + str(ntRatio) + "\n[The more it is close to 1, the more the two groups are alike]\n"
     print "Diff Ratio Distance is: " + str(dratio)
     print "normalized Diff Ratio is: " + str(ndRatio) + "\n[The more it is close to 0, the more the two groups are alike]"
+    print "[If you have obtained +inf (resp. -inf), it means there is no sample in the lists you have selected.]"
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
         data = "Total Ratio Results ****\n for lists " + str(sampleNameList1) + "\n and " + str(sampleNameList2) + "\n\nTotal Ratio Distance is: " + str(tratio) + "\n normalized Total Ratio is: " + str(ntRatio) + "\nDiff Ratio Distance is: " + str(dratio) + "\n normalized Diff Ratio is: " + str(ndRatio) +"\n\nEND OF FILE ****"  
@@ -128,21 +131,12 @@ def totalDiffRatioAct(dataArray):
 #____________________________________________________________________________
 
 def patternRatioAct(dataArray):
-    #Prints the samples ID
-    sampleIDList = dataArray[8]
-    print sampleIDList
-    if (len(sampleIDList) < 2):
-        print "ERROR: List of samples is empty or only of length one!..."
-        return -1
-    sampleNameList1 = parseList(raw_input("Input the first list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
-    isInDatabase(sampleNameList1,sampleIDList)
-    sampleNameList2 = parseList(raw_input("Input the second list of samples using the ID printed above. [e.g. " + sampleIDList[-1] + " ]\n"))
-    isInDatabase(sampleNameList2,sampleIDList)
+    sampleNameList1 = createSampleNameList(dataArray)
+    sampleNameList2 = createSampleNameList(dataArray)
     commonPatternsList = enumerateCommonPatterns(dataArray[7],sampleNameList1,sampleNameList2)
     specificPatternsList1 = enumerateSpecificPatterns(dataArray[7],sampleNameList1,sampleNameList2)
     specificPatternsList2 = enumerateSpecificPatterns(dataArray[7],sampleNameList2,sampleNameList1)
     pRatio = patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2)
-    print "Pattern Ratio is: ",pRatio
     #Only printing patterns of length > 1
     print "--- Common Patterns of length > 1 ---"
     if commonPatternsList:
@@ -164,7 +158,10 @@ def patternRatioAct(dataArray):
             if len(x[0]) > 1:
                 print x[0]
     else:
-        print "No pattern of length > 1."        
+        print "No pattern of length > 1."
+    print "Pattern Ratio is: ",pRatio
+    print "[If pattern ratio is superior to one, it means the two groups of samples are quite alike]"
+    print "[If you obtained +inf, if there are common patterns, it means both groups of samples contain exactly the same set of nodes. If there are no common patterns, it means there is no sample in both groups]"
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
         data = "Pattern Ratio Results ****\nfor lists of samples " + str(sampleNameList1) + "\nand " + str(sampleNameList2) + "\n\n-> Pattern Ratio is: " + str(pRatio) + "\n\nPrinting patterns: first is the list of nodes in the pattern, then the total number of assignations in this pattern and eventually the total number of nodes in the pattern\n\n-> Common Patterns:\n"
@@ -184,16 +181,10 @@ def patternRatioAct(dataArray):
 def percentageAct(dataArray):
     uTree = raw_input("Do you to get percentage of assignments to subtrees or to bacterias themselves? subtree/bacteria \n")
     usingTree = (uTree == "subtree")
-    nodesGroup = parseListNode(raw_input("Input the list of nodes/roots of subtrees you want to consider. [Please look at the taxonomic tree file to help you: e.g. (Clostridium,G);(Elusimicrobia,C);(Bacteria,K) ]\n"))
+    nodesGroup = parseListNode(raw_input("Input the list of nodes/roots of subtrees you want to consider. [Please look at the taxonomic tree file to help you: e.g. " + dataArray[6][-3] + ";" + dataArray[6][1] + ";" + dataArray[6][-1] + " ]\n"))
     isInDatabase(nodesGroup,dataArray[6])
-    print dataArray[1]
-    metadataList = parseList(raw_input("Input the list of metadata you want to consider among those written above. [e.g. ATB_IV;ATB_Os ]\n"))
-    isInDatabase(metadataList,dataArray[1])
-    interval1List = parseIntList(raw_input("Input the list of lower interval bounds corresponding to metadata above. [Please refer to README for more details. e.g. 1;2;1;0;0 ]\n"))
-    assert (len(interval1List) == len(metadataList))
-    interval2List = parseIntList(raw_input("Input the list of upper interval bounds corresponding to metadata above. [Please refer to README for more details. e.g. 3;2;1;2;0 ]\n"))
-    assert (len(interval2List) == len(metadataList))
-    result = percentageAssign(dataArray[0],dataArray[1],metadataList,interval1List,interval2List,dataArray[7],nodesGroup,dataArray[2],dataArray[3],usingTree)
+    sampleNameList = createSampleNameList(dataArray)
+    result = percentageAssign(dataArray[0],dataArray[1],sampleNameList,dataArray[7],nodesGroup,dataArray[2],dataArray[3],usingTree)
     print "[Preview.]"
     print result
     l = len(result)
@@ -228,6 +219,7 @@ def pearsonAct(dataArray):
             value1 = parseList(raw_input("What value? [metadatum list for metadatum, e.g. ATB_IV;ATB_Os ]\n"))
             isInDatabase(value1,dataArray[1])
         else:
+            print "\nERROR: You need to answer bacteria or metadatum."
             raise ValueError
         xArray = creatingArray(type1,value1,dataArray[2],dataArray[3],dataArray[0],dataArray[1])
         print "\nSecond set of values\n"
@@ -239,6 +231,7 @@ def pearsonAct(dataArray):
             value2 = parseList(raw_input("What value? [metadatum list for metadatum, e.g. ATB_IV;ATB_Os ]\n"))
             isInDatabase(value2,dataArray[1])
         else:
+            print "\nERROR: You need to answer bacteria or metadatum."
             raise ValueError
         yArray = creatingArray(type2,value2,dataArray[2],dataArray[3],dataArray[0],dataArray[1])
         pearson = samplePearson(xArray,yArray)
@@ -253,6 +246,7 @@ def pearsonAct(dataArray):
             value1 = parseList(raw_input("What value? [metadatum list for metadatum, e.g. ATB_IV;ATB_Os ]\n"))
             isInDatabase(value1,dataArray[1])
         else:
+            print "\nERROR: You need to answer bacteria or metadatum."
             raise ValueError
         xArray = creatingArray(type1,value1,dataArray[2],dataArray[3],dataArray[0],dataArray[1])
         print "Second set of values\n"
@@ -264,6 +258,7 @@ def pearsonAct(dataArray):
             value2 = parseList(raw_input("What value? [metadatum list for metadatum, e.g. ATB_IV;ATB_Os ]\n"))
             isInDatabase(value2,dataArray[1])
         else:
+            print "\nERROR: You need to answer bacteria or metadatum."
             raise ValueError
         yArray = creatingArray(type2,value2,dataArray[2],dataArray[3],dataArray[0],dataArray[1])
         printProbabilityLawsList()

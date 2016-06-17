@@ -20,7 +20,7 @@ Details about main.py:
 * PatternRatio also computes the ratio (number of assignments in common patterns)/(number of assignments in specific patterns). [ Returns +inf if number of assignments in specific patterns is zero]
 --- INTERPRETATION: The more large the pattern ratio is, the more the two samples bear a strong resemblance in terms of node population and of phylogenetic proximity between the nodes.
 
-- "Percentage of assignments in a certain group of nodes depending on metadata": after selection of a group of bacterias and of a group of metadata, gives an array with the percentage of assignments to this family of bacterias depending on the metadata. All the samples considered must have a required value n for a certain metadatum comprised between e1 and e2, where e1 and e2 are asked to the user. [For strings, use e1 = e2; for open intervals, use e1 = -inf or e2 = +inf]
+- "Percentage of assignments in a certain group of nodes depending on samples": after selection of a group of bacterias and of a group of samples/metadatum, gives an array with the percentage of assignments to this family of bacterias depending on the samples/metadata.
 
 **** TO IMPROVE
 - "Pearson correlation coefficient": computes the Pearson correlation coefficient between a number of assignments to a group of bacterias and a group of metadatas or between the numbers of assignments to two groups of bacterias under a certain probability law.
@@ -86,4 +86,6 @@ Comments:
 - Variables that will not likely be useful (number of assignments too small) are identified and put to null
 - Assignment numbers have been normalized relatively to the total number of reads assigned in the taxonomic tree
 - Then numbers have been centered and reduced
+*** Selection of samples ***
+- In most of the possible actions, you can either choose one by one the samples involved in the action or give a list of metadatum with lower (e1) and upper (e2) bounds for each of them. In this case, every sample considered must have a required value n for a certain metadatum comprised between e1 and e2, where e1 and e2 are asked to the user. [For strings, use e1 = e2; for open intervals, use e1 = -inf or e2 = +inf]
 

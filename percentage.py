@@ -28,11 +28,15 @@ def isInInterval(value,interval1,interval2):
         return value <= interval2
     elif interval2 == "+inf":
         return value >= interval1
+    else:
+        return (value <= interval2 and value >= interval1)
 
 #Computes the samples that match the requirements for the metadata group
 #@samplesListInGroup is the list of lists of sample ID that match the requirements for a certain metadatum
 #@interval1List and @interval2List are the lists of lower and upper interval bounds for the metadata
 def computeSamplesInGroup(samplesInfoList,infoList,metadataList,interval1List,interval2List):
+    assert (len(metadataList) == len(interval1List))
+    assert (len(metadataList) == len(interval2List))
     samplesListInGroup = []
     infoPositions = memPositionsInfo(infoList,metadataList)[::-1]
     #@datumPos matches the position of datum corresponding to the information at @infoPos
@@ -162,15 +166,12 @@ def computePercentageAssignmentTree(samplesListInGroup,nodesGroup,tree):
         else:
             percentageList.append("+inf")
     return percentageList
-        
+
 #__________________________________________________________
 
 #Returns an array giving the percentage of assignment to a certain group of bacterias depending on the metadata
 #if samplesListInGroup is of length N, then the function returns a matrix of dimensions 1xN
-def percentageAssign(samplesInfoList,infoList,metadataList,interval1List,interval2List,tree,nodesGroup,samplesList,speciesList,usingTree):
-    assert (len(metadataList) == len(interval1List))
-    assert (len(metadataList) == len(interval2List))
-    samplesListInGroup = computeSamplesInGroup(samplesInfoList,infoList,metadataList,interval1List,interval2List)
+def percentageAssign(samplesInfoList,infoList,samplesListInGroup,tree,nodesGroup,samplesList,speciesList,usingTree):
     #the elements in @percentageList are in the order of elements in @metadataList, see computeSamplesInGroup
     if usingTree:
         percentageList = computePercentageAssignmentTree(samplesListInGroup,nodesGroup,tree)[::-1]

@@ -9,13 +9,10 @@ from writeOnFiles import writeFile
 def trimList(list1,list2):
     lst1 = sorted(list1,key=lambda x:x)
     lst2 = sorted(list2,key=lambda x:x)
-    print lst1
-    print lst2
     trimList = []
     while lst1 and lst2:
         x1 = lst1.pop()
         x2 = lst2.pop()
-        print x1,x2
         if (x1 < x2):
             lst1.append(x1)
         elif (x1 > x2):

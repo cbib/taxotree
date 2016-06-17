@@ -69,7 +69,7 @@ def totalRatio(commonA,numberA1,numberA2):
 def diffRatioNormalized(commonA,numberA1,numberA2):
     #if @numberA1 = @common = @numberA2 = 0
     if not numberA1 and not numberA2 and not commonA:
-        return "+inf"
+        return "-inf"
     return ((numberA1 + numberA2)/(numberA1 + commonA + numberA2))
 
 def diffRatio(commonA):
