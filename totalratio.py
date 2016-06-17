@@ -3,58 +3,7 @@ from __future__ import division
 from taxoTree import TaxoTree,printTree
 from parsingMatrix import parseMatrix
 from parsingTree import parseTree
-from misc import mem
-
-#Returns a list of (name,rank,sampleHitList) tuples associated with
-#nodes of the taxonomic tree reduced to the sample sampleName
-#and the number of assignments in this tree
-#NB: We need to keep the whole sampleHitList (and not only the
-#number associated with sampleName) in order to apply set operations (intersection, ...)
-def inSample(element,sampleNameList):
-    #element[1] (number associated to a sample) must be non-zero
-    assert element[1]
-    #If list is empty
-    if not sampleNameList:
-        return False
-    for name in sampleNameList:
-        if (element[0] == name):
-            return True
-    return False
-
-#@sampleName is a list of names of samples
-#takeNodesInTree(tree,sampleName) should return the taxonomic tree reduced to the nodes assigned in sample sampleName = the list of assigned node + their sampleHitList, and the number of assignments in the reduced tree, and the number of nodes in the reduced tree
-def takeNodesInTree(tree,sampleNameList):
-    #@sampleHitList (see TaxoTree) is a list of (name of sample, number) pairs attached to a node of a TaxoTree
-    sample = []
-    numberTotalAssignments = 0
-    numberNodes = 0
-    queue = [ tree ]
-    while queue:
-        node = queue.pop()
-        isInSample = []
-        for x in node.sampleHitList:
-            if inSample(x,sampleNameList):
-                isInSample.append(x)
-        #if node is in sample, ie isInSample is not empty
-        if isInSample:
-            sample.append((node.name,node.rank,node.sampleHitList))
-            numberTotalAssignments += isInSample[0][1]
-            numberNodes += 1
-        queue += node.children
-    return sample,numberTotalAssignments,numberNodes
-
-#Returns boolean and sampleHitList if true
-def memAndSampleHitList(x,nodeList):
-    sampleHitList = []
-    nodeListCopy = []
-    for nd in nodeList:
-        nodeListCopy.append(nd)
-    #While @nodeList is not empty and @sampleHitList is empty
-    while nodeListCopy:
-        node = nodeListCopy.pop()
-        if (x[0] == node[0] and x[1] == node[1]):
-            return True,node[2]
-    return False,[]
+from misc import mem,inSample,takeNodesInTree,memAndSampleHitList
 
 #Returns @common,@in1,@in2,@numberA1,@numberA2
 #@numberA1 is the number of assignments in the tree reduced to nodes assigned in sampleList #1 (same goes for @numberA2)

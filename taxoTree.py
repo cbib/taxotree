@@ -16,8 +16,6 @@ from parsingTree import parseTree
 from parsingMatrix import parseMatrix,associatedData
 from misc import containsSpecie,mem,selectPath,compare
 
-from time import time
-
 class TaxoTree(object):
     #
     #
@@ -88,7 +86,6 @@ class TaxoTree(object):
     #
     #
     def addNodePreProcess(self,paths,nodesList,samplesList):
-        start = time()
         #Firstly, sorting nodes by decreasing rank: R < K < P < C < O < F < G < S
         sortedNodesList = sorted(nodesList,cmp=lambda x,y: compare(x[1],y[1]))
         nodesNumber = len(sortedNodesList)
@@ -146,8 +143,6 @@ class TaxoTree(object):
                 brotherNodesList.append(thisRankNodesList)
             if brotherNodesList:
                 allBrotherList.append(brotherNodesList)
-        end = time()
-        print "TIME:",(end-start)
         return sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber
     #
     #
@@ -159,7 +154,6 @@ class TaxoTree(object):
     #(3) else: get n's children identifiers through @hashFatherList[n], get the children's trees, construct the tree associated to n, and store it in @constructedTree[n]
     #(4) Repeat loop2 until rank R and return tree associated to Root
     def addNodeAux(self,paths,sortedNodesList,pathsNodes,samplesHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber):
-        start = time()
         #Initializing @constructedTree
         constructedTree = [ None ] * nodesNumber
         ranks = ["S","G","F","O","C","P","K","R"]
@@ -192,8 +186,6 @@ class TaxoTree(object):
                 #Step 2:
                 else:
                     constructedTree[idt] = TaxoTree(nm,rk,idt,samplesHitListNodes[idt],pathsNodes[idt],[],paths)
-        end = time()
-        print "TIME:",(end-start)
         constructedTree[-1].children = [ child for child in constructedTree[-1].children if child ]
         return constructedTree[-1]
     #

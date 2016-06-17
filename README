@@ -11,13 +11,14 @@ Details about main.py:
 - "TotalRatio and DiffRatio": 
 -- "Total Ratio" : 
 * Provided two groups 1 and 2 of samples, if n is the number of assignments to common nodes in both groups (i.e. the sum of assignments in common nodes in each group), and n1 et n2 respectively the number of assignments in these two groups in non-common nodes, then Total ratio Distance is (n1 + n2 + n) - n = n1 + n2. 
---- INTEPRETATION: The more small totalRatio "Distance" is, the more alike are the samples. 
-* It is also given in a normalized form: n/(n1 + n2 + n). 
---- INTERPRETATION: The more totalRatio is close to 1, the more alike are the samples. [Returns +inf if n1 = n2 = n3 = ... = 0]. 
+--- INTERPRETATION: The more small totalRatio "Distance" is, the more alike are the samples in terms of node population. 
+* It is also given in a normalized form: n/(n1 + n2 + n). [Returns +inf if n1 = n2 = n3 = ... = 0]. 
+--- INTERPRETATION: The more totalRatio is close to 1, the more alike are the samples in terms of node population. 
 -- "DiffRatio" : it is the symmetric of Total Ratio, that is: Diff ratio + Total ratio = 1.
 
-**** TO MODIFY
-- "PatternRatio": if n is the size of the largest common pattern between two samples (in terms of number of nodes), and n1, n2 respectively the total number of nodes in both samples, then PatternRatio is n1 + n2 - 2*n. It is also given in a normalized form: 2*n/(n1 + n2). The more PatternRatio is close to 1, the more the bacterias found in the two samples will be close phylogenetically to each other: in other words, it quantifies the "dispersion" of the bacterias in the tree. It can be interesting to compute the pattern ratio by using only one sample. Will also return the group of bacterias in the pattern. [Returns +inf if n1 = n2 = 0]
+- "PatternRatio": enumerates the common and specific patterns (of any length) of the two trees induced by the samples given in argument, and computes the number of nodes and assignments in each of them. It finally returns a list of (pattern,number of assignments,number of nodes) tuples for common and specific patterns. 
+* PatternRatio also computes the ratio (number of assignments in common patterns)/(number of assignments in specific patterns). [ Returns +inf if number of assignments in specific patterns is zero]
+--- INTERPRETATION: The more it is superior to 1, the more the two samples bear a strong resemblance in terms of node population and of phylogenetic proximity between the nodes.
 
 - "Percentage of assignments in a certain group of nodes depending on metadata": after selection of a group of bacterias and of a group of metadata, gives an array with the percentage of assignments to this family of bacterias depending on the metadata. All the samples considered must have a required value n for a certain metadatum comprised between e1 and e2, where e1 and e2 are asked to the user. [For strings, use e1 = e2; for open intervals, use e1 = -inf or e2 = +inf]
 
@@ -81,7 +82,7 @@ Helps saving results in files.
 Stores written files using writeOnFiles functions.
 
 Comments:
-*** Prior to the parsing operations, numbers have been normalized this way:
+*** Prior to the parsing operations, numbers have been normalized this way: ***
 - Variables that will not likely be useful (number of assignments too small) are identified and put to null
 - Assignment numbers have been normalized relatively to the total number of reads assigned in the taxonomic tree
 - Then numbers have been centered and reduced

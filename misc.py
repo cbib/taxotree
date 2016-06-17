@@ -2,7 +2,105 @@ from __future__ import division
 import numpy as np
 
 from writeOnFiles import writeFile
-from time import time
+
+#Returns a list containing elements of list1 that are not elements of list2
+#If the elements in lists are tuples, it will sorted using lexigraphical order with suitable order for each projection
+#Sorting allows to run in worst case complexity of O(nlog(n) + mlog(m)) where n,m are the length of the two lists
+def trimList(list1,list2):
+    lst1 = sorted(list1,key=lambda x:x)
+    lst2 = sorted(list2,key=lambda x:x)
+    print lst1
+    print lst2
+    trimList = []
+    while lst1 and lst2:
+        x1 = lst1.pop()
+        x2 = lst2.pop()
+        print x1,x2
+        if (x1 < x2):
+            lst1.append(x1)
+        elif (x1 > x2):
+            trimList.append(x1)
+            lst2.append(x2)
+    #At the end of the loop, at least one of the two lists is empty
+    if lst1:
+        #We do not care of the order at the end of the merge
+        return trimList + lst1
+    return trimList
+
+#Merge the elements of both lists, deleting multiple occurrences
+def mergeList(list1,list2):
+    lst1 = sorted(list1,key=lambda x:x)
+    lst2 = sorted(list1,key=lambda x:x)
+    union = []
+    while lst1 and lst2:
+        x1 = lst1.pop()
+        x2 = lst2.pop()
+        if (x1 == x2):
+            union.append(x1)
+        elif (x1 < x2):
+            union.append(x2)
+            lst1.append(x1)
+        else:
+            union.append(x1)
+            lst2.append(x2)
+    #At the end of the loop, at least one of the two lists is empty
+    if lst1:
+        #We do not care of the order at the end of the merge
+        return union + lst1
+    else:
+        #@ls2 may be empty
+        return union + lst2
+
+#Returns a list of (name,rank,sampleHitList) tuples associated with
+#nodes of the taxonomic tree reduced to the sample sampleName
+#and the number of assignments in this tree
+#NB: We need to keep the whole sampleHitList (and not only the
+#number associated with sampleName) in order to apply set operations (intersection, ...)
+def inSample(element,sampleNameList):
+    #element[1] (number associated to a sample) must be non-zero
+    assert element[1]
+    #If list is empty
+    if not sampleNameList:
+        return False
+    for name in sampleNameList:
+        if (element[0] == name):
+            return True
+    return False
+
+#@sampleName is a list of names of samples
+#takeNodesInTree(tree,sampleName) should return the taxonomic tree reduced to the nodes assigned in sample sampleName = the list of assigned node + their sampleHitList, and the number of assignments in the reduced tree, and the number of nodes in the reduced tree
+def takeNodesInTree(tree,sampleNameList):
+    #@sampleHitList (see TaxoTree) is a list of (name of sample, number) pairs attached to a node of a TaxoTree
+    sample = []
+    numberTotalAssignments = 0
+    numberNodes = 0
+    queue = [ tree ]
+    while queue:
+        node = queue.pop()
+        isInSample = []
+        for x in node.sampleHitList:
+            if inSample(x,sampleNameList):
+                isInSample.append(x)
+        #if node is in sample, ie isInSample is not empty
+        if isInSample:
+            sample.append((node.name,node.rank,node.sampleHitList))
+            numberTotalAssignments += isInSample[0][1]
+            numberNodes += 1
+        queue += node.children
+    return sample,numberTotalAssignments,numberNodes
+
+#Returns boolean and sampleHitList if true
+def memAndSampleHitList(x,nodeList):
+    sampleHitList = []
+    nodeListCopy = []
+    for nd in nodeList:
+        nodeListCopy.append(nd)
+    #While @nodeList is not empty and @sampleHitList is empty
+    while nodeListCopy:
+        node = nodeListCopy.pop()
+        if (x[0] == node[0] and x[1] == node[1]):
+            return True,node[2]
+    return False,[]
 
 #Gets sample ID 
 def getSampleIDList(samplesList):
