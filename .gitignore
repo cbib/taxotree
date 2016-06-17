@@ -7,8 +7,8 @@ README~
 TODO.txt
 *.csv~
 *.tree~
-*.file
-*.file~
+*.taxotree
+*.taxotree~
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
