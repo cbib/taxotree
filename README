@@ -7,6 +7,12 @@ In Emacs:
 - write down "main.py"
 - in the interpreter, write down "main()"
 
+In the terminal:
+- write down "python"
+- write down "from main import main"
+- write down "main()"
+- to exit Python, write down "exit()"
+
 Details about main.py:
 - "TotalRatio and DiffRatio": 
 -- "Total Ratio" : 

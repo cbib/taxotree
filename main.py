@@ -67,6 +67,6 @@ def main():
                 dataArray.append(matrixSim)
                 print "-- End \n"
         except ValueError:
-            print "ERROR: Please look at the line above.\n"
+            print "/!\ ERROR: Please look at the line above.\n"
     #return dataArray
     

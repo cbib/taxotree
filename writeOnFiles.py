@@ -1,7 +1,7 @@
 import numpy as np
 
 def writeText(filename,data):
-    fo = open("files/" + filename + ".file","w")
+    fo = open("files/" + filename + ".taxotree","w")
     fo.write(data)
     fo.close()
 

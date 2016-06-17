@@ -73,7 +73,7 @@ def listMetadata(metadataList,interval1List,interval2List):
         string += metadataList[-1] + " (value between " + str(interval1List[-1]) + " and " + str(interval2List[-1]) + ")"
     return string
 
-def createSampleNameList(dataArray):
+def createSampleNameList(dataArray,percentage=False):
     sampleIDList = dataArray[8]
     answer = raw_input("Do you want to select samples one by one, or to select samples matching requirements on metadata? Y/N \n")
     if (answer == "Y"):
@@ -81,7 +81,18 @@ def createSampleNameList(dataArray):
         if (len(sampleIDList) < 2):
             print "\n/!\ ERROR: List of samples is empty or only of length one!..."
             raise ValueError
-        sampleNameList = parseList(raw_input("Input the list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
+        if percentage:
+            numberList = int(raw_input("/!\ How many lists of samples do you want?\n"))
+            sampleNameList = []
+            if not numberList:
+                print "\n/!\ ERROR: Empty set of lists of samples!"
+                raise ValueError
+            while numberList:
+                sampleNameList11 = parseList(raw_input("Input the list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
+                sampleNameList.append(sampleNameList11)
+                numberList -= 1
+        else:
+            sampleNameList = parseList(raw_input("Input the list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
         isInDatabase(sampleNameList,sampleIDList)
     elif (answer == "N"):
         print dataArray[1]
@@ -118,11 +129,11 @@ def totalDiffRatioAct(dataArray):
     ntRatio = totalRatioNormalized(commonA,numberA1,numberA2)
     dratio = diffRatio(commonA)
     ndRatio = diffRatioNormalized(commonA,numberA1,numberA2)
-    print "Total Ratio Distance is: " + str(tratio)
+    print "\nTotal Ratio Distance is: " + str(tratio)
     print "normalized Total Ratio is: " + str(ntRatio) + "\n[The more it is close to 1, the more the two groups are alike]\n"
     print "Diff Ratio Distance is: " + str(dratio)
-    print "normalized Diff Ratio is: " + str(ndRatio) + "\n[The more it is close to 0, the more the two groups are alike]"
-    print "[If you have obtained +inf (resp. -inf), it means there is no sample in the lists you have selected.]"
+    print "normalized Diff Ratio is: " + str(ndRatio) + "\n[The more it is close to 0, the more the two groups are alike]\n"
+    print "[If you have obtained +inf (resp. -inf), it means you have selected no sample.]\n"
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
         data = "Total Ratio Results ****\n for lists " + str(sampleNameList1) + "\n and " + str(sampleNameList2) + "\n\nTotal Ratio Distance is: " + str(tratio) + "\n normalized Total Ratio is: " + str(ntRatio) + "\nDiff Ratio Distance is: " + str(dratio) + "\n normalized Diff Ratio is: " + str(ndRatio) +"\n\nEND OF FILE ****"  
@@ -138,30 +149,30 @@ def patternRatioAct(dataArray):
     specificPatternsList2 = enumerateSpecificPatterns(dataArray[7],sampleNameList2,sampleNameList1)
     pRatio = patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2)
     #Only printing patterns of length > 1
-    print "--- Common Patterns of length > 1 ---"
+    print "\n--- Common Patterns of length > 1 ---"
     if commonPatternsList:
         for x in commonPatternsList:
             if len(x[0]) > 1:
                 print x[0]
     else:
         print "No pattern of length > 1."
-    print "--- Specific Patterns of length > 1 in",sampleNameList1,"---"
+    print "\n--- Specific Patterns of length > 1 in",sampleNameList1,"---"
     if specificPatternsList1:
         for x in specificPatternsList1:
             if len(x[0]) > 1:
                 print x[0]
     else:
         print "No pattern of length > 1."
-    print "--- Specific Patterns of length > 1 in",sampleNameList2,"---"
+    print "\n--- Specific Patterns of length > 1 in",sampleNameList2,"---"
     if specificPatternsList2:
         for x in specificPatternsList2:
             if len(x[0]) > 1:
                 print x[0]
     else:
         print "No pattern of length > 1."
-    print "Pattern Ratio is: ",pRatio
+    print "\nPattern Ratio is: ",pRatio,"\n"
     print "[If pattern ratio is superior to one, it means the two groups of samples are quite alike]"
-    print "[If you obtained +inf, if there are common patterns, it means both groups of samples contain exactly the same set of nodes. If there are no common patterns, it means there is no sample in both groups]"
+    print "[If you obtained +inf, if there are common patterns, it means both groups of samples contain exactly the same set of nodes. If there are no common patterns, it means there is no sample in both groups]\n"
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
         data = "Pattern Ratio Results ****\nfor lists of samples " + str(sampleNameList1) + "\nand " + str(sampleNameList2) + "\n\n-> Pattern Ratio is: " + str(pRatio) + "\n\nPrinting patterns: first is the list of nodes in the pattern, then the total number of assignations in this pattern and eventually the total number of nodes in the pattern\n\n-> Common Patterns:\n"
@@ -181,16 +192,20 @@ def patternRatioAct(dataArray):
 def percentageAct(dataArray):
     uTree = raw_input("Do you to get percentage of assignments to subtrees or to bacterias themselves? subtree/bacteria \n")
     usingTree = (uTree == "subtree")
+    if not (uTree == "subtree" or uTree == "bacteria"):
+        print "\n/!\ ERROR: You need to answer bacteria or subtree."
+        raise ValueError
     nodesGroup = parseListNode(raw_input("Input the list of nodes/roots of subtrees you want to consider. [ Please look at the taxonomic tree file to help you: e.g. " + str(dataArray[6][-3]) + ";" + str(dataArray[6][1]) + ";" + str(dataArray[6][-1]) + ". /!\ Without the quotes! ]\n"))
     isInDatabase(nodesGroup,dataArray[6])
-    sampleNameList = createSampleNameList(dataArray)
+    sampleNameList = createSampleNameList(dataArray,True)
     result = percentageAssign(dataArray[0],dataArray[1],sampleNameList,dataArray[7],nodesGroup,dataArray[2],dataArray[3],usingTree)
-    print "[Preview.]"
+    print "\n[Preview.]"
     print result
     l = len(result)
     data = np.zeros(l)
     for i in range(l):
         data[i] = result[i]
+    print ""
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):  
         writeFile(data,"Percentage of assignments ****\nin the group of nodes: " + listNodes(nodesGroup) + "\ndepending on metadata (for each line): " + listMetadata(metadataList,interval1List,interval2List) + "\n\nEND OF FILE ****","array")
@@ -235,7 +250,7 @@ def pearsonAct(dataArray):
             raise ValueError
         yArray = creatingArray(type2,value2,dataArray[2],dataArray[3],dataArray[0],dataArray[1])
         pearson = samplePearson(xArray,yArray)
-        print "Pearson Sample coefficient is: " + str(pearson)
+        print "\nPearson Sample coefficient is: " + str(pearson) + "\n"
     else:
         print "First set of values\n"
         type1 = raw_input("Value are of type bacteria or metadatum? bacteria/metadatum\n")
@@ -270,7 +285,7 @@ def pearsonAct(dataArray):
         p3 = raw_input("Enter the law of probability for the product of first values with second values [among the ones above]\n")
         isInDatabase(p3,probList)
         pearson = populationPearson(xArray,yArray,p1,p2,p3)
-        print "Pearson Population coefficient is: " + str(pearson) 
+        print "\nPearson Population coefficient is: " + str(pearson) + "\n" 
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
         data = "The " + pearsonType + " Pearson coefficient for values: ****\n\n" + str(xArray) + "\n and " + str(yArray) + "\n is : " + str(pearson) + "\n\nEND OF FILE ****"
