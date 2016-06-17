@@ -181,7 +181,7 @@ def patternRatioAct(dataArray):
 def percentageAct(dataArray):
     uTree = raw_input("Do you to get percentage of assignments to subtrees or to bacterias themselves? subtree/bacteria \n")
     usingTree = (uTree == "subtree")
-    nodesGroup = parseListNode(raw_input("Input the list of nodes/roots of subtrees you want to consider. [Please look at the taxonomic tree file to help you: e.g. " + dataArray[6][-3] + ";" + dataArray[6][1] + ";" + dataArray[6][-1] + " ]\n"))
+    nodesGroup = parseListNode(raw_input("Input the list of nodes/roots of subtrees you want to consider. [ Please look at the taxonomic tree file to help you: e.g. " + str(dataArray[6][-3]) + ";" + str(dataArray[6][1]) + ";" + str(dataArray[6][-1]) + ". /!\ Without the quotes! ]\n"))
     isInDatabase(nodesGroup,dataArray[6])
     sampleNameList = createSampleNameList(dataArray)
     result = percentageAssign(dataArray[0],dataArray[1],sampleNameList,dataArray[7],nodesGroup,dataArray[2],dataArray[3],usingTree)

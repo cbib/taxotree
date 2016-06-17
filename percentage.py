@@ -177,7 +177,7 @@ def percentageAssign(samplesInfoList,infoList,samplesListInGroup,tree,nodesGroup
         percentageList = computePercentageAssignmentTree(samplesListInGroup,nodesGroup,tree)[::-1]
     else:
         percentageList = computePercentageAssignmentNodes(samplesListInGroup,nodesGroup,samplesList,speciesList)[::-1]
-    n = len(metadataList)
+    n = len(samplesListInGroup)
     result = np.zeros(n)
     for i in range(n):
         percent = percentageList.pop()
