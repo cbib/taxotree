@@ -13,7 +13,7 @@ from parsingTree import parseTree
 def enumerateCommonPatterns(tree,sampleNameList1,sampleNameList2):
     commonPatternsList = []
     #@nodesList1 is the list of nodes (name,rank,sampleHitList) for sampleNameList1 (cf. misc.py)
-    nodesList1,_,_ = takeNodesInTree(tree,samplesNameList1)
+    nodesList1,_,_ = takeNodesInTree(tree,sampleNameList1)
     #We consider every node of the tree as a potential root for a pattern
     for node in nodesList1:
         pattern = []
@@ -47,7 +47,9 @@ def enumerateCommonPatterns(tree,sampleNameList1,sampleNameList2):
                 for x in isInSample:
                     numberAssignments += x[1]
                 candidateNodes += child.children
-        commonPatternsList.append(pattern,numberAssignments,numberNodes)
+        #if the pattern is non-empty
+        if pattern:
+            commonPatternsList.append((pattern,numberAssignments,numberNodes))
     return commonPatternsList
 
 #___________________________________________________________________________________________________________
@@ -59,7 +61,7 @@ def enumerateSpecificPatterns(tree,sampleNameListPattern,sampleNameListOther):
     #List from where samples in both lists are deleted and only elements from sampleNameListPattern remain
     sampleNameListPatternTrimmed = trimList(sampleNameListPattern,sampleNameListOther)
     #@nodesList is the list of nodes (name,rank,sampleHitList) for sampleNameListPatternTrimmed
-    nodesList,_,_ = takeNodesInTree(tree,samplesNameListPatternTrimmed)
+    nodesList,_,_ = takeNodesInTree(tree,sampleNameListPatternTrimmed)
     #Pretty much the same procedure than for @enumerateCommonPatterns
     for node in nodesList:
         pattern = []
@@ -86,7 +88,9 @@ def enumerateSpecificPatterns(tree,sampleNameListPattern,sampleNameListOther):
                 for x in isInSampleListPattern:
                     numberAssignments += x[1]
                 candidateNodes += child.children
-        specificPatternsList.append(pattern,numberAssignments,numberNodes)
+        #if the pattern is non-empty
+        if pattern:
+            specificPatternsList.append((pattern,numberAssignments,numberNodes))
     return specificPatternsList
 
 #____________________________________________________________________________________________________________

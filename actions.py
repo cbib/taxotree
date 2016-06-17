@@ -13,7 +13,7 @@ from pearsonCorrelation import samplePearson,populationPearson,printProbabilityL
 from percentage import percentageAssign
 from similarityCoefficient import similarity
 
-#@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList]
+#@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList,#similarityMatrix]
 
 #Parsing functions
 def parseList(string):
@@ -101,9 +101,12 @@ def isInDatabase(parseList,dataList):
 def totalDiffRatioAct(dataArray):
     sampleIDList = dataArray[8]
     print sampleIDList
-    sampleNameList1 = parseList(raw_input("Input the first list of samples using the ID printed above. [e.g. OPNA-J90;DUGA-J0;GATE-J0 ]\n"))
+    if (len(sampleIDList) < 2):
+        print "ERROR: List of samples is empty or only of length one!..."
+        return -1
+    sampleNameList1 = parseList(raw_input("Input the first list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
     isInDatabase(sampleNameList1,sampleIDList)
-    sampleNameList2 = parseList(raw_input("Input the second list of samples using the ID printed above. [e.g. OPNA-J90;DUGA-J0;GATE-J0 ]\n"))
+    sampleNameList2 = parseList(raw_input("Input the second list of samples using the ID printed above. [e.g.  " + sampleIDList[-1] + " ]\n"))
     isInDatabase(sampleNameList2,sampleIDList)
     common,in1,in2,_,_,_,_,_ = compute(dataArray[7],sampleNameList1,sampleNameList2)
     commonA = countAssignmentsInCommon(common,sampleNameList1,sampleNameList2)
@@ -128,24 +131,40 @@ def patternRatioAct(dataArray):
     #Prints the samples ID
     sampleIDList = dataArray[8]
     print sampleIDList
-    sampleNameList1 = parseList(raw_input("Input the first list of samples using the ID printed above. [e.g. OPNA-J90;DUGA-J0;GATE-J0 ]\n"))
+    if (len(sampleIDList) < 2):
+        print "ERROR: List of samples is empty or only of length one!..."
+        return -1
+    sampleNameList1 = parseList(raw_input("Input the first list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
     isInDatabase(sampleNameList1,sampleIDList)
-    sampleNameList2 = parseList(raw_input("Input the second list of samples using the ID printed above. [e.g. BLANC;DUGA-J45 ]\n"))
+    sampleNameList2 = parseList(raw_input("Input the second list of samples using the ID printed above. [e.g. " + sampleIDList[-1] + " ]\n"))
     isInDatabase(sampleNameList2,sampleIDList)
-    commonPatternsList = enumerateCommonPatterns(tree,sampleNameList1,sampleNameList2)
-    specificPatternsList1 = enumerateSpecificPatterns(tree,sampleNameList1,sampleNameList2)
-    specificPatternsList2 = enumerateSpecificPatterns(tree,sampleNameList2,sampleNameList1)
+    commonPatternsList = enumerateCommonPatterns(dataArray[7],sampleNameList1,sampleNameList2)
+    specificPatternsList1 = enumerateSpecificPatterns(dataArray[7],sampleNameList1,sampleNameList2)
+    specificPatternsList2 = enumerateSpecificPatterns(dataArray[7],sampleNameList2,sampleNameList1)
     pRatio = patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2)
     print "Pattern Ratio is: ",pRatio
-    print "--- Common Patterns ---"
-    for x in commonPatternsList:
-        print x[0]
-    print "--- Specific Patterns in",sampleNameList1,"---"
-    for x in specificPatternsList1:
-        print x[0]
-    print "--- Specific Patterns in",sampleNameList2,"---"
-    for x in specificPatternsList2:
-        print x[0]
+    #Only printing patterns of length > 1
+    print "--- Common Patterns of length > 1 ---"
+    if commonPatternsList:
+        for x in commonPatternsList:
+            if len(x[0]) > 1:
+                print x[0]
+    else:
+        print "No pattern of length > 1."
+    print "--- Specific Patterns of length > 1 in",sampleNameList1,"---"
+    if specificPatternsList1:
+        for x in specificPatternsList1:
+            if len(x[0]) > 1:
+                print x[0]
+    else:
+        print "No pattern of length > 1."
+    print "--- Specific Patterns of length > 1 in",sampleNameList2,"---"
+    if specificPatternsList2:
+        for x in specificPatternsList2:
+            if len(x[0]) > 1:
+                print x[0]
+    else:
+        print "No pattern of length > 1."        
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
         data = "Pattern Ratio Results ****\nfor lists of samples " + str(sampleNameList1) + "\nand " + str(sampleNameList2) + "\n\n-> Pattern Ratio is: " + str(pRatio) + "\n\nPrinting patterns: first is the list of nodes in the pattern, then the total number of assignations in this pattern and eventually the total number of nodes in the pattern\n\n-> Common Patterns:\n"
@@ -162,7 +181,6 @@ def patternRatioAct(dataArray):
 
 #____________________________________________________________________________
         
-#@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree]
 def percentageAct(dataArray):
     uTree = raw_input("Do you to get percentage of assignments to subtrees or to bacterias themselves? subtree/bacteria \n")
     usingTree = (uTree == "subtree")
@@ -198,7 +216,6 @@ def creatingArray(typeArray,valueArrayList,samplesOccList,speciesList,samplesInf
 
 #_____________________________________________________________________________
 
-#@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree]
 def pearsonAct(dataArray):
     pearsonType = raw_input("Do you want to compute sample Pearson coefficient or population Pearson coefficient? sample/population \n")
     if (pearsonType == "sample"):

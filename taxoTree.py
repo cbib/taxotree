@@ -191,8 +191,13 @@ class TaxoTree(object):
     #
     #
     def addNode(self,paths,nodesList,samplesList):
+        from time import time
+        start = time()
         sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber = self.addNodePreProcess(paths,nodesList,samplesList)
-        return self.addNodeAux(paths,sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber)
+        finalTree = self.addNodeAux(paths,sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber)
+        end = time()
+        print "TIME:",(end-start)
+        return finalTree
     #
     #
     def iterate(self,f,DFS=False):

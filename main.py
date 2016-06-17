@@ -33,8 +33,8 @@ def main():
     except IOError:
         print "\nERROR: Maybe the filename you gave does not exist in \"meta\" folder\n"
     print "-- End of parsing\n"
-    print "/!\ Constructing the whole annotated taxonomic Tree"
-    print "[ You may have to wait for a few seconds. ]"
+    print "/!\ Constructing the whole annotated taxonomic tree"
+    print "[ You may have to wait for a few seconds... ]"
     taxoTree = TaxoTree("Root").addNode(paths,nodesList,samplesOccList)
     print "-- End of construction\n"
     dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList]
