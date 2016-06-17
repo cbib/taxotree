@@ -99,7 +99,8 @@ def patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2)
     #There will be no assignment counted more than once, since patterns are disjoint
     commonAssignments = 0
     for x in commonPatternsList:
-        commonAssignments += x[1]
+        if (len(x[0]) > 1):
+            commonAssignments += x[1]
     specificAssignments1 = 0
     for x in specificPatternsList1:
         specificAssignments1 += x[1]

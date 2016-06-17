@@ -84,7 +84,7 @@ def createSampleNameList(dataArray,percentage=False):
         if percentage:
             numberList = int(raw_input("/!\ How many lists of samples do you want?\n"))
             sampleNameList = []
-            if not numberList:
+            if (numberList < 1):
                 print "\n/!\ ERROR: Empty set of lists of samples!"
                 raise ValueError
             while numberList:

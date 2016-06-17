@@ -23,7 +23,7 @@ Details about main.py:
 -- "DiffRatio" : it is the symmetric of Total Ratio, that is: Diff ratio + Total ratio = 1.
 
 - "PatternRatio": enumerates the common and specific patterns (of any length) of the two trees induced by the samples given in argument, and computes the number of nodes and assignments in each of them. It finally returns a list of (pattern,number of assignments,number of nodes) tuples for common and specific patterns. 
-* PatternRatio also computes the ratio (number of assignments in common patterns)/(number of assignments in specific patterns). [ Returns +inf if number of assignments in specific patterns is zero]
+* PatternRatio also computes the ratio (number of assignments in common patterns of length > 1)/(number of assignments in specific patterns). [ Returns +inf if number of assignments in specific patterns is zero ]
 --- INTERPRETATION: The more large the pattern ratio is, the more the two samples bear a strong resemblance in terms of node population and of phylogenetic proximity between the nodes.
 
 - "Percentage of assignments in a certain group of nodes depending on samples": after selection of a group of bacterias and of a group of samples/metadatum, gives an array with the percentage of assignments to this family of bacterias depending on the samples/metadata.
