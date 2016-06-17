@@ -8,7 +8,7 @@ from taxoTree import TaxoTree
 from misc import getValueBacteria,getValueMetadata,getValueMetadataSelection,mem
 
 from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
-from patternRatio import patternRatio,patternRatioNormalized
+from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
 from pearsonCorrelation import samplePearson,populationPearson,printProbabilityLawsList
 from percentage import percentageAssign
 from similarityCoefficient import similarity
@@ -100,13 +100,9 @@ def isInDatabase(parseList,dataList):
 #Actions
 def totalDiffRatioAct(dataArray):
     sampleIDList = dataArray[8]
-    print "[First set of samples]"
-    #sampleNameList1 = createSampleNameList(dataArray)
     print sampleIDList
     sampleNameList1 = parseList(raw_input("Input the first list of samples using the ID printed above. [e.g. OPNA-J90;DUGA-J0;GATE-J0 ]\n"))
     isInDatabase(sampleNameList1,sampleIDList)
-    print "[Second set of samples]"
-    #sampleNameList2 = createSampleNameList(dataArray)
     sampleNameList2 = parseList(raw_input("Input the second list of samples using the ID printed above. [e.g. OPNA-J90;DUGA-J0;GATE-J0 ]\n"))
     isInDatabase(sampleNameList2,sampleIDList)
     common,in1,in2,_,_,_,_,_ = compute(dataArray[7],sampleNameList1,sampleNameList2)
@@ -123,7 +119,7 @@ def totalDiffRatioAct(dataArray):
     print "normalized Diff Ratio is: " + str(ndRatio) + "\n[The more it is close to 0, the more the two groups are alike]"
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
-        data = "Total Ratio Results ****\n for lists " + str(sampleNameList1) + "\n and " + str(sampleNameList2) + "\n\nTotal Ratio Distance is: " + str(tratio) + "\n normalized Total Ratio is: " + str(ntRatio) + "\nDiff Ratio Distance is: " + str(dratio) + "\n normalized Diff Ratio is: " + str(ndRatio) +"\n\n END ****"  
+        data = "Total Ratio Results ****\n for lists " + str(sampleNameList1) + "\n and " + str(sampleNameList2) + "\n\nTotal Ratio Distance is: " + str(tratio) + "\n normalized Total Ratio is: " + str(ntRatio) + "\nDiff Ratio Distance is: " + str(dratio) + "\n normalized Diff Ratio is: " + str(ndRatio) +"\n\nEND OF FILE ****"  
         writeFile(data,"","text")
 
 #____________________________________________________________________________
@@ -132,19 +128,36 @@ def patternRatioAct(dataArray):
     #Prints the samples ID
     sampleIDList = dataArray[8]
     print sampleIDList
-    sampleName1 = raw_input("Input the first sample name using the ID printed above. [e.g OPNA-J90 ]\n")
-    isInDatabase([sampleName1],sampleIDList)
-    sampleName2 = raw_input("Input the second sample name using the ID printed above. [e.g. DUGA-J0 ]\n")
-    isInDatabase([sampleName2],sampleIDList)
-    ratio,patternList = patternRatio(dataArray[7],sampleName1,sampleName2)
-    nRatio,_ = patternRatioNormalized(dataArray[7],sampleName1,sampleName2)
-    print "(non normalized) Pattern Ratio is: ",ratio
-    print "normalized Pattern Ratio is: ",nRatio
-    print "Pattern is:"
-    print patternList
+    sampleNameList1 = parseList(raw_input("Input the first list of samples using the ID printed above. [e.g. OPNA-J90;DUGA-J0;GATE-J0 ]\n"))
+    isInDatabase(sampleNameList1,sampleIDList)
+    sampleNameList2 = parseList(raw_input("Input the second list of samples using the ID printed above. [e.g. BLANC;DUGA-J45 ]\n"))
+    isInDatabase(sampleNameList2,sampleIDList)
+    commonPatternsList = enumerateCommonPatterns(tree,sampleNameList1,sampleNameList2)
+    specificPatternsList1 = enumerateSpecificPatterns(tree,sampleNameList1,sampleNameList2)
+    specificPatternsList2 = enumerateSpecificPatterns(tree,sampleNameList2,sampleNameList1)
+    pRatio = patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2)
+    print "Pattern Ratio is: ",pRatio
+    print "--- Common Patterns ---"
+    for x in commonPatternsList:
+        print x[0]
+    print "--- Specific Patterns in",sampleNameList1,"---"
+    for x in specificPatternsList1:
+        print x[0]
+    print "--- Specific Patterns in",sampleNameList2,"---"
+    for x in specificPatternsList2:
+        print x[0]
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
-        data = "Pattern Ratio Results ****\n for samples " + sampleName1 + "\n and " + sampleName2 + "\n\n (non normalized) Pattern Ratio is: " + str(ratio) + "\n normalized Pattern Ratio is: " + str(nRatio) + "\n Pattern is: " + str(patternList) + "\n\n END ****"  
+        data = "Pattern Ratio Results ****\nfor lists of samples " + str(sampleNameList1) + "\nand " + str(sampleNameList2) + "\n\n-> Pattern Ratio is: " + str(pRatio) + "\n\nPrinting patterns: first is the list of nodes in the pattern, then the total number of assignations in this pattern and eventually the total number of nodes in the pattern\n\n-> Common Patterns:\n"
+        for x in commonPatternsList:
+            data += str(x) + "\n"
+        data += "\n-> Specific patterns to " + str(sampleNameList1) + ":\n"
+        for x in specificPatternsList1:
+            data += str(x) + "\n"
+        data += "\n-> Specific patterns to " + str(sampleNameList2) + ":\n"
+        for x in specificPatternsList2:
+            data += str(x) + "\n"
+        data += "\nEND OF FILE ****"
         writeFile(data,"","text")
 
 #____________________________________________________________________________
@@ -171,7 +184,7 @@ def percentageAct(dataArray):
         data[i] = result[i]
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):  
-        writeFile(data,"Percentage of assignments in the group of nodes: " + listNodes(nodesGroup) + "\ndepending on metadata (for each line): " + listMetadata(metadataList,interval1List,interval2List),"array")
+        writeFile(data,"Percentage of assignments ****\nin the group of nodes: " + listNodes(nodesGroup) + "\ndepending on metadata (for each line): " + listMetadata(metadataList,interval1List,interval2List) + "\n\nEND OF FILE ****","array")
 
 #_____________________________________________________________________________
         
@@ -248,7 +261,7 @@ def pearsonAct(dataArray):
         print "Pearson Population coefficient is: " + str(pearson) 
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
-        data = "The " + pearsonType + " Pearson coefficient for values: **** \n\n" + str(xArray) + "\n and " + str(yArray) + "\n is : " + str(pearson) + "\n\n END ****"
+        data = "The " + pearsonType + " Pearson coefficient for values: ****\n\n" + str(xArray) + "\n and " + str(yArray) + "\n is : " + str(pearson) + "\n\nEND OF FILE ****"
         writeFile(data,"","text")
 
 #_____________________________________________________________________________

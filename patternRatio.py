@@ -75,6 +75,11 @@ def enumerateSpecificPatterns(tree,sampleNameListPattern,sampleNameListOther):
             for x in sampleHitList:
                 if inSample(x,sampleNameListPatternTrimmed):
                     isInSampleListPattern.append(x)
+                if inSample(x,sampleNameListOther):
+                    #This node is assigned in the samples of sampleNameListOther
+                    #so it is discarded from the pattern
+                    isInSamplePattern = []
+                    break
             if isInSampleListPattern:
                 pattern.append((child.name,child.rank))
                 numberNodes += 1
@@ -86,20 +91,17 @@ def enumerateSpecificPatterns(tree,sampleNameListPattern,sampleNameListOther):
 
 #____________________________________________________________________________________________________________
 
-def patternRatio(tree,sampleName1,sampleName2):
-    #@numberN1 and numberN2 are respectively the number of nodes in sample1 and sample2
-    _,_,numberN1 = takeNodesInTree(tree,[sampleName1])
-    _,_,numberN2 = takeNodesInTree(tree,[sampleName2])
-    maxPatternLength,patternList = maxPattern(tree,sampleName1,sampleName2)
-    return (numberN1 + numberN2 - 2*maxPatternLength),patternList
-
-def patternRatioNormalized(tree,sampleName1,sampleName2):
-    #@numberN1 and numberN2 are respectively the number of nodes in sample1 and sample2
-    _,_,numberN1 = takeNodesInTree(tree,[sampleName1])
-    _,_,numberN2 = takeNodesInTree(tree,[sampleName2])
-    maxPatternLength,patternList = maxPattern(tree,sampleName1,sampleName2)
-    #if numberN1 = numberN2 = 0
-    if not numberN1 and not numberN2:
-        return "+inf",[]
-    return 2*maxPatternLength/(numberN1 + numberN2),patternList
-
+def patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2):
+    #There will be no assignment counted more than once, since patterns are disjoint
+    commonAssignments = 0
+    for x in commonPatternsList:
+        commonAssignments += x[1]
+    specificAssignments1 = 0
+    for x in specificPatternsList1:
+        specificAssignments1 += x[1]
+    specificAssignments2 = 0
+    for x in specificPatternsList2:
+        specificAssignments2 += x[1]
+    if not specificAssignments1 and not specificAssignments2:
+        return "+inf"
+    return commonAssignments/(specificAssignments1 + specificAssignments2)
