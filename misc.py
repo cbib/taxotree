@@ -75,32 +75,25 @@ def containsSpecie(path,name,rank):
             return True
     return False
 
-def containsSpecieCutPath(path,name,rank,includeEnd):
-    i = 0
-    n = len(path)
-    while i < n and not (path[i] == (name,rank)):
-        i += 1
-    if i == n:
-        return False,[]
-    else:
-        if includeEnd:
-            return True,path[:i+1]
-        else:
-            return True,path[:i]
-
 #@paths is the paths list of a TaxoTree
-#The queries in @addNode (see TaxoTree) start with S-ranked nodes, then G-ranked nodes, and so on.
 #@n = len(@paths)
-def selectPath(paths,name,rank,n,includeEnd=False):
+def selectPath(paths,name,rank,n):
     i = 0
-    while i < n:
-        boolean,path = containsSpecieCutPath(paths[i],name,rank,includeEnd)
-        if boolean:
-            return path
-        else:
+    while i < n and not containsSpecie(paths[i],name,rank):
+	i += 1
+    if (i == n):
+        print "No path for %s,%s"%(name,rank)
+        return []
+    else:
+        path = []
+        x = paths[i]
+        #Memorizes only the part of the path that leads to (name,rank)
+        n = len(x)
+        i = 0
+        while (i < n) and not (x[i][0] == name and x[i][1] == rank):
+            path.append(x[i])
             i += 1
-    print "BUG: No path for %s,%s"%(name,rank)
-    return []
+        return path
 
 def isLeaf(paths,name,rank,allNodes):
     l = []

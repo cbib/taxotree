@@ -1,8 +1,13 @@
-<<<<<<< HEAD
 *.pyc
 /static
 .DS_Store
-=======
+README~
+*.py~
+*.txt~
+TODO.txt
+*.csv~
+*.tree~
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -92,4 +97,3 @@ ENV/
 
 # Rope project settings
 .ropeproject
->>>>>>> a1d9239c799f1fce56de7404fd8cd35f97d87243
