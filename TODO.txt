@@ -1,0 +1,22 @@
+-> pearson
+-> actions.py total pattern
+-> percentage.py "+inf", "-inf" à reconnaître
+-> pattern : nombre de motifs spé, communs
+-> loi proba
+-> articles
+-> autres mesures ? Robinson Foulds, Mean Pairwise distance, phylogenetic diversity
+-> factoriser code création de données
+-> axe discriminant: calculer distance pondérée de toutes les données + calculer la plus grosse part -> critère discriminant
+-> faire la sélection de samples pour total ratio
+-> total ratio
+-> incertitudes
+-> graphes
+-> gradient de couleur
+
+D données cliniques
+S échantillons avec assignation
+
+P tous les ss ens de S induits par D
+pour tout p1 p2 inclus dans P p1np2 = 0
+
+les Pi Pj les plus différents (+ grandes distances p/ moyenne, quartile)

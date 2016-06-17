@@ -1,0 +1,88 @@
+*** Use main.py to interact gently with the program. ***
+
+In Emacs:
+- open main.py
+- C-c C-p to open interpreter
+- in the code, C-c C-l to evaluate the file
+- write down "main.py"
+- in the interpreter, write down "main()"
+
+Details about main.py:
+- "TotalRatio and DiffRatio": 
+-- "Total Ratio" : 
+* Provided two groups 1 and 2 of samples, if n is the number of assignments to common nodes in both groups (i.e. the sum of assignments in common nodes in each group), and n1 et n2 respectively the number of assignments in these two groups in non-common nodes, then Total ratio Distance is (n1 + n2 + n) - n = n1 + n2. 
+--- INTEPRETATION: The more small totalRatio "Distance" is, the more alike are the samples. 
+* It is also given in a normalized form: n/(n1 + n2 + n). 
+--- INTERPRETATION: The more totalRatio is close to 1, the more alike are the samples. [Returns +inf if n1 = n2 = n3 = ... = 0]. 
+-- "DiffRatio" : it is the symmetric of Total Ratio, that is: Diff ratio + Total ratio = 1.
+
+**** TO MODIFY
+- "PatternRatio": if n is the size of the largest common pattern between two samples (in terms of number of nodes), and n1, n2 respectively the total number of nodes in both samples, then PatternRatio is n1 + n2 - 2*n. It is also given in a normalized form: 2*n/(n1 + n2). The more PatternRatio is close to 1, the more the bacterias found in the two samples will be close phylogenetically to each other: in other words, it quantifies the "dispersion" of the bacterias in the tree. It can be interesting to compute the pattern ratio by using only one sample. Will also return the group of bacterias in the pattern. [Returns +inf if n1 = n2 = 0]
+
+- "Percentage of assignments in a certain group of nodes depending on metadata": after selection of a group of bacterias and of a group of metadata, gives an array with the percentage of assignments to this family of bacterias depending on the metadata. All the samples considered must have a required value n for a certain metadatum comprised between e1 and e2, where e1 and e2 are asked to the user. [For strings, use e1 = e2; for open intervals, use e1 = -inf or e2 = +inf]
+
+**** TO IMPROVE
+- "Pearson correlation coefficient": computes the Pearson correlation coefficient between a number of assignments to a group of bacterias and a group of metadatas or between the numbers of assignments to two groups of bacterias under a certain probability law.
+
+- "Similarity coefficients between patients": measures the level of similarity between two patients (or two groups of patients) according to metadata: for N patients/groups, returns a NxN matrix M where M(i,j) is the similarity coefficient between patient i/group i and patient j/group j. Formula for such a coefficient is M(i,j) = M(j,i) = sum{for ni value in line i in the metadata matrix where nj != unknown and ni != unknown} |ni - nj| (distance). 
+
+Details about the files:
+**** actions.py ****
+
+**** computeDiscriminatoryDistance.py ****
+Compares groups of samples using the different criteria.
+
+**** exceptions.py ****
+Contains the user-defined exceptions.
+
+**** main.py ****
+Interface with the user.
+
+**** /meta ****
+Contains raw material.
+
+**** misc.py ****
+Contains useful macros.
+
+**** normalization.py ****
+Normalizes values from a list of values.
+
+**** parsingInfo.py ****
+Parses data table stored at /meta.
+
+**** parsingMatrix.py ****
+Parses occurrence matrix stored at /meta.
+
+**** parsingTree.py ****
+Parses taxonomic tree stored at /meta.
+
+**** patternTree.py ****
+Computes patternRatio.
+
+**** pearsonCorrelation.py ****
+Computes Pearson coefficient.
+
+**** percentage.py ****
+Computes array of percentage.
+
+**** similarityCoefficient.py ****
+Computes the similarity coefficient.
+
+**** taxoTree.py ****
+Implements the current version of TaxoTree.
+
+**** totalratio.py ****
+Computes totalRatio.
+
+**** writeOnFiles ****
+Helps saving results in files.
+
+**** /files
+Stores written files using writeOnFiles functions.
+
+Comments:
+*** Prior to the parsing operations, numbers have been normalized this way:
+- Variables that will not likely be useful (number of assignments too small) are identified and put to null
+- Assignment numbers have been normalized relatively to the total number of reads assigned in the taxonomic tree
+- Then numbers have been centered and reduced
+

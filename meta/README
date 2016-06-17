@@ -1,0 +1,3 @@
+- Info.csv : metadata for the samples
+- MGAcount_complete.csv : the occurrence matrix for each sample
+- GGdb2015.tree : the whole taxonomic tree from GreenGenes

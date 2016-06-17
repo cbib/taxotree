@@ -1,0 +1,17 @@
+R:Root
+ K:Bacteria
+  P:Elusimicrobia
+   C:Elusimicrobia  
+    O:FAC88
+    O:Elusimicrobiales
+     F:Elusimicrobiaceae
+    O:MVP-88
+   C:Endomicrobia
+  P:Tenericutes
+   C:Erysipelotrichi
+    O:Erysipelotrichales
+     F:Erysipelotrichaceae
+      G:Clostridium
+       S:Clostridium metallolevans
+       S:Clostridium scindens
+       S:Clostridium chauvoei
