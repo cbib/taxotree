@@ -1,0 +1,23 @@
+R:Root
+ K:Bacteria
+  P:AC1
+   C:LC-1
+   C:SHA-114
+  P:MSBL6
+   C:KB1
+   C:AT425_EubG1
+  P:Verrucomicrobia
+   C:Methylacidiphilae
+    O:Methylacidiphilales
+     F:LD19
+     F:Methylacidiphilaceae
+      G:LP2A
+      G:Candidatus Methylacidiphilum
+       S:Methylacidiphilum infernorum
+   C:TP21
+   C:Verruco-5
+    O:RFP12
+   C:Spartobacteria
+    O:Spartobacteriales
+     F:Spartobacteriaceae
+      G:Chthoniobacter
