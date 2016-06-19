@@ -35,6 +35,7 @@ def parseMatrix(filename):
                 else:
                     thisSampleList.append(number)
             if not (len(thisSampleList) == n):
+                print "\n /!\ ERROR: [BUG] [parsingMatrix/parseMatrix] Parsing error."
                 raise ValueError
             samplesList.append(thisSampleList)
     return samplesList,speciesList

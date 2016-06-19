@@ -1,7 +1,10 @@
 from __future__ import division
 import numpy as np
+import re
 
 from writeOnFiles import writeFile
+
+integer = re.compile("[0-9]+")
 
 #Returns a list containing elements of list1 that are not elements of list2
 #If the elements in lists are tuples, it will sorted using lexigraphical order with suitable order for each projection
@@ -55,7 +58,9 @@ def mergeList(list1,list2):
 #number associated with sampleName) in order to apply set operations (intersection, ...)
 def inSample(element,sampleNameList):
     #element[1] (number associated to a sample) must be non-zero
-    assert element[1]
+    if not element[1]:
+        print "\n/!\ ERROR: [BUG] [misc/inSample] Null element."
+        raise ValueError
     #If list is empty
     if not sampleNameList:
         return False
@@ -177,8 +182,8 @@ def selectPath(paths,name,rank,n):
     while i < n and not containsSpecie(paths[i],name,rank):
 	i += 1
     if (i == n):
-        print "No path for %s,%s"%(name,rank)
-        return []
+        print "\n/!\ ERROR: [BUG] [misc/selectPath] No path for (%s,%s)."%(name,rank)
+        raise ValueError
     else:
         path = []
         x = paths[i]
@@ -212,6 +217,7 @@ def setOperations(paths,name1,rank1,name2,rank2,allNodes=False):
     n = min(len(path1),len(path2))
     #if there is more than one path to the nodes, or no path
     if (n < 1):
+        print "\n/!\ ERROR: [BUG] [misc/setOperations] It is not a tree."
         raise ValueError
     else:
         commonPath = []
@@ -246,40 +252,24 @@ def getValueOneBacteria(samplesOccList,speciesList,name,rank):
     while i < n and not (speciesList[i][0] == name and speciesList[i][1] == rank):
         i += 1
     values = []
-    #len(sample) == len(speciesList)
     for sample in samplesOccList:
+        assert (i < len(sample))
         values.append((sample[0],sample[i]))
     return values
     
 #@bacteriaList is a list of (name,rank) pairs
+#iterates @getValueOneBacteria function
 def getValueBacteria(samplesOccList,speciesList,bacteriaList):
     result = [(sample[0],bacteria,0) for bacteria in bacteriaList for sample in samplesOccList]
     for bacteria in bacteriaList:
-        #print bacteria[0],bacteria[1]
         r = getValueOneBacteria(samplesOccList,speciesList,bacteria[0],bacteria[1])
         result = arraySum(result,r)
-    #print result
-    answer = raw_input("Write Bacteria file? [Choose for formatting (string,(string,string),integer)]  Y/N\n")
+    answer = raw_input("Write Bacteria file? Y/N\n")
     if (answer == "Y"):
         writeFile(result,"array")
     return result
 
-#Computes the set of number of assignments to a sample verifying some requirements for a given metadatum
-#See percentage to understand the role of defaultValue and intervalLength
-def getValueOneMetadatumSelection(samplesInfoList,infoList,metadatum,defaultValue,intervalLength):
-    i = 0
-    n = len(infoList)
-    while i < n and not (metadatum == infoList[i]):
-        i += 1
-    values = []
-    for sample in samplesInfoList:
-        if (sample[i] == defaultValue) or (sample[i] >= defaultValue - intervalLength/2 and sample[i] <= defaultValue + intervalLength/2):
-            if not (sample[i] == "N"):
-                values.append((sample[0],int(sample[i])))
-            else:
-                values.append((sample[0],sample[i]))
-    return values
-
+#Same procedure for metadata
 def getValueOneMetadatum(samplesInfoList,infoList,metadatum):
     i = 0
     n = len(infoList)
@@ -293,32 +283,14 @@ def getValueOneMetadatum(samplesInfoList,infoList,metadatum):
             values.append((sample[0],sample[i]))
     return values
 
-#Selection of samples provided a default value for the metadata
-def getValueMetadataSelection(samplesInfoList,infoList,metadata,defaultValues,intervalLengths):
-    result = [(sample[0],metadatum,0) for metadatum in metadata for sample in samplesInfoList]
-    print result
-    assert (len(metadata) == len(defaultValues) and len(metadata) == len(intervalLengths))
-    n = len(metadata)
-    for i in range(n):
-        r = getValueOneMetadatumSelection(samplesInfoList,infoList,metadata[i],defaultValues[i],intervalLengths[i])
-        print r
-        result = arraySum(result,r)
-    print result
-    answer = raw_input("Write Metadata file? [Choose for formatting (string,string,integer)] Y/N\n")
-    if (answer == "Y"):
-        writeFile(result,"array")
-    return result
-
-#@metadataList is a list of metadata
+#Selection of samples provided default values for the metadata
+#iterates @getValueOneMetadatum
 def getValueMetadata(samplesInfoList,infoList,metadata):
     result = [(sample[0],metadatum,0) for metadatum in metadata for sample in samplesInfoList]
-    print result
     for metadatum in metadata:
         r = getValueOneMetadatum(samplesInfoList,infoList,metadatum)
-        print r
         result = arraySum(result,r)
-    print result
-    answer = raw_input("Write Metadata file? [Choose for formatting (string,string,integer)] Y/N\n")
+    answer = raw_input("Write Metadata file? Y/N\n")
     if (answer == "Y"):
         writeFile(result,"array")
     return result

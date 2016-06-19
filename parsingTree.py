@@ -4,7 +4,6 @@ from misc import sanitize,containsSpecie
 import re
 
 #Useful macros
-
 def getNameRankList(string):
     return [(sanitize(string.split(":")[-1]).split("\n")[0],sanitize(string.split(":")[0]).split("\n")[0])]
 
@@ -97,6 +96,7 @@ def parseTree(filename,allNodes=False):
             i1 += 1
             paths += [ lineage6 ]
         else:
+            print "\n /!\ ERROR: [BUG] [parsingTree/parseTree] Parsing error."
             raise ValueError
     #Returns list of paths, total number of nodes, list of all nodes
     return paths,n,nodesList

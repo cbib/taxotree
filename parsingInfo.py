@@ -15,7 +15,9 @@ def parseInfo(filename):
         thisSampleList = []
         lsDirty = line.split(",")
         #Checks if lsDirty is not empty
-        assert len(lsDirty)
+        if not lsDirty:
+            print "\n /!\ ERROR: [BUG] [parsingInfo/parseInfo] Parsing error. (1)"
+            raise ValueError
 	ls = []
         for data in lsDirty:
             if not (data == ""):
@@ -26,7 +28,9 @@ def parseInfo(filename):
         for data in ls:
             thisSampleList.append(sanitize(data).split("\n")[0])
         #samplesList is the list of every sample's list
-	assert (len(thisSampleList) == len(infoList))
+	if not (len(thisSampleList) == len(infoList)):
+            print "\n /!\ ERROR: [BUG] [parsingInfo/parseInfo] Parsing error. (2)"
+            raise ValueError
         samplesList.append(thisSampleList)
     return samplesList,infoList
 

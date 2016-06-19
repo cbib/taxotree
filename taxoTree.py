@@ -49,7 +49,7 @@ class TaxoTree(object):
                     nodeList = node.children + nodeList
                 else:
                     nodeList += node.children
-            #This node does not exist
+            print "\n/!\ ERROR: Subtree not found."
             raise ValueError
         #
         #
@@ -213,15 +213,16 @@ class TaxoTree(object):
             else:
                 nodeList = nodeList + child.children
 
-def printTree(tree):
+def printTree(tree,sampleOn=False):
     print "ROOT"
     if not tree:
         #Should not happen...
-        print "TREE TURNED OUT TO BE NONE"
-        return 1
+        print "\n/!\ ERROR: Tree turned out to be None."
+        raise ValueError
     print "(%s,%s,%d)"%(tree.name,tree.rank,tree.ident)
-    print "SAMPLE HIT LIST"
-    print tree.sampleHitList
+    if sampleOn:
+        print "SAMPLE HIT LIST"
+        print tree.sampleHitList
     nodeList = []
     for ch in tree.children:
         nodeList.append(ch)

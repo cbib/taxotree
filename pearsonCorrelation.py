@@ -30,7 +30,8 @@ def applyProb(xArray,p):
     elif (p == "uniformProbabilityProduct"):
         return uniformProbabilityProduct(xArray)
     else:
-        print "Undefined probability law."
+        print "\n/!\ ERROR: Undefined probability law."
+        raise ValueError
 
 #Calculus of expectation provided the array of every probability associated to eeach value of the xArray
 def expectation(xArray,probArray):

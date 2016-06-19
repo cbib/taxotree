@@ -1,10 +1,13 @@
 from __future__ import division
 import numpy as np
+import re
 
 from misc import mem
 from taxoTree import TaxoTree
 from parsingInfo import parseInfo
 from parsingTree import parseTree
+
+integer = re.compile("[0-9]+")
 
 #memPositions is the list of positions in the infoList of information that belongs to metadataList
 #In the order of the elements of metadataList
@@ -35,8 +38,6 @@ def isInInterval(value,interval1,interval2):
 #@samplesListInGroup is the list of lists of sample ID that match the requirements for a certain metadatum
 #@interval1List and @interval2List are the lists of lower and upper interval bounds for the metadata
 def computeSamplesInGroup(samplesInfoList,infoList,metadataList,interval1List,interval2List):
-    assert (len(metadataList) == len(interval1List))
-    assert (len(metadataList) == len(interval2List))
     samplesListInGroup = []
     infoPositions = memPositionsInfo(infoList,metadataList)[::-1]
     #@datumPos matches the position of datum corresponding to the information at @infoPos
@@ -59,9 +60,10 @@ def computeSamplesInGroup(samplesInfoList,infoList,metadataList,interval1List,in
                 elif not (sample[infoPos] == "N") and (int(sample[infoPos]) == interval1List[datumPos]):
                     #Adds the sampleID to the list
                     samplesInGroup += [sample[0]]
-            #If the length of interval of acceptable vaues is non-zero
+                #In any other case, the sample is not added
+            #If the length of interval of acceptable values is non-zero
             else:
-                if isInInterval(int(sample[infoPos]),interval1List[datumPos],interval2List[datumPos]):
+                if integer.match(sample[infoPos]) and isInInterval(int(sample[infoPos]),interval1List[datumPos],interval2List[datumPos]):
                     samplesInGroup += [sample[0]]
         datumPos += 1
         samplesListInGroup.append(samplesInGroup)

@@ -6,7 +6,7 @@ def writeText(filename,data):
     fo.close()
 
 def writeArray(filename,data,header):
-    np.savetxt("files/" + filename + ".file",data,"%s"," | "," \n",header + " \n","","")
+    np.savetxt("files/" + filename + ".taxotree",data,"%s"," | "," \n",header + " \n","","")
 
 def writeFile(data,header,typeData="text"):
     filename = raw_input("In which file do you want to write it? [Be careful not to choose a name that already exists as it would truncate the existing file]\n")

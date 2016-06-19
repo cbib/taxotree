@@ -2,7 +2,7 @@ from parsingTree import parseTree
 from parsingMatrix import parseMatrix
 from parsingInfo import parseInfo
 from taxoTree import TaxoTree
-from actions import totalDiffRatioAct,patternRatioAct,percentageAct,pearsonAct,similarityAct
+from actions import totalDiffRatioAct,patternRatioAct,percentageAct,pearsonAct,similarityAct,printTreeAct
 from normalization import normalize
 from misc import getSampleIDList
 
@@ -48,6 +48,7 @@ def main():
             print "   3: Percentage of assignments in a certain group of bacterias depending on metadata"
             print "   4: Pearson correlation coefficient"
             print "   5: Similarity coefficients between patients"
+            print "   6: Print the taxonomic tree"
             print "[To quit, write down exit]"
             answer = raw_input("Your answer?\n")
             if (answer =="1"):
@@ -66,8 +67,14 @@ def main():
                 matrixSim = similarityAct(dataArray,iMatrix)
                 dataArray.append(matrixSim)
                 print "-- End \n"
+            elif (answer == "6"):
+                printTreeAct(dataArray)
+                print "-- End \n"
+            elif not (answer == "exit"):
+                print "/!\ ERROR: Please enter a number between 1 and 6, or exit if you want to quit."
+                raise ValueError
         except ValueError:
             print "/!\ ERROR: Please look at the line above."
-            print "/!\ ERROR: If the line above is blank, it is an uncatched ValueError.\n"
+            print "/!\ ERROR: If the line above is blank, it may be an uncatched ValueError.\n"
     #return dataArray
     

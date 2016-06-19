@@ -1,4 +1,3 @@
-#To ensure floating division
 from __future__ import division
 
 from taxoTree import TaxoTree
@@ -12,7 +11,7 @@ from parsingTree import parseTree
 #@commonPatternsList contains (pattern (list of (name,rank) pairs),number of assignments in nodes of this pattern in both samples,number of nodes in this pattern) 
 def enumerateCommonPatterns(tree,sampleNameList1,sampleNameList2):
     commonPatternsList = []
-    #@nodesList1 is the list of nodes (name,rank,sampleHitList) for sampleNameList1 (cf. misc.py)
+    #@nodesList1 is the list of nodes (name,rank,sampleHitList) for sampleNameList1 (see misc.py)
     nodesList1,_,_ = takeNodesInTree(tree,sampleNameList1)
     #We consider every node of the tree as a potential root for a pattern
     for node in nodesList1:
