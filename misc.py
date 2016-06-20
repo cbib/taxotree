@@ -253,7 +253,7 @@ def getValueBacteria(samplesOccList,speciesList,bacteriaPos,sampleList):
     assignments = 0
     for sample in sampleList:
         if not (len(sample) == len(speciesList)):
-            print "\n/!\ ERROR: [BUG] [misc/getValueBacteria] Different lengths",len(sample),"and",len(speciesList)
+            print "\n/!\ ERROR: [BUG] [misc/getValueBacteria] Different lengths",len(sample),"and",len(speciesList),"(1)"
             raise ValueError
         i = 0
         n = len(samplesOccList)
@@ -264,7 +264,7 @@ def getValueBacteria(samplesOccList,speciesList,bacteriaPos,sampleList):
             if pos < len(sample):
                 assignments += samplesOccList[i][pos]
             else:
-                print "\n/!\ ERROR: [BUG] [misc/getValueBacteria] Different lengths",len(sample),"and",pos
+                print "\n/!\ ERROR: [BUG] [misc/getValueBacteria] Different lengths",len(sample),"and",pos,"(2)"
                 raise ValueError
         resultList.append((sample,assignments))
     return resultList
