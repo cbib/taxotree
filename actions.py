@@ -391,3 +391,13 @@ def printTreeAct(dataArray):
         print "\n/!\ ERROR: You need to answer 'Y' or 'N'."
         raise ValueError
     printTree(dataArray[7],(answer == "Y"))
+
+#____________________________________________________________________________
+
+def plottingAct(dataArray):
+    ()
+
+#____________________________________________________________________________
+
+def distanceAct(dataArray):
+    ()

@@ -234,7 +234,8 @@ def taxoLCA(paths,name1,rank1,name2,rank2,allNodes=False):
     commonPath,_,_ = setOperations(paths,name1,rank1,name2,rank2,allNodes=False)
     return commonPath[-1]
 
-#Computes the positions of number of assignments to each bacteria of the group in the occurrences matrix
+#Computes the positions of the number of assignments to each bacteria of the group bacteriaList in the occurrences matrix
+#that is, all the numbers of columns corresponding to one of the bacterias in bacteriaList
 def getPositionBacteria(bacteriaList,speciesList):
     i = 0
     positions = []
@@ -245,19 +246,26 @@ def getPositionBacteria(bacteriaList,speciesList):
         i += 1
     return positions
 
-#Computes the set of number of assignments to a certain bacteria (name,rank)
-#Returns a (sample,number of assignments to the group of bacterias in sample) pair list
+#Computes the set of number of assignments to a certain group of bacterias (positions have been already computed in bacteriaPos)
+#Returns a (sample,number of assignments to the group of bacterias in sample) pair list, where sample belongs to sampleList, which is a list of sample IDs
 def getValueBacteria(samplesOccList,speciesList,bacteriaPos,sampleList):
     resultList = []
     assignments = 0
     for sample in sampleList:
+        if not (len(sample) == len(speciesList)):
+            print "\n/!\ ERROR: [BUG] [misc/getValueBacteria] Different lengths",len(sample),"and",len(speciesList)
+            raise ValueError
         i = 0
         n = len(samplesOccList)
         #gets the line associated to the sample in samplesOccList
         while i < n and not (samplesOccList[i][0] == sample):
             i += 1
         for pos in bacteriaPos:
-            assignments += samplesOccList[i][pos]
+            if pos < len(sample):
+                assignments += samplesOccList[i][pos]
+            else:
+                print "\n/!\ ERROR: [BUG] [misc/getValueBacteria] Different lengths",len(sample),"and",pos
+                raise ValueError
         resultList.append((sample,assignments))
     return resultList
     
@@ -300,23 +308,39 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,metadatum):
         print "\n/!\ ERROR: You have selected no sample."
         raise ValueError
     sample = sampleSorted.pop()
+    if len(sample) < i:
+        print "\n/!\ ERROR: [BUG] [misc/getValueBacteriaMetadata] Different lengths",len(sample),"and",i,"(1)"
+        raise ValueError
+    #selects a sample where the value of the metadatum is known
     while not integer.match(sample[i]):
         sample = sampleSorted.pop()
+        if len(sample) < i:
+            print "\n/!\ ERROR: [BUG] [misc/getValueBacteriaMetadata] Different lengths",len(sample),"and",i,"(2)"
+            raise ValueError
+    #Initializing the set of values of the metadatum
     currValue = sample[i]
     valueSet.append(currValue)
+    #While it remains samples in the list
     while sampleSorted:
         valueSample = []
-        while sample[i] == currValue:
+        #Filling the list of samples with similar values of the metadatum
+        while (sample[i] == currValue):
             valueSample.append(sample)
             sample = sampleSorted.pop()
+            #gets the next sample where the value of the metadatum is known
             while not integer.match(sample[i]):
                 sample = sampleSorted.pop()
+        #appends the newly created list to the main list
         valueSampleMetadatum.append(valueSample)
+        #Initializing next loop with the new different value of the metadatum
         currValue = sample[i]
+        #Adding this value to the set
         valueSet.append(currValue)
     #Integer values of metadatum are sorted
     yArray = sorted(valueSet,key=lambda x:x)
+    #For every different value of the metadatum
     for sampleValueList in valueSampleMetadatum:
+        #gets the number of assignments to bacterias which positions are in bacteriaPos depending on the value of the metadatum (any sample in sampleValueList has the same value of the metadatum)
         xArray.append(getValueBacteria(samplesOccList,speciesList,bacteriaPos,sampleValueList))
     answer = raw_input("Write both Bacteria and Metadatum files? Y/N\n")
     if (answer == "Y"):
