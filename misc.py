@@ -104,13 +104,14 @@ def memAndSampleHitList(x,nodeList):
             return True,node[2]
     return False,[]
 
-#Gets sample ID 
+#Gets sample IDs
 def getSampleIDList(samplesList):
     sampleIDList = []
     for sample in samplesList:
         if not mem(sample[0],sampleIDList):
             sampleIDList.append(sample[0])
-    return sampleIDList
+    #Sorts sample IDs in alphabetical order
+    return sorted(sampleIDList,key=lambda x:x)
 
 #For sorting lists of nodes (name,rank) by decreasing order S > G > F > O > C > P > K > R. Returns 1 if rank1 => rank2, -1 if rank1 < rank2
 def compare(rank1,rank2):

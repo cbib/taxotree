@@ -56,7 +56,7 @@ def countAssignmentsInCommon(common,sampleNameList1,sampleNameList2):
                 s += sampleHit[1]
     return s
 
-#When totalRatio is close to 1, it means the two samples are quite alike
+#When totalRatio is close to 1, it means the two samples are quite alike. [ Please read README to see in which way ]
 def totalRatioNormalized(commonA,numberA1,numberA2):
     #if @numberA1 = @numberA2 = @commonA = 0
     if not numberA1 and not numberA2 and not commonA:

@@ -116,8 +116,11 @@ def computePercentageAssignmentNodes(samplesListInGroup,nodesGroup,samplesList,s
                 sampleHitList = memReturnSampleHitList(sample,samplesList)
                 #Adds for every sample the number corresponding the node in nodePositions
                 #if @sampleHitList is non-empty
-                if sampleHitList:
+                if nodePos >= len(sampleHitList):
                     assignmentsInGroup += sampleHitList[nodePos]
+                else:
+                    print "\n/!\ ERROR: [BUG] [percentage/computePercentageAssignmentNodes] List out of range: nodePos:",nodePos,"length of sampleHitList:",len(sampleHitList),"sampleHitList:",sampleHitList
+                    raise ValueError
         if totalAssignments:
             percentageList.append(100*assignmentsInGroup/totalAssignments)
         else:

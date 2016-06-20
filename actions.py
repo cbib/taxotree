@@ -88,18 +88,30 @@ def sanitizeNode(stringNode):
     return "(" + stringNode[0] + "," + stringNode[1] + ")"
 
 #Printing pretty lists of metadata with their default values
-def listMetadata(metadataList,interval1List,interval2List):
+def listSampleInvolved(metadataList,interval1List,interval2List,sampleNameList):
     string = ""
-    n = len(metadataList)
-    for i in range(n-1):
-        if (interval1List[i] == interval2List[i]):
-            string += metadataList[i] + " (value equal to " + str(interval1List[i]) + "), "
+    if not metadataList and not interval1List and not interval2List and not sampleNameList:
+      print "\n/!\ ERROR: You have selected no sample."
+      raise ValueError
+    #If samples were selected one by one
+    elif sampleNameList:
+        string += "\ndepending on the group of samples: "
+        for sl in sampleNameList[:-1]:
+            string += str(sl) + ", "
+        string += str(sampleNameList[-1])
+    #If samples were selected according to metadata values (len(metadataList) = len(interval1List) = len(interval2List))
+    if metadataList:
+        string += "\nselected on metadata (for each line): "
+        n = len(metadataList)
+        for i in range(n-1):
+            if (interval1List[i] == interval2List[i]):
+                string += metadataList[i] + " (value equal to " + str(interval1List[i]) + "), "
+            else:
+                string += metadataList[i] + " (value between " + str(interval1List[i]) + " and " + str(interval2List[i]) + "), "
+        if (interval1List[-1] == interval2List[-1]):
+            string += metadataList[-1] + " (value equal to " + str(interval1List[-1]) + ")"
         else:
-            string += metadataList[i] + " (value between " + str(interval1List[i]) + " and " + str(interval2List[i]) + "), "
-    if (interval1List[-1] == interval2List[-1]):
-        string += metadataList[-1] + " (value equal to " + str(interval1List[-1]) + ")"
-    else:
-        string += metadataList[-1] + " (value between " + str(interval1List[-1]) + " and " + str(interval2List[-1]) + ")"
+            string += metadataList[-1] + " (value between " + str(interval1List[-1]) + " and " + str(interval2List[-1]) + ")"
     return string
 
 #Selecting samples in two ways: either choose each of them one by one, or selecting according to default values of certain metadatum
@@ -108,47 +120,68 @@ def createSampleNameList(dataArray,percentage=False):
     interval1List = []
     interval2List = []
     sampleIDList = dataArray[8]
-    answer = raw_input("Do you want to select samples one by one, or to select samples matching requirements on metadata? one/matching \n")
-    if (answer == "one"):
-        print sampleIDList
-        if (len(sampleIDList) < 2):
-            print "\n/!\ ERROR: List of samples is empty or only of length one!..."
+    if percentage:
+        i = raw_input("/!\ How many different lists of samples do you want?\n")
+        if not integer.match(i):
+            print "\n/!\ ERROR: You need to enter a integer here!"
             raise ValueError
-        #Part of code only available in percentage function
-        if percentage:
-            i = raw_input("/!\ How many different lists of samples do you want?\n")
-            if not integer.match(i):
-                print "\n/!\ ERROR: You need to enter a integer here!"
-                raise ValueError
-            numberList = int(i)
-            sampleNameList = []
-            if (numberList < 1):
-                print "\n/!\ ERROR: Empty set of lists of samples!"
-                raise ValueError
-            while numberList:
+        numberList = int(i)
+        sampleNameList = []
+        if (numberList < 1):
+            print "\n/!\ ERROR: Empty set of lists of samples!"
+            raise ValueError
+        while numberList:
+            answer = raw_input("Do you want to select samples one by one, or to select samples matching requirements on metadata? one/matching \n")
+            if (answer == "one"):
+                if (len(sampleIDList) < 2):
+                    print "\n/!\ ERROR: List of samples is empty or only of length one!..."
+                    raise ValueError
+                print sampleIDList
                 sampleNameList11 = parseList(raw_input("Input the list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
-                sampleNameList.append(sampleNameList11)
-                numberList -= 1
-            isInDatabase(sampleNameList,sampleIDList)
-        else:
-            sampleNameList = parseList(raw_input("Input the list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
-        isInDatabase(sampleNameList,sampleIDList)
-    elif (answer == "matching"):
-        print dataArray[1]
-        metadataList = parseList(raw_input("Input the list of metadata you want to consider among those written above. [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
-        isInDatabase(metadataList,dataArray[1])
-        interval1List = parseIntList(raw_input("Input the list of lower interval bounds corresponding to metadatum/metadata above. [ Please refer to README for more details. e.g. 1;2 ]\n"))
-        if not (len(interval1List) == len(metadataList)):
-            print "\n/!\ ERROR: You need to enter the same number of lower bounds than of metadata!"
-            raise ValueError
-        interval2List = parseIntList(raw_input("Input the list of upper interval bounds corresponding to metadatum/metadata above. [ Please refer to README for more details. e.g. 3;2 ]\n"))
-        if not (len(interval2List) == len(metadataList)):
-            print "\n/!\ ERROR: You need to enter the same number of upper bounds than of metadata!"
-            raise ValueError
-        sampleNameList = computeSamplesInGroup(dataArray[0],dataArray[1],metadataList,interval1List,interval2List)
+            elif (answer == "matching"):
+                print dataArray[1]
+                metadataList = parseList(raw_input("Input the list of metadata you want to consider among those written above. [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+                isInDatabase(metadataList,dataArray[1])
+                interval1List = parseIntList(raw_input("Input the list of lower interval bounds corresponding to metadatum/metadata above. [ Please refer to README for more details. e.g. 1;2 ]\n"))
+                if not (len(interval1List) == len(metadataList)):
+                    print "\n/!\ ERROR: You need to enter the same number of lower bounds than of metadata!"
+                    raise ValueError
+                interval2List = parseIntList(raw_input("Input the list of upper interval bounds corresponding to metadatum/metadata above. [ Please refer to README for more details. e.g. 3;2 ]\n"))
+                if not (len(interval2List) == len(metadataList)):
+                    print "\n/!\ ERROR: You need to enter the same number of upper bounds than of metadata!"
+                    raise ValueError
+                sampleNameList11 = computeSamplesInGroup(dataArray[0],dataArray[1],metadataList,interval1List,interval2List)[0]
+            else:
+                print "\n/!\ ERROR: You need to answer either 'one' or 'matching' and not: \"",answer,"\"."
+                raise ValueError
+            isInDatabase(sampleNameList11,sampleIDList)
+            sampleNameList.append(sampleNameList11)
+            numberList -= 1
     else:
-        print "\n/!\ ERROR: You need to answer 'one' or 'matching' and not: \"",answer,"\"."
-        raise ValueError
+            answer = raw_input("Do you want to select samples one by one, or to select samples matching requirements on metadata? one/matching \n")
+            if (answer == "one"):
+                if (len(sampleIDList) < 2):
+                    print "\n/!\ ERROR: List of samples is empty or only of length one!..."
+                    raise ValueError
+                print sampleIDList
+                sampleNameList = parseList(raw_input("Input the list of samples using the ID printed above. [e.g. " + sampleIDList[0] + ";"+ sampleIDList[1] + " ]\n"))
+            elif (answer == "matching"):
+                print dataArray[1]
+                metadataList = parseList(raw_input("Input the list of metadata you want to consider among those written above. [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+                isInDatabase(metadataList,dataArray[1])
+                interval1List = parseIntList(raw_input("Input the list of lower interval bounds corresponding to metadatum/metadata above. [ Please refer to README for more details. e.g. 1;-inf;3 ]\n"))
+                if not (len(interval1List) == len(metadataList)):
+                    print "\n/!\ ERROR: You need to enter the same number of lower bounds than of metadata!"
+                    raise ValueError
+                interval2List = parseIntList(raw_input("Input the list of upper interval bounds corresponding to metadatum/metadata above. [ Please refer to README for more details. e.g. +inf;2;1 ]\n"))
+                if not (len(interval2List) == len(metadataList)):
+                    print "\n/!\ ERROR: You need to enter the same number of upper bounds than of metadata!"
+                    raise ValueError
+                sampleNameList = computeSamplesInGroup(dataArray[0],dataArray[1],metadataList,interval1List,interval2List)[0]
+            else:
+                print "\n/!\ ERROR: You need to answer either 'one' or 'matching' and not: \"",answer,"\"."
+                raise ValueError
+            isInDatabase(sampleNameList,sampleIDList)
     return sampleNameList,metadataList,interval1List,interval2List
 
 #Checks if the elements in @parselist belong to @datalist else returns an error
@@ -159,7 +192,7 @@ def isInDatabase(parseList,dataList):
             if not n:
                 print "\n/!\ ERROR: [BUG] [actions/isInDatabase] Empty list."
             else:
-                print "\n/!\ ERROR: '" + pl + "' is not in the database containing: " + str(dataList[:min(n-1,3)]) + "."
+                print "\n/!\ ERROR: '" + str(pl) + "' is not in the database beginning with: " + str(dataList[:min(n-1,3)]) + "."
             raise ValueError
 
 #____________________________________________________________________________
@@ -167,9 +200,9 @@ def isInDatabase(parseList,dataList):
 #Actions
 def totalDiffRatioAct(dataArray):
     print "First list of samples."
-    sampleNameList1,_,_,_ = createSampleNameList(dataArray)
+    sampleNameList1,metadataList1,interval1List1,interval2List1 = createSampleNameList(dataArray)
     print "Second list of samples."
-    sampleNameList2,_,_,_ = createSampleNameList(dataArray)
+    sampleNameList2,metadataList2,interval1List2,interval2List2 = createSampleNameList(dataArray)
     common,in1,in2,_,_,_,_,_ = compute(dataArray[7],sampleNameList1,sampleNameList2)
     commonA = countAssignmentsInCommon(common,sampleNameList1,sampleNameList2)
     numberA1 = countAssignments(in1,sampleNameList1)
@@ -185,16 +218,22 @@ def totalDiffRatioAct(dataArray):
     print "[If you have obtained +inf (resp. -inf), it could mean you have selected no sample.]\n"
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
-        data = "Total Ratio Results ****\n for lists " + str(sampleNameList1) + "\n and " + str(sampleNameList2) + "\n\nTotal Ratio Distance is: " + str(tratio) + "\n normalized Total Ratio is: " + str(ntRatio) + "\nDiff Ratio Distance is: " + str(dratio) + "\n normalized Diff Ratio is: " + str(ndRatio) +"\n\nEND OF FILE ****"  
+        data = "Total Ratio Results ****\n for lists " + str(sampleNameList1) + "\n"
+        if metadataList1:
+            data += "selected on metadata: " + str(metadataList1) + "with extreme values: " + str(interval1List1) + " (lower bounds) and " + str(interval2List1) + " (upper bounds) \n"
+        data += " and " + str(sampleNameList2) + "\n"
+        if metadataList2:
+            data += "selected on metadata: " + str(metadataList2) + "with extreme values: " + str(interval1List2) + " (lower bounds) and " + str(interval2List2) + " (upper bounds) \n"
+        data += "\nTotal Ratio Distance is: " + str(tratio) + "\n normalized Total Ratio is: " + str(ntRatio) + "\nDiff Ratio Distance is: " + str(dratio) + "\n normalized Diff Ratio is: " + str(ndRatio) +"\n\nEND OF FILE ****"  
         writeFile(data,"","text")
 
 #____________________________________________________________________________
 
 def patternRatioAct(dataArray):
     print "First list of samples."
-    sampleNameList1,_,_,_ = createSampleNameList(dataArray)
+    sampleNameList1,metadata1,interval11,interval21 = createSampleNameList(dataArray)
     print "Second list of samples."
-    sampleNameList2,_,_,_ = createSampleNameList(dataArray)
+    sampleNameList2,metadata2,interval12,interval22 = createSampleNameList(dataArray)
     commonPatternsList = enumerateCommonPatterns(dataArray[7],sampleNameList1,sampleNameList2)
     specificPatternsList1 = enumerateSpecificPatterns(dataArray[7],sampleNameList1,sampleNameList2)
     specificPatternsList2 = enumerateSpecificPatterns(dataArray[7],sampleNameList2,sampleNameList1)
@@ -208,7 +247,10 @@ def patternRatioAct(dataArray):
                 print x[0]
     else:
         print "No pattern of length > 1."
-    print "\n--- Total number of specific patterns in",sampleNameList1,": ",len(specificPatternsList1)
+    print "\n--- Total number of specific patterns in",sampleNameList1
+    if metadata1:
+        print "selected on metadata: ",str(metadata1),"with lower and upper bounds being",str(interval11),"and",str(interval21),":"
+    print len(specificPatternsList1)
     print "--- Specific patterns of length > 1 in",sampleNameList1,"---"
     if specificPatternsList1:
         for x in specificPatternsList1:
@@ -216,7 +258,10 @@ def patternRatioAct(dataArray):
                 print x[0]
     else:
         print "No pattern of length > 1."
-    print "\n--- Total number of specific patterns in",sampleNameList2,": ",len(specificPatternsList2)
+    print "\n--- Total number of specific patterns in",sampleNameList2
+    if metadata2:
+        print "selected on metadata: ",str(metadata2),"with lower and upper bounds being",str(interval12),"and",str(interval22),":"
+    print len(specificPatternsList2)
     print "--- Specific patterns of length > 1 in",sampleNameList2,"---"
     if specificPatternsList2:
         for x in specificPatternsList2:
@@ -229,7 +274,13 @@ def patternRatioAct(dataArray):
     print "[ If you obtained +inf, if there are common patterns (of length 1 or superior to 1), it could mean both groups of samples contain exactly the same set of nodes. If there is no common pattern, it could mean there is no sample in both groups ]\n"
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
-        data = "Pattern Ratio Results ****\nfor lists of samples " + str(sampleNameList1) + "\nand " + str(sampleNameList2) + "\n\n-> Pattern Ratio is: " + str(pRatio) + "\n\nPrinting patterns: first is the list of nodes in the pattern, then the total number of assignations in this pattern and eventually the total number of nodes in the pattern\n\n-> Common Patterns:\n"
+        data = "Pattern Ratio Results ****\nfor lists of samples " + str(sampleNameList1) + "\n"
+        if metadata1:
+            data += "selected on metadata: " + str(metadata1) + " with lower and upper bounds being " + str(interval11) + " and " + str(interval21) + "\n"
+        data += "\nand " + str(sampleNameList2) + "\n"
+        if metadata2:
+            data += "selected on metadata: " + str(metadata2) + " with lower and upper bounds being " + str(interval12) + " and " + str(interval22) + "\n"
+        data += "\n-> Pattern Ratio is: " + str(pRatio) + "\n\nPrinting patterns: first is the list of nodes in the pattern, then the total number of assignations in this pattern and eventually the total number of nodes in the pattern\n\n-> Common Patterns:\n"
         for x in commonPatternsList:
             data += str(x) + "\n"
         data += "\n-> Specific patterns to " + str(sampleNameList1) + ":\n"
@@ -262,7 +313,7 @@ def percentageAct(dataArray):
     print ""
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):  
-        writeFile(data,"Percentage of assignments ****\nin the group of nodes: " + listNodes(nodesGroup) + "\ndepending on metadata (for each line): " + listMetadata(metadataList,interval1List,interval2List) + "\n\nEND OF FILE ****","array")
+        writeFile(data,"Percentage of assignments ****\nin the group of nodes: " + listNodes(nodesGroup) + listSampleInvolved(metadataList,interval1List,interval2List,sampleNameList),"array")
 
 #_____________________________________________________________________________
 

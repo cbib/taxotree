@@ -49,7 +49,7 @@ class TaxoTree(object):
                     nodeList = node.children + nodeList
                 else:
                     nodeList += node.children
-            print "\n/!\ ERROR: Subtree not found."
+            print "\n/!\ ERROR: Subtree rooted at: (",name,rank,") not found. It probably means that this node is not assigned in the samples you have selected."
             raise ValueError
         #
         #
@@ -196,7 +196,7 @@ class TaxoTree(object):
         sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber = self.addNodePreProcess(paths,nodesList,samplesList)
         finalTree = self.addNodeAux(paths,sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber)
         end = time()
-        print "TIME:",(end-start)
+        print "TIME:",(end-start),"sec"
         return finalTree
     #
     #
