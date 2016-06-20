@@ -326,13 +326,29 @@ def creatingArray(dataArray,pearson=False):
             print dataArray[1]
             valueInput2 = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
             isInDatabase(valueInput2,dataArray[1])
-            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,valueInput2)
+            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[8],dataArray[2],dataArray[3],valueInput2)
         else:
             print "\nERROR: You need to answer 'BB' or 'BM', and not ",typeInput
             raise ValueError
-    #Cases for plotting graphs
+    #Available cases for only plotting graphs
     else:
-        ()
+        typeInput = raw_input("Do you want to compute bacteria/bacteria or bacteria/metadatum? BB/BM [ Please read README for details. ]\n")
+        if (typeInput == "BB"):
+            valueInput1 = parseListNode(raw_input("Choose the first group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
+            isInDatabase(valueInput1,dataArray[6])
+            valueInput2 = parseListNode(raw_input("Choose the second group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
+            isInDatabase(valueInput2,dataArray[6])
+            return getValueBacteriaBacteria(dataArray[2],dataArray[3],dataArray[8],valueInput1,valueInput2)
+        elif (typeInput == "BM"):
+            valueInput1 = parseListNode(raw_input("Choose the group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
+            isInDatabase(valueInput1,dataArray[6])
+            print dataArray[1]
+            valueInput2 = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+            isInDatabase(valueInput2,dataArray[1])
+            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[2],dataArray[3],valueInput2)
+        else:
+            print "\nERROR: You need to answer 'BB' or 'BM', and not ",typeInput
+            raise ValueError
     
 #_____________________________________________________________________________
 
@@ -361,6 +377,7 @@ def pearsonAct(dataArray):
     if (answer == "Y"):
         data = "The " + pearsonType + " Pearson coefficient for values: ****\n\n" + str(xArray) + "\n and " + str(yArray) + "\n is : " + str(pearson) + "\n\nEND OF FILE ****"
         writeFile(data,"","text")
+    answer = raw_input("Plot the corresponding graph? Y/N\n")
 
 #_____________________________________________________________________________
 

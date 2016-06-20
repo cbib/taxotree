@@ -259,10 +259,13 @@ def getPositionBacteria(bacteriaList,speciesList):
 
 #Computes the set of number of assignments to a certain group of bacterias (positions have been already computed in bacteriaPos)
 #Returns a (sample,number of assignments to the group of bacterias in sample) pair list, where sample belongs to sampleList, which is a list of sample IDs
-def getValueBacteria(samplesOccList,speciesList,sampleIDList,bacteriaPos,sampleList):
+def getValueBacteria(samplesOccList,speciesList,sampleIDList,bacteriaPos,sampleList,metadata=False):
     resultList = []
     assignments = 0
     for sample in sampleList:
+        if metadata:
+            #Keeps the sample ID
+            sample = sample[0]
         i = 0
         n = len(samplesOccList)
         #gets the line associated to the sample in samplesOccList
@@ -317,7 +320,9 @@ def getValueBacteriaBacteria(samplesOccList,speciesList,sampleIDList,bacterias1,
     return xArray,yArray
 
 #Returns xArray and yArray, where yArray contains the values of selected metadatum and xArray contains the number of assignments to a chosen group of bacterias depending on the value of the metadatum 
-def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,metadatum):
+def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,samplesOccList,speciesList,metadatum):
+    #One metadatum only!
+    metadatum = metadatum[0]
     xArray = []
     #Stores the positions of number of assignments to each bacteria of the group in the occurrences matrix
     bacteriaPos = getPositionBacteria(bacterias,speciesList)
@@ -351,16 +356,15 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,metadatum):
             raise ValueError
     #Initializing the set of values of the metadatum
     currValue = sample[i]
-    valueSet.append((metadatum,currValue))
     #While it remains samples in the list
     while sampleSorted:
         valueSample = []
         #Filling the list of samples with similar values of the metadatum
-        while (sample[i] == currValue):
+        while sampleSorted and (sample[i] == currValue):
             valueSample.append(sample)
             sample = sampleSorted.pop()
             #gets the next sample where the value of the metadatum is known
-            while not integer.match(sample[i]):
+            while not integer.match(sample[i]) and sampleSorted:
                 sample = sampleSorted.pop()
         #appends the newly created list to the main list
         valueSampleMetadatum.append(valueSample)
@@ -373,16 +377,16 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,metadatum):
     #For every different value of the metadatum
     for sampleValueList in valueSampleMetadatum:
         #gets the number of assignments to bacterias which positions are in bacteriaPos depending on the value of the metadatum (any sample in sampleValueList has the same value of the metadatum)
-        res = getValueBacteria(samplesOccList,speciesList,bacteriaPos,sampleValueList)
+        res = getValueBacteria(samplesOccList,speciesList,sampleIDList,bacteriaPos,sampleValueList,True)
         if res:
-            xArray += res
+            xArray.append(res)
         else:
             for sample in sampleValueList:
                 xArray.append((sample,0))
     print "[Preview.]"
-    print "--- Number of assignments to the group of bacterias",bacterias,"in samples depending on the value of metadatum",metadatum
+    print "--- Number of assignments to the group of bacterias",bacterias,"in samples depending on the",len(xArray),"value(s) of metadatum",metadatum
     print xArray
-    print "--- Set of values of metadatum",metadatum
+    print "--- Set of values of metadatum",metadatum,"of length",len(yArray)
     string = ""
     for x in yArray:
         string += str(x[1]) + " "
@@ -390,7 +394,7 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,metadatum):
     answer = raw_input("Write both Bacteria and Metadatum files? Y/N\n")
     if (answer == "Y"):
         print "Saving first file"
-        writeFile(xArray,"**** Values of assignments in samples samples depending on the value of metadatum",metadatum,"of nodes: " + str(bacteria) + "\n\n","array")
+        writeFile(xArray,"**** Values of assignments in samples samples depending on the value of metadatum" + str(metadatum) + "of nodes: " + str(bacterias) + "\n\n","array")
         print "Saving second file"
         writeFile(yArray,"**** Values of metadatum: " + str(metadatum) + "\n\n","array")
     return xArray,yArray

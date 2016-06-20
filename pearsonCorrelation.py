@@ -12,6 +12,9 @@ def printProbabilityLawsList():
 
 def uniformProbability(xArray):
     n = len(xArray)
+    if not n:
+        print "\n/!\ ERROR: Empty list."
+        raise ValueError
     probArray = np.zeros(n)
     for i in range(n):
         probArray[i] = 1/n
@@ -19,6 +22,9 @@ def uniformProbability(xArray):
 
 def uniformProbabilityProduct(xArray):
     n = len(xArray)
+    if not n:
+        print "\n/!\ ERROR: Empty list."
+        raise ValueError
     probArray = np.zeros(n)
     for i in range(n):
         probArray[i] = 1/(n*n)
@@ -77,8 +83,12 @@ def populationPearson(xArray,yArray,p1,p2,p3):
 
 def mean(xArray):
     n = len(xArray)
+    if not n:
+        print "\n/!\ ERROR: Empty list."
+        raise ValueError
     s = 0
     for i in range(n):
+        print xArray[i][1]
         s += xArray[i][1]
     return ((1/n)*s)
 
@@ -91,6 +101,9 @@ def samplePearson(xArray,yArray):
         s1 += (xArray[i][1] - mX)*(yArray[i][1] - mY)
         s2 += (xArray[i][1] - mX)*(xArray[i][1] - mX)
         s3 += (yArray[i][1] - mY)*(yArray[i][1] - mY)
+    if (s2 == 0) or (s3 == 0):
+        print "\n/!\ ERROR: No assignment in these samples."
+        raise ValueError
     result = s1/(np.sqrt(s2)*np.sqrt(s3))
     if result > 1 or result < -1:
         print "\n/!\ ERROR: Inconsistent value of Pearson correlation coefficient:",result,"(should be between -1 and 1)"
