@@ -68,7 +68,11 @@ def populationPearson(xArray,yArray,p1,p2,p3):
     cov = covariance(xArray,yArray,pp1,pp2,pp3)
     stdX = stDeviation(xArray,pp1)
     stdY = stDeviation(yArray,pp2)
-    return (cov/(stdX*stdY))
+    result = cov/(stdX*stdY)
+    if result > 1 or result < -1:
+        print "\n/!\ ERROR: Inconsistent value of Pearson correlation coefficient:",result,"(should be between -1 and 1)"
+        raise ValueError
+    return result
 
 def mean(xArray):
     n = len(xArray)
@@ -86,5 +90,9 @@ def samplePearson(xArray,yArray):
         s1 += (xArray[i] - mX)*(yArray[i] - mY)
         s2 += (xArray[i] - mX)*(xArray[i] - mX)
         s3 += (yArray[i] - mY)*(yArray[i] - mY)
-    return (s1/(np.sqrt(s2)*np.sqrt(s3)))
+    result = s1/(np.sqrt(s2)*np.sqrt(s3))
+    if result > 1 or result < -1:
+        print "\n/!\ ERROR: Inconsistent value of Pearson correlation coefficient:",result,"(should be between -1 and 1)"
+        raise ValueError
+    return result
         

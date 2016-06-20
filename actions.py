@@ -330,7 +330,7 @@ def creatingArray(dataArray):
         isInDatabase(valueInput,dataArray[1])
         return getValueMetadata(dataArray[0],dataArray[1],valueInput)
     else:
-        print "\nERROR: You need to answer 'bacteria' or 'metadatum'."
+        print "\nERROR: You need to answer 'bacteria' or 'metadatum', and not ",typeInput
         raise ValueError
     
 #_____________________________________________________________________________
@@ -344,7 +344,7 @@ def pearsonAct(dataArray):
         yArray = creatingArray(dataArray)
         pearson = samplePearson(xArray,yArray)
         print "\nPearson Sample coefficient is: " + str(pearson) + "\n"
-    else:
+    elif (pearsonType == "population"):
         print "First set of values\n"
         xArray = creatingArray(dataArray)
         print "Second set of values\n"
@@ -358,7 +358,10 @@ def pearsonAct(dataArray):
         p3 = raw_input("Enter the law of probability for the product of first values with second values [among the ones above]\n")
         isInDatabase(p3,probList)
         pearson = populationPearson(xArray,yArray,p1,p2,p3)
-        print "\nPearson Population coefficient is: " + str(pearson) + "\n" 
+        print "\nPearson Population coefficient is: " + str(pearson) + "\n"
+    else:
+        print "\n/!\ ERROR: You need to answer 'sample' or 'population', and not ",pearsonType
+        raise ValueError
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
         data = "The " + pearsonType + " Pearson coefficient for values: ****\n\n" + str(xArray) + "\n and " + str(yArray) + "\n is : " + str(pearson) + "\n\nEND OF FILE ****"

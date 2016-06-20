@@ -242,6 +242,8 @@ def sumOp(x,y):
 
 #@xArray and @yArray have the same length and are tuples lists
 def arraySum(xArray,yArray):
+    print xArray[i],yArray[i]
+    print xArray[i][0],xArray[i][1],str(yArray[i][1]) + " + " + str(xArray[i][2])
     return [(xArray[i][0],xArray[i][1],sumOp(yArray[i][1],xArray[i][2])) for i in range(len(xArray))]
             
 

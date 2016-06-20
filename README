@@ -13,6 +13,8 @@ In the terminal:
 - write down "main()"
 - to exit Python, write down "exit()"
 
+-----------------------------------------------------------------------------------------------------------------
+
 Details about main.py:
 - "TotalRatio and DiffRatio": 
 -- "Total Ratio" : 
@@ -25,16 +27,41 @@ Details about main.py:
 - "PatternRatio": 
 * Enumerates the common and specific patterns (of any length) of the two trees induced by the samples given in argument, and computes the number of nodes and assignments in each of them. It finally returns a list of (pattern,number of assignments,number of nodes) tuples for common and specific patterns. 
 * PatternRatio also computes the ratio (number of assignments in common patterns of length > 1)/(number of assignments in specific patterns). [ Returns +inf if number of assignments in specific patterns is zero ]
---- INTERPRETATION: The more large the pattern ratio is, the more the two samples bear a strong resemblance in terms of node population and of phylogenetic proximity between the nodes.
+--- INTERPRETATION: The more large the pattern ratio is, the more the two samples bear a strong resemblance in terms of node population AND of phylogenetic proximity between the nodes.
 
 - "Percentage of assignments in a certain group of nodes depending on samples": 
 * After selection of a group of bacterias and of a group of samples/metadatum, gives an array with the percentage of assignments to this family of bacterias depending on the samples/metadata.
 
 - "Pearson correlation coefficient": 
-* Computes the Pearson correlation coefficient between a number of assignments to a group of bacterias and a group of metadatas or between the numbers of assignments to two groups of bacterias under a certain probability law.
+* Computes the Pearson correlation coefficient r between a number of assignments to a group of bacterias and a group of metadatas or between the numbers of assignments to two groups of bacterias under a certain probability law. [ Returns an error if this coefficient is not comprised between -1 and 1 ]
+--- INTERPRETATION: Be careful about the interpretation of this coefficient, as a coefficient close to 0 could mean no linear relationship. It is important to compare r with the graph associated to the same values to see if the correlation found does mean something. As a general rule, you can assume the existence of a somehow linear correlation between two variables when |r| > 0.5. For x and y variables considered:
+**** If r = –1. There is a perfect linear relationship between x and y: when x is increasing, y is decreasing, and the other way around.
+**** If r = 0. There is no linear relationship between x and y.
+**** If r = +1. There is a perfect linear relationship between x and y: when x is increasing, y is increasing, and the other way around.
 
 - "Similarity coefficients between patients": 
-* Measures the level of similarity between two patients (or two groups of patients) according to metadata: for N patients/groups, returns a NxN matrix M where M(i,j) is the similarity coefficient between patient i/group i and patient j/group j. Formula for such a coefficient is M(i,j) = M(j,i) = sum{for ni value in line i in the metadata matrix where nj != unknown and ni != unknown} |ni - nj| (distance). 
+* Measures the level of similarity between two patients (or two groups of patients) according to metadata: for N patients/groups, returns a NxN matrix M where M(i,j) is the similarity coefficient between patient i/group i and patient j/group j. Formula for such a coefficient is M(i,j) = M(j,i) = sum{for ni value in line i in the metadata matrix where nj != unknown and ni != unknown} |ni - nj| (distance).
+
+- "Print the taxonomic tree":
+* Prints the whole taxonomic tree with this syntax:
+The program gives the choice of printing also for every node its sampleHitList, that is, the number of assignments n to this node for every sample where n is positive (non-zero).
+__________________________________________________________________________
+ROOT
+[ (name,rank,identifier) ]
+{ SAMPLEHITLIST
+[ sampleHitList of this node ] }
+CHILDREN
+** child #[number of child] of [ name rank ]
+[ printing recursively the subtree rooted at this child ]
+---
+END #[number of child] [ (child name) (child rank) ] of [ name rank ] ****
+--
+End
+___________________________________________________________________________
+
+
+-----------------------------------------------------------------------------------------------------------------
+
 
 Details about the files:
 **** actions.py ****
@@ -75,6 +102,9 @@ Computes Pearson coefficient.
 **** percentage.py ****
 Computes array of percentage.
 
+**** plottingValues.py ****
+Draws the graph of a set of values yArray depending on set of values xArray.
+
 **** similarityCoefficient.py ****
 Computes the similarity coefficient.
 
@@ -90,6 +120,8 @@ Helps saving results in files.
 **** /files
 Stores written files using writeOnFiles functions.
 
+-----------------------------------------------------------------------------------------------------------------
+
 Comments:
 *** Prior to the parsing operations, numbers have been normalized this way: ***
 - Variables that will not likely be useful (number of assignments too small) are identified and put to null
@@ -97,4 +129,5 @@ Comments:
 - Then numbers have been centered and reduced
 *** Selection of samples ***
 - In most of the possible actions, you can either choose one by one the samples involved in the action or give a list of metadatum with lower (e1) and upper (e2) bounds for each of them. In this case, every sample considered must have a required value n for a certain metadatum comprised between e1 and e2, where e1 and e2 are asked to the user. [For strings, use e1 = e2; for open intervals, use e1 = -inf or e2 = +inf]
-
+*** Plotting ***
+- If you do not succeed in creating a graph, because Python cannot import matplotlib.pyplot, then (if you are on Linux and own Python 3) write down in a terminal "sudo apt install python3-matplotlib", write down your password and follow the instructions. Now it should work. If you cannot install, try download and install the latest updates of your programs ("sudo apt update" and then "sudo apt upgrade").
