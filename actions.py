@@ -7,7 +7,7 @@ from parsingMatrix import parseMatrix
 from parsingInfo import parseInfo
 from parsingTree import parseTree
 from taxoTree import TaxoTree,printTree
-from misc import getValueBacteria,getValueMetadata,mem
+from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem
 
 from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
@@ -319,36 +319,40 @@ def percentageAct(dataArray):
 
 
 #@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList,#similarityMatrix]
-def creatingArray(dataArray):
-    typeInput = raw_input("Value are of type bacteria or metadatum? bacteria/metadatum\n")
-    if (typeInput == "bacteria"):
-        valueInput = parseListNode(raw_input("What value? [ (name,rank) list for bacteria, e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
-        isInDatabase(valueInput,dataArray[6])
-        return getValueBacteria(dataArray[2],dataArray[3],valueInput)
-    elif (typeInput == "metadatum"):
-        valueInput = parseList(raw_input("What value? [metadatum list for metadatum, e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
-        isInDatabase(valueInput,dataArray[1])
-        return getValueMetadata(dataArray[0],dataArray[1],valueInput)
+#Returns two arrays xArray and yArray, where yArray gives the value of a certain quantity depending on the values of xArray
+def creatingArray(dataArray,pearson=False):
+    #Available cases in Pearson function
+    if pearson:
+        typeInput = raw_input("Do you want to compute bacteria/bacteria or bacteria/metadatum? BB/BM [ Please read README for details. ]\n")
+        if (typeInput == "BB"):
+            valueInput1 = parseListNode(raw_input("Choose the first group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
+            isInDatabase(valueInput1,dataArray[6])
+            valueInput2 = parseListNode(raw_input("Choose the second group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
+            isInDatabase(valueInput2,dataArray[6])
+            return getValueBacteriaBacteria(dataArray[2],dataArray[3],dataArray[8],valueInput1,valueInput2)
+        elif (typeInput == "BM"):
+            valueInput1 = parseListNode(raw_input("Choose the group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
+            isInDatabase(valueInput1,dataArray[6])
+            print dataArray[1]
+            valueInput2 = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+            isInDatabase(valueInput2,dataArray[1])
+            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,valueInput2)
+        else:
+            print "\nERROR: You need to answer 'BB' or 'BM', and not ",typeInput
+            raise ValueError
     else:
-        print "\nERROR: You need to answer 'bacteria' or 'metadatum', and not ",typeInput
-        raise ValueError
+        ()
     
 #_____________________________________________________________________________
 
 def pearsonAct(dataArray):
     pearsonType = raw_input("Do you want to compute sample Pearson coefficient or population Pearson coefficient? sample/population \n")
     if (pearsonType == "sample"):
-        print "\nFirst set of values\n"
-        xArray = creatingArray(dataArray)
-        print "\nSecond set of values\n"
-        yArray = creatingArray(dataArray)
+        xArray,yArray = creatingArray(dataArray,True)
         pearson = samplePearson(xArray,yArray)
         print "\nPearson Sample coefficient is: " + str(pearson) + "\n"
     elif (pearsonType == "population"):
-        print "First set of values\n"
-        xArray = creatingArray(dataArray)
-        print "Second set of values\n"
-        yArray = creatingArray(dataArray)
+        xArray,yArray = creatingArray(dataArray,True)
         printProbabilityLawsList()
         probList = ["UniformProbability","UniformProbabilityProduct"]
         p1 = raw_input("Enter the law of probability for first values [among the ones above]\n")

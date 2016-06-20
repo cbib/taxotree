@@ -100,9 +100,12 @@ def sumList(ls):
 def computePercentageAssignmentNodes(samplesListInGroup,nodesGroup,samplesList,speciesList):
     percentageList = []
     nodePositions = memPositionsNodes(speciesList,nodesGroup)
-    while samplesListInGroup:
+    samplesListCopy = []
+    for s in samplesListInGroup:
+        samplesListCopy.append(s)
+    while samplesListCopy:
         #@samplesInGroup is a list of sample ID corresponding to a certain metadatum
-        samplesInGroup = samplesListInGroup.pop()
+        samplesInGroup = samplesListCopy.pop()
         #@assignmentsInGroup contains the number of assignment to the nodes in nodesPositions in the samples in samplesInGroup
         assignmentsInGroup = 0
         #@totalAssignments contains the total number of assignments in the samples in samplesInGroup
@@ -116,7 +119,7 @@ def computePercentageAssignmentNodes(samplesListInGroup,nodesGroup,samplesList,s
                 sampleHitList = memReturnSampleHitList(sample,samplesList)
                 #Adds for every sample the number corresponding the node in nodePositions
                 #if @sampleHitList is non-empty
-                if nodePos >= len(sampleHitList):
+                if nodePos <= len(sampleHitList):
                     assignmentsInGroup += sampleHitList[nodePos]
                 else:
                     print "\n/!\ ERROR: [BUG] [percentage/computePercentageAssignmentNodes] List out of range: nodePos:",nodePos,"length of sampleHitList:",len(sampleHitList),"sampleHitList:",sampleHitList
@@ -182,6 +185,9 @@ def percentageAssign(samplesInfoList,infoList,samplesListInGroup,tree,nodesGroup
         percentageList = computePercentageAssignmentTree(samplesListInGroup,nodesGroup,tree)[::-1]
     else:
         percentageList = computePercentageAssignmentNodes(samplesListInGroup,nodesGroup,samplesList,speciesList)[::-1]
+    if not (len(percentageList) == len(samplesListInGroup)):
+        print "\n/!\ ERROR: [BUG] [percentage/percentageAssign] The number of rows does not match the number of groups of samples."
+        raise ValueError
     n = len(samplesListInGroup)
     result = np.zeros(n)
     for i in range(n):

@@ -59,7 +59,6 @@ END #[number of child] [ (child name) (child rank) ] of [ name rank ] ****
 End
 ___________________________________________________________________________
 
-
 -----------------------------------------------------------------------------------------------------------------
 
 
@@ -124,10 +123,12 @@ Stores written files using writeOnFiles functions.
 
 Comments:
 *** Prior to the parsing operations, numbers have been normalized this way: ***
-- Variables that will not likely be useful (number of assignments too small) are identified and put to null
+- Variables that will not likely be useful (e.g. number of assignments too small) are identified and removed
 - Assignment numbers have been normalized relatively to the total number of reads assigned in the taxonomic tree
 - Then numbers have been centered and reduced
 *** Selection of samples ***
 - In most of the possible actions, you can either choose one by one the samples involved in the action or give a list of metadatum with lower (e1) and upper (e2) bounds for each of them. In this case, every sample considered must have a required value n for a certain metadatum comprised between e1 and e2, where e1 and e2 are asked to the user. [For strings, use e1 = e2; for open intervals, use e1 = -inf or e2 = +inf]
+*** Selection of values (in Pearson coefficient computing function) ***
+- After being asked whether you want to compute sample Pearson or population Pearson coefficient, you can choose the nature of the two variables x and y = f(x) that you want to compare. You can compute two cases: y being the number of assignments to a chosen group of bacterias in a given sample S depending on x, number of assignments to another chosen group of bacterias in S; or y being the number of assignments to a chosen group of bacterias depending on x, value of one metadatum (unknown value are ignored). You can choose to display the graph of these two values, and the straight line which slope is the Pearson correlation coefficient.
 *** Plotting ***
-- If you do not succeed in creating a graph, because Python cannot import matplotlib.pyplot, then (if you are on Linux and own Python 3) write down in a terminal "sudo apt install python3-matplotlib", write down your password and follow the instructions. Now it should work. If you cannot install, try download and install the latest updates of your programs ("sudo apt update" and then "sudo apt upgrade").
+- If you do not succeed in creating a graph, because Python cannot import matplotlib.pyplot, then (if you are on Linux and own Python 3) write down in a terminal "sudo apt-get install python-matplotlib", and follow the instructions. Now it should work. If you cannot install, try download and install the latest updates of your programs ("sudo apt update" and then "sudo apt upgrade").

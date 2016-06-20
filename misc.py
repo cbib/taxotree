@@ -234,66 +234,94 @@ def taxoLCA(paths,name1,rank1,name2,rank2,allNodes=False):
     commonPath,_,_ = setOperations(paths,name1,rank1,name2,rank2,allNodes=False)
     return commonPath[-1]
 
-def sumOp(x,y):
-    if (x == "N") or (y == "N"):
-        return "N"
-    else:
-        return (x+y)
-
-#@xArray and @yArray have the same length and are tuples lists
-def arraySum(xArray,yArray):
-    print xArray[i],yArray[i]
-    print xArray[i][0],xArray[i][1],str(yArray[i][1]) + " + " + str(xArray[i][2])
-    return [(xArray[i][0],xArray[i][1],sumOp(yArray[i][1],xArray[i][2])) for i in range(len(xArray))]
-            
+#Computes the positions of number of assignments to each bacteria of the group in the occurrences matrix
+def getPositionBacteria(bacteriaList,speciesList):
+    i = 0
+    positions = []
+    n = len(speciesList)
+    while i < n:
+        if mem(speciesList[i],bacteriaList):
+            positions.append(i)
+        i += 1
+    return positions
 
 #Computes the set of number of assignments to a certain bacteria (name,rank)
-#The set contains (sampleID,numberAssignments) pairs
-def getValueOneBacteria(samplesOccList,speciesList,name,rank):
-    i = 0
-    n = len(speciesList)
-    while i < n and not (speciesList[i][0] == name and speciesList[i][1] == rank):
-        i += 1
-    values = []
-    for sample in samplesOccList:
-        assert (i < len(sample))
-        values.append((sample[0],sample[i]))
-    return values
+#Returns a (sample,number of assignments to the group of bacterias in sample) pair list
+def getValueBacteria(samplesOccList,speciesList,bacteriaPos,sampleList):
+    resultList = []
+    assignments = 0
+    for sample in sampleList:
+        i = 0
+        n = len(samplesOccList)
+        #gets the line associated to the sample in samplesOccList
+        while i < n and not (samplesOccList[i][0] == sample):
+            i += 1
+        for pos in bacteriaPos:
+            assignments += samplesOccList[i][pos]
+        resultList.append((sample,assignments))
+    return resultList
     
-#@bacteriaList is a list of (name,rank) pairs
-#iterates @getValueOneBacteria function
-def getValueBacteria(samplesOccList,speciesList,bacteriaList):
-    result = [(sample[0],bacteria,0) for bacteria in bacteriaList for sample in samplesOccList]
-    for bacteria in bacteriaList:
-        r = getValueOneBacteria(samplesOccList,speciesList,bacteria[0],bacteria[1])
-        result = arraySum(result,r)
-    answer = raw_input("Write Bacteria file? Y/N\n")
+#Returns xArray, yArray where xArray and yArray are both arrays containing the number of assignments to a chosen group of bacterias depending on the sample considered
+def getValueBacteriaBacteria(samplesOccList,speciesList,sampleIDList,bacterias1,bacterias2):
+    xArray,yArray = [],[]
+    #Stores the positions of number of assignments to each bacteria of the group in the occurrences matrix
+    bacteriaPos1 = getPositionBacteria(bacterias1,speciesList)
+    bacteriaPos2 = getPositionBacteria(bacterias2,speciesList)
+    for sample in sampleIDList:
+        #gets the number of assignments to the group of bacterias in the sample 
+        xArray.append(getValueBacteria(samplesOccList,speciesList,bacteriaPos1,[sample])[0])
+        yArray.append(getValueBacteria(samplesOccList,speciesList,bacteriaPos2,[sample])[0])
+    answer = raw_input("Write both Bacteria files? Y/N\n")
     if (answer == "Y"):
-        writeFile(result,"array")
-    return result
+        print "Saving first file"
+        writeFile(xArray,"**** Values of assignments in all samples of nodes: " + str(bacteria1) + "\n\n","array")
+        print "Saving second file"
+        writeFile(yArray,"**** Values of assignments in all samples of nodes: " + str(bacteria2) + "\n\n","array")
+    return xArray,yArray
 
-#Same procedure for metadata
-def getValueOneMetadatum(samplesInfoList,infoList,metadatum):
+#Returns xArray and yArray, where yArray contains the values of selected metadatum and xArray contains the number of assignments to a chosen group of bacterias depending on the value of the metadatum 
+def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,metadatum):
+    xArray = []
+    #Stores the positions of number of assignments to each bacteria of the group in the occurrences matrix
+    bacteriaPos = getPositionBacteria(bacterias,speciesList)
+    #computes the number of colum which matches the metadatum in infoList
     i = 0
     n = len(infoList)
-    while i < n and not (metadatum == infoList[i]):
+    while i < n and not (infoList[i] == metadatum):
         i += 1
-    values = []
-    for sample in samplesInfoList:
-        if not (sample[i] == "N"):
-            values.append((sample[0],int(sample[i])))
-        else:
-            values.append((sample[0],sample[i]))
-    return values
-
-#Selection of samples provided default values for the metadata
-#iterates @getValueOneMetadatum
-def getValueMetadata(samplesInfoList,infoList,metadata):
-    result = [(sample[0],metadatum,0) for metadatum in metadata for sample in samplesInfoList]
-    for metadatum in metadata:
-        r = getValueOneMetadatum(samplesInfoList,infoList,metadatum)
-        result = arraySum(result,r)
-    answer = raw_input("Write Metadata file? Y/N\n")
+    #Getting the set of values of the metadatum
+    #Sorting samples according to the values of the metadatum
+    sampleSorted = sorted(samplesInfoList,key=lambda x: x[i])
+    #List of list of samples: one sublist matches a value of the metadatum
+    valueSampleMetadatum = []
+    #The set of values of the metadatum
+    valueSet = []
+    if not len(sampleSorted):
+        print "\n/!\ ERROR: You have selected no sample."
+        raise ValueError
+    sample = sampleSorted.pop()
+    while not integer.match(sample[i]):
+        sample = sampleSorted.pop()
+    currValue = sample[i]
+    valueSet.append(currValue)
+    while sampleSorted:
+        valueSample = []
+        while sample[i] == currValue:
+            valueSample.append(sample)
+            sample = sampleSorted.pop()
+            while not integer.match(sample[i]):
+                sample = sampleSorted.pop()
+        valueSampleMetadatum.append(valueSample)
+        currValue = sample[i]
+        valueSet.append(currValue)
+    #Integer values of metadatum are sorted
+    yArray = sorted(valueSet,key=lambda x:x)
+    for sampleValueList in valueSampleMetadatum:
+        xArray.append(getValueBacteria(samplesOccList,speciesList,bacteriaPos,sampleValueList))
+    answer = raw_input("Write both Bacteria and Metadatum files? Y/N\n")
     if (answer == "Y"):
-        writeFile(result,"array")
-    return result
+        print "Saving first file"
+        writeFile(xArray,"**** Values of assignments in all samples of nodes: " + str(bacteria) + "\n\n","array")
+        print "Saving second file"
+        writeFile(yArray,"**** Values of metadatum: " + str(metadatum) + "\n\n","array")
+    return xArray,yArray
