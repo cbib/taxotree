@@ -34,11 +34,12 @@ def applyProb(xArray,p):
         raise ValueError
 
 #Calculus of expectation provided the array of every probability associated to eeach value of the xArray
+#xArray is an list containing (sample/metadatum,number) pairs
 def expectation(xArray,probArray):
     s = 0
     n = len(xArray)
     for i in range(n):
-        s += xArray[i]*probArray[i]
+        s += xArray[i][1]*probArray[i]
     return s
 
 #p (p1, p2 for multiple variables) is the probability function which assigns to each x value its probability
@@ -46,7 +47,7 @@ def variation(xArray,p):
     n = len(xArray)
     xSqArray = np.zeros(n)
     for i in range(n):
-        xSqArray[i] = xArray[i]*xArray[i]
+        xSqArray[i] = (xArray[i][0],xArray[i][1]*xArray[i][1])
     expSq = expectation(xSqArray,applyProb(xSqArray,p))
     exp = expectation(xArray,applyProb(xArray,p))
     return (expSq-exp*exp)
@@ -60,7 +61,7 @@ def covariance(xArray,yArray,p1,p2,p3):
     n = len(xArray)
     xyArray = np.zeros(n)
     for i in range(n):
-        xyArray[i] = xArray[i]*yArray[i]
+        xyArray[i] = (xArray,xArray[i][1]*yArray[i][1])
     expXY = expectation(xyArray,applyProb(xyArray,p3))
     return (expXY - expX*expY)
 
@@ -78,7 +79,7 @@ def mean(xArray):
     n = len(xArray)
     s = 0
     for i in range(n):
-        s += xArray[i]
+        s += xArray[i][1]
     return ((1/n)*s)
 
 def samplePearson(xArray,yArray):
@@ -87,9 +88,9 @@ def samplePearson(xArray,yArray):
     n = len(xArray)
     s1,s2,s3 = 0,0,0
     for i in range(n):
-        s1 += (xArray[i] - mX)*(yArray[i] - mY)
-        s2 += (xArray[i] - mX)*(xArray[i] - mX)
-        s3 += (yArray[i] - mY)*(yArray[i] - mY)
+        s1 += (xArray[i][1] - mX)*(yArray[i][1] - mY)
+        s2 += (xArray[i][1] - mX)*(xArray[i][1] - mX)
+        s3 += (yArray[i][1] - mY)*(yArray[i][1] - mY)
     result = s1/(np.sqrt(s2)*np.sqrt(s3))
     if result > 1 or result < -1:
         print "\n/!\ ERROR: Inconsistent value of Pearson correlation coefficient:",result,"(should be between -1 and 1)"

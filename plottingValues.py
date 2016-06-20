@@ -32,15 +32,15 @@ def plotHist(xArray,xLabel="X",yLabel="f(X)",maxx=10,minx=0,maxy=10,miny=0,title
     if (answer == "Y"):
         plt.show()
 
-#@labels is the array containing the labels of the pie (can go up to 12 different labels)
+#@labels is the array containing the labels of the pie (can go up to 14 different labels)
 #@sizes is the arrays of parts of the pie owned by the different labels
 def plotPie(labels,sizes):
-    initColors = ['gold','yellowgreen','lightcoral','lightskyblue','violet','blue','pink','red','orange','green','gray','black']
+    initColors = ['gold','yellowgreen','lightcoral','lightskyblue','violet','blue','pink','red','orange','green','gray','black','brown','yellow']
     n = len(labels)
     if not (n == len(sizes)):
         print "\n/!\ ERROR: Different lengths ",len(labels),"and",len(sizes)
         raise ValueError
-    if n > 12:
+    if n > 14:
         print "\n/!\ ERROR: Not enough colors! Please modify plottingValues.py and restart Python"
         raise ValueError
     #explode maximum percentage

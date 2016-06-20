@@ -7,13 +7,14 @@ from parsingMatrix import parseMatrix
 from parsingInfo import parseInfo
 from parsingTree import parseTree
 from taxoTree import TaxoTree,printTree
-from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem
+from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem,isInDatabase
 
 from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
 from pearsonCorrelation import samplePearson,populationPearson,printProbabilityLawsList
 from percentage import percentageAssign,computeSamplesInGroup
 from similarityCoefficient import similarity
+from computeDiscriminatoryDistance import computeSimilarity
 
 #@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList,#similarityMatrix]
 
@@ -184,17 +185,6 @@ def createSampleNameList(dataArray,percentage=False):
             isInDatabase(sampleNameList,sampleIDList)
     return sampleNameList,metadataList,interval1List,interval2List
 
-#Checks if the elements in @parselist belong to @datalist else returns an error
-def isInDatabase(parseList,dataList):
-    for pl in parseList:
-        if not mem(pl,dataList):
-            n = len(dataList)
-            if not n:
-                print "\n/!\ ERROR: [BUG] [actions/isInDatabase] Empty list."
-            else:
-                print "\n/!\ ERROR: '" + str(pl) + "' is not in the database beginning with: " + str(dataList[:min(n-1,3)]) + "."
-            raise ValueError
-
 #____________________________________________________________________________
 
 #Actions
@@ -340,6 +330,7 @@ def creatingArray(dataArray,pearson=False):
         else:
             print "\nERROR: You need to answer 'BB' or 'BM', and not ",typeInput
             raise ValueError
+    #Cases for plotting graphs
     else:
         ()
     
@@ -400,4 +391,11 @@ def plottingAct(dataArray):
 #____________________________________________________________________________
 
 def distanceAct(dataArray):
-    ()
+    print "/!\ Computing similarity matrix..."
+    m = computeSimilarity(dataArray)
+    print "[Preview.]"
+    print m
+    answer = raw_input("Save the results? Y/N\n")
+    if (answer == "Y"):  
+        writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and similarity matrix\n","array")
+    return m

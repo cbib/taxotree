@@ -3,7 +3,6 @@ from parsingMatrix import parseMatrix
 from parsingInfo import parseInfo
 from taxoTree import TaxoTree
 from actions import totalDiffRatioAct,patternRatioAct,percentageAct,pearsonAct,similarityAct,printTreeAct,plottingAct,distanceAct
-from normalization import normalize
 from misc import getSampleIDList
 
 def main():
@@ -49,7 +48,7 @@ def main():
             print "   4: Pearson correlation coefficient"
             print "   5: Similarity coefficients between patients"
             print "   6: Print the taxonomic tree"
-            print "   7: Plot a graph, or a histogram (TODO)"
+            print "   7: Plot a graph, or a histogram, or a pie (TODO)"
             print "   8: Compute total distance between two samples (TODO)"
             print "[To quit, write down exit]"
             answer = raw_input("Your answer?\n")
