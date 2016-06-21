@@ -7,7 +7,7 @@ from parsingMatrix import parseMatrix
 from parsingInfo import parseInfo
 from parsingTree import parseTree
 from taxoTree import TaxoTree,printTree
-from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem,isInDatabase
+from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem,isInDatabase,getMaxMin
 
 from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
@@ -15,6 +15,7 @@ from pearsonCorrelation import samplePearson,populationPearson,printProbabilityL
 from percentage import percentageAssign,computeSamplesInGroup
 from similarityCoefficient import similarity
 from computeDiscriminatoryDistance import computeSimilarity
+from plottingValues import plotPearsonGraph,plotGraph,plotHist,plotPie
 
 #@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList,#similarityMatrix]
 
@@ -326,7 +327,7 @@ def creatingArray(dataArray,pearson=False):
             print dataArray[1]
             valueInput2 = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
             isInDatabase(valueInput2,dataArray[1])
-            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[8],dataArray[2],dataArray[3],valueInput2)
+            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[8],dataArray[2],dataArray[3],valueInput2),typeInput,valueInput1,valueInput2
         else:
             print "\nERROR: You need to answer 'BB' or 'BM', and not ",typeInput
             raise ValueError
@@ -345,7 +346,7 @@ def creatingArray(dataArray,pearson=False):
             print dataArray[1]
             valueInput2 = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
             isInDatabase(valueInput2,dataArray[1])
-            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[2],dataArray[3],valueInput2)
+            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[2],dataArray[3],valueInput2),typeInput,valueInput1,valueInput2
         else:
             print "\nERROR: You need to answer 'BB' or 'BM', and not ",typeInput
             raise ValueError
@@ -355,11 +356,11 @@ def creatingArray(dataArray,pearson=False):
 def pearsonAct(dataArray):
     pearsonType = raw_input("Do you want to compute sample Pearson coefficient or population Pearson coefficient? sample/population \n")
     if (pearsonType == "sample"):
-        xArray,yArray = creatingArray(dataArray,True)
+        xArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
         pearson = samplePearson(xArray,yArray)
         print "\nPearson Sample coefficient is: " + str(pearson) + "\n"
     elif (pearsonType == "population"):
-        xArray,yArray = creatingArray(dataArray,True)
+        xArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
         printProbabilityLawsList()
         probList = ["UniformProbability","UniformProbabilityProduct"]
         p1 = raw_input("Enter the law of probability for first values [among the ones above]\n")
@@ -375,9 +376,13 @@ def pearsonAct(dataArray):
         raise ValueError
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
-        data = "The " + pearsonType + " Pearson coefficient for values: ****\n\n" + str(xArray) + "\n and " + str(yArray) + "\n is : " + str(pearson) + "\n\nEND OF FILE ****"
+        data = "The " + pearsonType + " (" + typeInput + ") Pearson coefficient ****\nfor values: \n\n" + str(xArray) + "\ncorresponding to " + str(valueInput1) + "\n\n and\n\n" + str(yArray) + "\ncorresponding to " + str(valueInput2) + "\n\n is : " + str(pearson) + "\n\nEND OF FILE ****"
         writeFile(data,"","text")
     answer = raw_input("Plot the corresponding graph? Y/N\n")
+    if (answer == "Y"):
+        maxix,minix = getMaxMin(xArray)
+        maxiy,miniy = getMaxMin(xArray)
+        plotPearsonGraph(xArray,yArray,pearson,str(valueInput1[:3]),str(valueInput2[:3]),maxix,minix,maxiy,miniy,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both values")
 
 #_____________________________________________________________________________
 

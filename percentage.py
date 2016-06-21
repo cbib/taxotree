@@ -18,7 +18,10 @@ def memPositionsInfo(infoList,metadataList):
         n = len(infoList)
         while i < n and not (datum == infoList[i]):
             i += 1
-        if not (i == n):
+        if (i == n):
+            print "\n/!\ ERROR: Info",datum,"not found."
+            raise ValueError
+        else:
             positions.append(i)
     return positions
 
@@ -80,6 +83,10 @@ def memPositionsNodes(speciesList,nodesGroup):
         i = 0
         while (i < n) and not (speciesList[i][0] == node[0] and speciesList[i][1] == node[1]):
             i += 1
+        if (i == n):
+            print "\n/!\ ERROR: Node",node,"not found."
+            print "/!\ ERROR: That means this node is in the taxonomic tree, but not in the occurrence matrix."
+            raise ValueError
         positions.append(i)
     return positions
 
@@ -119,7 +126,7 @@ def computePercentageAssignmentNodes(samplesListInGroup,nodesGroup,samplesList,s
                 sampleHitList = memReturnSampleHitList(sample,samplesList)
                 #Adds for every sample the number corresponding the node in nodePositions
                 #if @sampleHitList is non-empty
-                if nodePos <= len(sampleHitList):
+                if nodePos < len(sampleHitList):
                     assignmentsInGroup += sampleHitList[nodePos]
                 else:
                     print "\n/!\ ERROR: [BUG] [percentage/computePercentageAssignmentNodes] List out of range: nodePos:",nodePos,"length of sampleHitList:",len(sampleHitList),"sampleHitList:",sampleHitList

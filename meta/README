@@ -4,3 +4,4 @@
 - test.tree: a reduced taxonomic tree for tests.
 
 /!\ Some samples are in the occurrence matrix and not in the data matrix!
+/!\ Some nodes are in the tree but not in the data matrix!

@@ -1,6 +1,22 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+#@pearson is the Pearson coefficient
+def plotPearsonGraph(xArray,yArray,pearson,xLabel="X",yLabel="f(X)",maxx=10,minx=0,maxy=10,miny=0,title="Plotting of unknown function f"):
+    fig = plt.figure()
+    plt.grid(True)
+    plt.title(title)
+    plt.xlabel(xLabel)
+    plt.ylabel(yLabel)
+    plt.xlim(minx,maxx)
+    plt.ylim(miny,maxy)
+    t = np.linspace(0,maxx,1)
+    #Lines will be in red for the main function, blue for pearson line
+    plt.plot(xArray,yArray,"ro",t,pearson*t,"b--")
+    answer = raw_input("Show this figure? Y/N\n")
+    if (answer == "Y"):
+        plt.show()
+
 #Draws points
 #xArray and yArray are the array of values for the two variables
 #xLabel and yLabel are the corresponding labels

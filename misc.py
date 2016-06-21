@@ -6,6 +6,18 @@ from writeOnFiles import writeFile
 
 integer = re.compile("[0-9]+")
 
+#gets maximum and minimum of an array with pairs (name,number)
+def getMaxMin(array):
+    n = len(array)
+    mini = array[0]
+    maxi = array[0]
+    for i in range(1,n):
+        if array[i] > maxi:
+            maxi = array[i]
+        elif array[i] < mini:
+            mini = array[i]
+    return maxi,mini
+
 #Returns a list containing elements of list1 that are not elements of list2
 #If the elements in lists are tuples, it will sorted using lexigraphical order with suitable order for each projection
 #Sorting allows to run in worst case complexity of O(nlog(n) + mlog(m)) where n,m are the length of the two lists
@@ -104,7 +116,8 @@ def memAndSampleHitList(x,nodeList):
             return True,node[2]
     return False,[]
 
-#Gets sample IDs
+#Gets sample IDs from the data matrix
+#/!\ Some of the samples may be appear in the data matrix!
 def getSampleIDList(samplesList):
     sampleIDList = []
     for sample in samplesList:
@@ -276,6 +289,7 @@ def getValueBacteria(samplesOccList,speciesList,sampleIDList,bacteriaPos,sampleL
             #If it passes here, it means the sample is in the data matrix but not in the occurrence matrix (e.g. BLANC: we ignore such samples)
             break
             #print "\n/!\ ERROR: sample name",sample,"not found."
+            #print "/!\ ERROR: It may mean the sample is not in the occurrence matrix."
             #raise ValueError
         for pos in bacteriaPos:
             if pos < len(samplesOccList[i]):
@@ -306,16 +320,17 @@ def getValueBacteriaBacteria(samplesOccList,speciesList,sampleIDList,bacterias1,
             yArray += res
         else:
             yArray.append((sample,0))
-    print "[Preview.]"
-    print "--- Number of assignments to the group of bacterias",bacterias1,"in all",len(xArray),"samples"
+    print "\n[Preview.]"
+    print "\n--- Number of assignments to the group of bacterias",bacterias1,"in all",len(xArray),"samples"
     print xArray
-    print "--- Number of assignments to the group of bacterias",bacterias2,"in all",len(xArray),"samples"
+    print "\n--- Number of assignments to the group of bacterias",bacterias2,"in all",len(xArray),"samples"
     print yArray
-    answer = raw_input("Write both Bacteria files? Y/N\n")
+    answer = raw_input("\nWrite both Bacteria files? Y/N\n")
+    print "HEHZFHEOFEO?"
     if (answer == "Y"):
-        print "Saving first file"
+        print "Saving first file..."
         writeFile(xArray,"**** Values of assignments in all samples of nodes: " + str(bacterias1) + "\n\n","array")
-        print "Saving second file"
+        print "Saving second file..."
         writeFile(yArray,"**** Values of assignments in all samples of nodes: " + str(bacterias2) + "\n\n","array")
     return xArray,yArray
 
@@ -383,15 +398,15 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,sam
         else:
             for sample in sampleValueList:
                 xArray.append((sample,0))
-    print "[Preview.]"
-    print "--- Number of assignments to the group of bacterias",bacterias,"in samples depending on the",len(xArray),"value(s) of metadatum",metadatum
+    print "\n[Preview.]"
+    print "\n--- Number of assignments to the group of bacterias",bacterias,"in samples depending on the",len(xArray),"value(s) of metadatum",metadatum
     print xArray
-    print "--- Set of values of metadatum",metadatum,"of length",len(yArray)
+    print "\n--- Set of values of metadatum",metadatum,"of length",len(yArray)
     string = ""
-    for x in yArray:
-        string += str(x[1]) + " "
-    print string
-    answer = raw_input("Write both Bacteria and Metadatum files? Y/N\n")
+    for x in yArray[:-1]:
+        string += str(x[1]) + ", "
+    print (string + str(yArray[-1]))
+    answer = raw_input("\nWrite both Bacteria and Metadatum files? Y/N\n")
     if (answer == "Y"):
         print "Saving first file"
         writeFile(xArray,"**** Values of assignments in samples samples depending on the value of metadatum" + str(metadatum) + "of nodes: " + str(bacterias) + "\n\n","array")
