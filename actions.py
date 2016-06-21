@@ -327,14 +327,16 @@ def creatingArray(dataArray,pearson=False):
             isInDatabase(valueInput1,dataArray[6])
             valueInput2 = parseListNode(raw_input("Choose the second group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
             isInDatabase(valueInput2,dataArray[6])
-            return getValueBacteriaBacteria(dataArray[2],dataArray[3],dataArray[8],valueInput1,valueInput2)
+            xArray,yArray = getValueBacteriaBacteria(dataArray[2],dataArray[3],dataArray[8],valueInput1,valueInput2)
+            return xArray,yArray,typeInput,valueInput1,valueInput2
         elif (typeInput == "BM"):
             valueInput1 = parseListNode(raw_input("Choose the group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
             isInDatabase(valueInput1,dataArray[6])
             print dataArray[1]
             valueInput2 = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
             isInDatabase(valueInput2,dataArray[1])
-            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[8],dataArray[2],dataArray[3],valueInput2),typeInput,valueInput1,valueInput2
+            xArray,yArray = getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[8],dataArray[2],dataArray[3],valueInput2)
+            return xArray,yArray,typeInput,valueInput1,valueInput2
         else:
             print "\nERROR: You need to answer 'BB' or 'BM', and not ",typeInput
             raise ValueError
@@ -376,14 +378,15 @@ def pearsonAct(dataArray):
         print "\nPearson Sample coefficient is: " + str(pearson) + "\n"
     elif (pearsonType == "population"):
         xArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
+        print "\nAvailable probability laws:\n"
         printProbabilityLawsList()
-        probList = ["UniformProbability","UniformProbabilityProduct"]
-        p1 = raw_input("Enter the law of probability for first values [among the ones above]\n")
-        isInDatabase(p1,probList)
+        probList = ["uniformProbability","uniformProbabilityProduct"]
+        p1 = raw_input("\nEnter the law of probability for first values [among the ones above]\n")
+        isInDatabase([p1],probList)
         p2 = raw_input("Enter the law of probability for second values [among the ones above]\n")
-        isInDatabase(p2,probList)
+        isInDatabase([p2],probList)
         p3 = raw_input("Enter the law of probability for the product of first values with second values [among the ones above]\n")
-        isInDatabase(p3,probList)
+        isInDatabase([p3],probList)
         pearson = populationPearson(xArray,yArray,p1,p2,p3)
         print "\nPearson Population coefficient is: " + str(pearson) + "\n"
     else:
@@ -397,9 +400,11 @@ def pearsonAct(dataArray):
         print "/!\ You should answer 'Y' or 'N'!"
     answer = raw_input("Plot the corresponding graph? Y/N\n")
     if (answer == "Y"):
-        maxix,minix = getMaxMin(xArray)
-        maxiy,miniy = getMaxMin(xArray)
-        plotPearsonGraph(xArray,yArray,pearson,str(valueInput1[:3]) + "...",str(valueInput2[:3]) + "...",maxix,minix,maxiy,miniy,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both set of values")
+        cleanedxArray = [ x[1] for x in xArray ]
+        cleanedyArray = [ y[1] for y in yArray ]
+        maxix,minix = getMaxMin(cleanedxArray)
+        maxiy,miniy = getMaxMin(cleanedyArray)
+        plotPearsonGraph(cleanedxArray,cleanedyArray,pearson,str(valueInput1[:3]) + "...",str(valueInput2[:3]) + "...",maxix,minix,maxiy,miniy,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both sets of values")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
 

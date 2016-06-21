@@ -30,6 +30,8 @@ def normalizeList(valueList):
         normList.append((value-exp)/stDeviation)
     return normList
 
+#__________________________________________________________________________________________
+
 #Idem for 2D matrix with finite and infinite values
 def expectMatrix(matrix,n,m):
     exp = 0
@@ -42,6 +44,8 @@ def expectMatrix(matrix,n,m):
             #Since we have to deal only with integers (numpy module in Python...)
             #-1 signifies infinite value (see computeDiscriminatoryDistance.py)
             #We ignore these infinite values in the calculus of the expectation
+            print "matrix i, matrix j",matrix[i],matrix[j]
+            print "matrix i j",matrix[i][j]
             if not (matrix[i][j] == -1):
                 exp += matrix[i][j]/(n*m)
     return exp

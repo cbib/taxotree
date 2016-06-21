@@ -71,7 +71,7 @@ def covariance(xArray,yArray,p1,p2,p3):
     expXY = expectation(xyArray,applyProb(xyArray,p3))
     return (expXY - expX*expY)
 
-def populationPearson(xArray,yArray,p1,p2,p3):
+def populationPearson(xArray,yArray,pp1,pp2,pp3):
     cov = covariance(xArray,yArray,pp1,pp2,pp3)
     stdX = stDeviation(xArray,pp1)
     stdY = stDeviation(yArray,pp2)
@@ -88,13 +88,14 @@ def mean(xArray):
         raise ValueError
     s = 0
     for i in range(n):
-        print xArray[i][1]
         s += xArray[i][1]
     return ((1/n)*s)
 
 def samplePearson(xArray,yArray):
-    mX = mean(xArray)
-    mY = mean(yArray)
+    #Must be uncommented if the original data has not been normalized
+    #mX = mean(xArray)
+    #mY = mean(yArray)
+    mX,mY = 0,0
     n = len(xArray)
     s1,s2,s3 = 0,0,0
     for i in range(n):
