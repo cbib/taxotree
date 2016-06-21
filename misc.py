@@ -325,24 +325,22 @@ def getValueBacteriaBacteria(samplesOccList,speciesList,sampleIDList,bacterias1,
     print xArray
     print "\n--- Number of assignments to the group of bacterias",bacterias2,"in all",len(xArray),"samples"
     print yArray
-    answer = raw_input("\nWrite both Bacteria files? Y/N\n")
-    if (answer == "Y"):
-        print "Saving first file..."
-        writeFile(xArray,"**** Values of assignments in all samples of nodes: " + str(bacterias1) + "\n\n","array")
-        print "Saving second file..."
-        writeFile(yArray,"**** Values of assignments in all samples of nodes: " + str(bacterias2) + "\n\n","array")
-    elif not (answer == "N"):
-        print "/!\ You should answer 'Y' or 'N'!"
+    #answer = raw_input("\nWrite both Bacteria files? Y/N\n")
+    #if (answer == "Y"):
+    #    print "Saving first file..."
+    #    writeFile(xArray,"**** Values of assignments in all samples of nodes: " + str(bacterias1) + "\n\n","array")
+    #    print "Saving second file..."
+    #    writeFile(yArray,"**** Values of assignments in all samples of nodes: " + str(bacterias2) + "\n\n","array")
+    #elif not (answer == "N"):
+    #    print "/!\ You should answer 'Y' or 'N'!"
     return xArray,yArray
 
-#Returns xArray and yArray, where yArray contains the values of selected metadatum and xArray contains the number of assignments to a chosen group of bacterias depending on the value of the metadatum 
-def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,samplesOccList,speciesList,metadatum):
+#Given a set of samples, gives the list of disjoint groups of samples according to the value of the metadatum, and the set of values of the metadatum
+#@metadatum is a list (of one element) of metadata.
+def partitionSampleByMetadatumValue(metadatum,infoList,samplesInfoList):
     #One metadatum only!
     metadatum = metadatum[0]
-    xArray = []
-    #Stores the positions of number of assignments to each bacteria of the group in the occurrences matrix
-    bacteriaPos = getPositionBacteria(bacterias,speciesList)
-    #computes the number of colum which matches the metadatum in infoList
+    #computes the number of column which matches the metadatum in infoList
     i = 0
     n = len(infoList)
     while i < n and not (infoList[i] == metadatum):
@@ -362,13 +360,13 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,sam
         raise ValueError
     sample = sampleSorted.pop()
     if len(sample) < i:
-        print "\n/!\ ERROR: [BUG] [misc/getValueBacteriaMetadata] Different lengths",len(sample),"and",i,"(1)"
+        print "\n/!\ ERROR: [BUG] [misc/partitionSampleByMetadatumValue] Different lengths",len(sample),"and",i,"(1)"
         raise ValueError
     #selects a sample where the value of the metadatum is known
     while not integer.match(sample[i]):
         sample = sampleSorted.pop()
         if len(sample) < i:
-            print "\n/!\ ERROR: [BUG] [misc/getValueBacteriaMetadata] Different lengths",len(sample),"and",i,"(2)"
+            print "\n/!\ ERROR: [BUG] [misc/partitionSampleByMetadatumValue] Different lengths",len(sample),"and",i,"(2)"
             raise ValueError
     #Initializing the set of values of the metadatum
     currValue = sample[i]
@@ -389,6 +387,14 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,sam
         currValue = sample[i]
         #Adding this value to the set
         valueSet.append((metadatum,currValue))
+    return valueSet,valueSampleMetadatum
+
+#Returns xArray and yArray, where yArray contains the values of selected metadatum and xArray contains the number of assignments to a chosen group of bacterias depending on the value of the metadatum 
+def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,samplesOccList,speciesList,metadatum):
+    xArray = []
+    #Stores the positions of number of assignments to each bacteria of the group in the occurrences matrix
+    bacteriaPos = getPositionBacteria(bacterias,speciesList)
+    valueSet,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum,infoList,samplesInfoList)
     #Integer values of metadatum are sorted
     yArray = sorted(valueSet,key=lambda x:x[1])
     #For every different value of the metadatum
@@ -408,12 +414,12 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,sam
     for x in yArray[:-1]:
         string += str(x[1]) + ", "
     print (string + str(yArray[-1][1]))
-    answer = raw_input("\nWrite both Bacteria and Metadatum files? Y/N\n")
-    if (answer == "Y"):
-        print "Saving first file"
-        writeFile(xArray,"**** Values of assignments in samples samples depending on the value of metadatum" + str(metadatum) + "of nodes: " + str(bacterias) + "\n\n","array")
-        print "Saving second file"
-        writeFile(yArray,"**** Values of metadatum: " + str(metadatum) + "\n\n","array")
-    elif not (answer == "N"):
-        print "/!\ You should answer 'Y' or 'N'!"
+    #answer = raw_input("\nWrite both Bacteria and Metadatum files? Y/N\n")
+    #if (answer == "Y"):
+    #    print "Saving first file"
+    #    writeFile(xArray,"**** Values of assignments in samples samples depending on the value of metadatum" + str(metadatum) + "of nodes: " + str(bacterias) + "\n\n","array")
+    #    print "Saving second file"
+    #    writeFile(yArray,"**** Values of metadatum: " + str(metadatum) + "\n\n","array")
+    #elif not (answer == "N"):
+    #    print "/!\ You should answer 'Y' or 'N'!"
     return xArray,yArray

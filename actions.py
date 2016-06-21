@@ -7,14 +7,14 @@ from parsingMatrix import parseMatrix
 from parsingInfo import parseInfo
 from parsingTree import parseTree
 from taxoTree import TaxoTree,printTree
-from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem,isInDatabase,getMaxMin
+from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem,isInDatabase,getMaxMin,partitionSampleByMetadatumValue
 
 from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
 from pearsonCorrelation import samplePearson,populationPearson,printProbabilityLawsList
 from percentage import percentageAssign,computeSamplesInGroup
 from similarityCoefficient import similarity
-from computeDiscriminatoryDistance import computeSimilarity
+from computeDiscriminatoryDistance import computeSimilarity,mostDifferentSamplesGroups
 from plottingValues import plotPearsonGraph,plotGraph,plotHist,plotPie
 
 #@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList,#similarityMatrix]
@@ -311,6 +311,7 @@ def percentageAct(dataArray):
         writeFile(data,"Percentage of assignments ****\nin the group of nodes: " + listNodes(nodesGroup) + listSampleInvolved(metadataList,interval1List,interval2List,sampleNameList),"array")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
+    return result,nodesGroup,sampleNameList,metadataList
 
 #_____________________________________________________________________________
 
@@ -339,23 +340,31 @@ def creatingArray(dataArray,pearson=False):
             raise ValueError
     #Available cases for only plotting graphs
     else:
-        typeInput = raw_input("Do you want to compute bacteria/bacteria or bacteria/metadatum? BB/BM [ Please read README for details. ]\n")
-        if (typeInput == "BB"):
-            valueInput1 = parseListNode(raw_input("Choose the first group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
-            isInDatabase(valueInput1,dataArray[6])
-            valueInput2 = parseListNode(raw_input("Choose the second group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
-            isInDatabase(valueInput2,dataArray[6])
-            return getValueBacteriaBacteria(dataArray[2],dataArray[3],dataArray[8],valueInput1,valueInput2)
-        elif (typeInput == "BM"):
-            valueInput1 = parseListNode(raw_input("Choose the group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
-            isInDatabase(valueInput1,dataArray[6])
-            print dataArray[1]
-            valueInput2 = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
-            isInDatabase(valueInput2,dataArray[1])
-            return getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[2],dataArray[3],valueInput2),typeInput,valueInput1,valueInput2
+        graphTypeInput = raw_input("Do you want to plot a graph or a pie? graph/pie [Read README for details. Histograms will be available in later versions]\n")
+        if graphTypeInput == "graph":
+            typeInput = raw_input("Do you want to plot bacteria/bacteria or bacteria/metadatum? BB/BM [ Please read README for details. ]\n")
+            if (typeInput == "BB"):
+                valueInput1 = parseListNode(raw_input("Choose the first group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
+                isInDatabase(valueInput1,dataArray[6])
+                valueInput2 = parseListNode(raw_input("Choose the second group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
+                isInDatabase(valueInput2,dataArray[6])
+                return graphTypeInput,getValueBacteriaBacteria(dataArray[2],dataArray[3],dataArray[8],valueInput1,valueInput2),typeInput,valueInput1,valueInput2
+            elif (typeInput == "BM"):
+                valueInput1 = parseListNode(raw_input("Choose the group of bacterias [ Read the taxonomic tree to help you: e.g. " + sanitizeNode(dataArray[6][-3]) + ";" + sanitizeNode(dataArray[6][1]) + ";" + sanitizeNode(dataArray[6][-1]) + " ]\n"))
+                isInDatabase(valueInput1,dataArray[6])
+                print dataArray[1]
+                valueInput2 = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+                isInDatabase(valueInput2,dataArray[1])
+                return graphTypeInput,getValueBacteriaMetadata(dataArray[0],dataArray[1],valueInput1,dataArray[2],dataArray[3],valueInput2),typeInput,valueInput1,valueInput2
+            else:
+                print "\nERROR: You need to answer 'BB' or 'BM', and not ",typeInput
+                raise ValueError
+        elif graphTypeInput == "pie":
+                result,nodesGroup,sampleNameList,metadataList = percentageAct(dataArray)
+                return graphTypeInput,result,nodesGroup,sampleNameList,metadataList
         else:
-            print "\nERROR: You need to answer 'BB' or 'BM', and not ",typeInput
-            raise ValueError
+            print "\nERROR: You need to answer 'graph' or 'pie', and not ",graphTypeInput
+            raise ValueError            
     
 #_____________________________________________________________________________
 
@@ -390,7 +399,7 @@ def pearsonAct(dataArray):
     if (answer == "Y"):
         maxix,minix = getMaxMin(xArray)
         maxiy,miniy = getMaxMin(xArray)
-        plotPearsonGraph(xArray,yArray,pearson,str(valueInput1[:3]),str(valueInput2[:3]),maxix,minix,maxiy,miniy,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both values")
+        plotPearsonGraph(xArray,yArray,pearson,str(valueInput1[:3]) + "...",str(valueInput2[:3]) + "...",maxix,minix,maxiy,miniy,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both set of values")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
 
@@ -420,7 +429,25 @@ def printTreeAct(dataArray):
 #____________________________________________________________________________
 
 def plottingAct(dataArray):
-    ()
+    creatingArrayOutput = creatingArray(dataArray)
+    if creatingArrayOutput[0] == "graph":
+            graphTypeInput,xArray,yArray,typeInput,valueInput1,valueInput2 = creatingArrayOutput
+            maxx,minix = getMaxMin(xArray)
+            maxy,miniy = getMaxMin(yArray)
+            if typeInput == "BB":
+                xLabel = "Group of bacteria 1"
+                yLabel = "Group of bacteria 2"
+            #typeInput == "BM"
+            else:
+                xLabel = "Group of bacteria"
+                yLabel = "Metadatum"
+            plotGraph(xArray,yArray,xLabel=xLabel,yLabel=yLabel,maxx=maxx,minx=minix,maxy=maxy,miny=miniy,title="Plotting of type " + typeInput + " with values " + str(valuesInput1[:3]) + "...  and " + str(valuesInput2[:3]) + "...")
+    elif creatingArrayOutput[0] == "pie":
+        graphTypeInput,result,nodesGroup,sampleNameList,metadataList = creatingArrayOutput
+        plotPie(sampleNameList,result,"Assignments to the group of bacterias: " + str(nodesGroup) + " depending on samples"))
+    else:
+        print "\n/!\ ERROR: [BUG] [actions/plottingAct] Unknown type of graph."
+        raise ValueError
 
 #____________________________________________________________________________
 
@@ -435,3 +462,20 @@ def distanceAct(dataArray):
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
     answer = raw_input("Compute the most different groups of samples?")
+    if (answer == "Y"):
+            print dataArray[1]
+            valueInput = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+            isInDatabase(valueInput,dataArray[1])
+            _,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum,dataArray[1],dataArray[0])
+            pairsList = mostDifferentSamplesGroups(matrix,sampleIDList,sampleNameList)
+            print "[ Preview. ]"
+            print "List of the most different sample groups according to the similarity coefficients computed:"
+            print pairsList
+            answer = raw_input("\nSave the results? Y/N\n")
+            if (answer == "Y"):
+                data = "Most different groups of samples ****\nsorted by values of metadatum: " + metadatum + "\n\nGroups were: " + str(valueSampleMetadatum) + "\n\nAnd the most different ones are: " + str(pairsList) + "\n\nEND OF FILE ****"
+                writeFile(data,"","text")
+            elif not (answer == "N"):
+                print "/!\ You should answer 'Y' or 'N'!"
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"

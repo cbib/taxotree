@@ -38,7 +38,7 @@ def main():
     print "-- End of construction\n"
     dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList]
     answer = ""
-    while not (answer == "exit"):
+    while not ((answer == "exit") or (answer == "exit()") or (answer == "quit")):
         try:
             print "What do you want to do?"
             print "[Write down the number matching with the action required. Details are in README file]"
@@ -77,8 +77,8 @@ def main():
             elif (answer == "8"):
                 distanceAct(dataArray)
                 print "-- End \n"
-            elif not (answer == "exit"):
-                print "/!\ ERROR: Please enter a number between 1 and 8 included, or exit if you want to quit."
+            elif not ((answer == "exit") or (answer == "exit()") or (answer == "quit")):
+                print "/!\ ERROR: Please enter a number between 1 and 8 included, or 'exit' if you want to quit."
                 raise ValueError
         except ValueError:
             print "/!\ ERROR: Please look at the line above."

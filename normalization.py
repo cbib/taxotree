@@ -44,8 +44,8 @@ def expectMatrix(matrix,n,m):
 
 def standardDeviationMatrix(matrix,n,m):
     mProduct = [matrix[i][j]*matrix[i][j] for i in range(n) for j in range(m)]
-    expProd = expectMatrix(mProduct)
-    exp = expectMatrix(matrix)
+    expProd = expectMatrix(mProduct,n,m)
+    exp = expectMatrix(matrix,n,m)
     expS = exp*exp
     return np.sqrt(expProd-expS)
 

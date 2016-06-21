@@ -14,22 +14,27 @@ def computeSimilarity(dataArray):
     matrix = np.zeros((n,n))
     m = similarity(dataArray[0],dataArray[1])
     for i in range(n):
-        for j in range(n):
+        for j in range(i,n):
+            print "Processed sample pair:",sampleIDList[i],sampleIDList[j]
             #Total ratio computation
+            print "Total ratio computation"
             common,in1,in2,_,_,_,_,_ = compute(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             commonA = countAssignmentsInCommon(common,[sampleIDList[i]],[sampleIDList[j]])
             numberA1 = countAssignments(in1,[sampleIDList[i]])
             numberA2 = countAssignments(in2,[sampleIDList[j]])
             tratio = totalRatio(commonA,numberA1,numberA2)
             #Pattern ratio computation
+            print "Pattern ratio computation"
             commonPatternsList = enumerateCommonPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             specificPatternsList1 = enumerateSpecificPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             specificPatternsList2 = enumerateSpecificPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             pRatio = patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2)
             #Get similarity coefficient
+            print "Similarity coefficient"
             similarityCoefficient = m[i][j] #= m[j][i] (see similarityCoefficient.py)
-            matrix[i][j] = pRatio + similarityCoefficient + tratio
-            matrix[j][i] = pRatio + similarityCoefficient + tratio
+            s = float(pRatio) + float(similarityCoefficient) + float(tratio)
+            matrix[i][j] = s
+            matrix[j][i] = s
     return normalizeSymmetricMatrix(matrix)
 
 #@sampleNameList is a list of disjoint groups of samples (groups induced by metadata for example, see @computeSampleInGroup in misc).
