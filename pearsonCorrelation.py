@@ -96,7 +96,7 @@ def samplePearson(xArray,yArray):
     #mX = mean(xArray)
     #mY = mean(yArray)
     mX,mY = 0,0
-    n = len(xArray)
+    n = len(yArray)
     s1,s2,s3 = 0,0,0
     for i in range(n):
         s1 += (xArray[i][1] - mX)*(yArray[i][1] - mY)

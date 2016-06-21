@@ -373,8 +373,21 @@ def creatingArray(dataArray,pearson=False):
 def pearsonAct(dataArray):
     pearsonType = raw_input("Do you want to compute sample Pearson coefficient or population Pearson coefficient? sample/population \n")
     if (pearsonType == "sample"):
-        xArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
-        pearson = samplePearson(xArray,yArray)
+        xNArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
+        if typeInput == "BB":
+            xArray = xNArray
+            pearson = samplePearson(xArray,yArray)
+        #typeInput = "BM"
+        else:
+            #xNArray is a list of list of (sampleID,number of assignments in this sample) pairs
+            #We need thus to sum the numbers of assignments for a same value of the metadata
+            xArray = []
+            for ls in xNArray:
+                s = 0
+                for pair in ls:
+                    s += pair[1]
+                xArray.append((ls[0][0],s))
+            pearson = samplePearson(xArray,yArray)
         print "\nPearson Sample coefficient is: " + str(pearson) + "\n"
     elif (pearsonType == "population"):
         xArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
@@ -394,7 +407,7 @@ def pearsonAct(dataArray):
         raise ValueError
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
-        data = "The " + pearsonType + " (" + typeInput + ") Pearson coefficient ****\nfor values: \n\n" + str(xArray) + "\ncorresponding to " + str(valueInput1) + "\n\n and\n\n" + str(yArray) + "\ncorresponding to " + str(valueInput2) + "\n\n is : " + str(pearson) + "\n\nEND OF FILE ****"
+        data = "The " + pearsonType + " (" + typeInput + ") Pearson coefficient ****\nfor values: \n\n" + str([ x[1] for x in xArray]) + "\ncorresponding to " + str(valueInput1) + "\n\n and\n\n" + str([ y[1] for y in yArray ]) + "\ncorresponding to " + str(valueInput2) + "\n\n is : " + str(pearson) + "\n\nEND OF FILE ****"
         writeFile(data,"","text")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
@@ -404,7 +417,11 @@ def pearsonAct(dataArray):
         cleanedyArray = [ y[1] for y in yArray ]
         maxix,minix = getMaxMin(cleanedxArray)
         maxiy,miniy = getMaxMin(cleanedyArray)
-        plotPearsonGraph(cleanedxArray,cleanedyArray,pearson,str(valueInput1[:3]) + "...",str(valueInput2[:3]) + "...",maxix,minix,maxiy,miniy,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both sets of values")
+        #It is more interesting to generate a histogram in these cases
+        if len(cleanedxArray) < 4:
+            plotHist(cleanedyArray,str(valueInput2[:3]) + "...",str(valueInput1[:3]) + "...",maxiy,miniy,maxix-1,minix+1,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both sets of values")
+        else:
+            plotPearsonGraph(cleanedxArray,cleanedyArray,pearson,str(valueInput1[:3]) + "...",str(valueInput2[:3]) + "...",maxix,minix,maxiy,miniy,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both sets of values")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
 

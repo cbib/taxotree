@@ -325,14 +325,14 @@ def getValueBacteriaBacteria(samplesOccList,speciesList,sampleIDList,bacterias1,
     print xArray
     print "\n--- Number of assignments to the group of bacterias",bacterias2,"in all",len(xArray),"samples"
     print yArray
-    #answer = raw_input("\nWrite both Bacteria files? Y/N\n")
-    #if (answer == "Y"):
-    #    print "Saving first file..."
-    #    writeFile(xArray,"**** Values of assignments in all samples of nodes: " + str(bacterias1) + "\n\n","array")
-    #    print "Saving second file..."
-    #    writeFile(yArray,"**** Values of assignments in all samples of nodes: " + str(bacterias2) + "\n\n","array")
-    #elif not (answer == "N"):
-    #    print "/!\ You should answer 'Y' or 'N'!"
+    answer = raw_input("\nWrite both Bacteria files? Y/N\n")
+    if (answer == "Y"):
+        print "Saving first file..."
+        writeFile(xArray,"**** Values of assignments in all samples of nodes: " + str(bacterias1) + "\n\n","array")
+        print "Saving second file..."
+        writeFile(yArray,"**** Values of assignments in all samples of nodes: " + str(bacterias2) + "\n\n","array")
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
     return xArray,yArray
 
 #Given a set of samples, gives the list of disjoint groups of samples according to the value of the metadatum, and the set of values of the metadatum
@@ -370,10 +370,11 @@ def partitionSampleByMetadatumValue(metadatum,infoList,samplesInfoList):
             raise ValueError
     #Initializing the set of values of the metadatum
     currValue = sample[i]
-    valueSet.append(currValue)
+    valueSet.append((metadatum,int(currValue)))
     #While it remains samples in the list
     while sampleSorted:
         valueSample = []
+        isEmpty = False
         #Filling the list of samples with similar values of the metadatum
         while sampleSorted and (sample[i] == currValue):
             valueSample.append(sample)
@@ -381,12 +382,16 @@ def partitionSampleByMetadatumValue(metadatum,infoList,samplesInfoList):
             #gets the next sample where the value of the metadatum is known
             while not integer.match(sample[i]) and sampleSorted:
                 sample = sampleSorted.pop()
+            #If sampleSorted is empty
+            if not sampleSorted:
+                isEmpty = True
         #appends the newly created list to the main list
         valueSampleMetadatum.append(valueSample)
         #Initializing next loop with the new different value of the metadatum
         currValue = sample[i]
-        #Adding this value to the set
-        valueSet.append((metadatum,currValue))
+        if isEmpty:
+            #Adding this value to the set
+            valueSet.append((metadatum,int(currValue)))
     return valueSet,valueSampleMetadatum
 
 #Returns xArray and yArray, where yArray contains the values of selected metadatum and xArray contains the number of assignments to a chosen group of bacterias depending on the value of the metadatum 
@@ -414,12 +419,12 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,sam
     for x in yArray[:-1]:
         string += str(x[1]) + ", "
     print (string + str(yArray[-1][1]))
-    #answer = raw_input("\nWrite both Bacteria and Metadatum files? Y/N\n")
-    #if (answer == "Y"):
-    #    print "Saving first file"
-    #    writeFile(xArray,"**** Values of assignments in samples samples depending on the value of metadatum" + str(metadatum) + "of nodes: " + str(bacterias) + "\n\n","array")
-    #    print "Saving second file"
-    #    writeFile(yArray,"**** Values of metadatum: " + str(metadatum) + "\n\n","array")
-    #elif not (answer == "N"):
-    #    print "/!\ You should answer 'Y' or 'N'!"
+    answer = raw_input("\nWrite both Bacteria and Metadatum files? Y/N\n")
+    if (answer == "Y"):
+        print "Saving first file"
+        writeFile(xArray,"**** Values of assignments in samples samples depending on the value of metadatum" + str(metadatum) + "of nodes: " + str(bacterias) + "\n\n","array")
+        print "Saving second file"
+        writeFile(yArray,"**** Values of metadatum: " + str(metadatum) + "\n\n","array")
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
     return xArray,yArray

@@ -24,9 +24,7 @@ def plotPearsonGraph(xArray,yArray,pearson,xLabel="X",yLabel="f(X)",maxx=10,minx
         currVal += step
     #Lines will be in red for the main function, blue for pearson line
     plt.plot(xArray,yArray,"ro",t,pearsont,"b--")
-    answer = raw_input("Show this figure? Y/N\n")
-    if (answer == "Y"):
-        plt.show()
+    plt.show()
 
 #Draws points
 #len(xArray) == len(yArray)
@@ -45,9 +43,7 @@ def plotGraph(xArray,yArray,xLabel="X",yLabel="f(X)",maxx=10,minx=0,maxy=10,miny
     plt.ylim(miny,maxy)
     #Lines will be in red
     plt.plot(xArray,yArray,"ro")
-    answer = raw_input("Show this figure? Y/N\n")
-    if (answer == "Y"):
-        plt.show()
+    plt.show()
 
 #Draws histograms
 def plotHist(xArray,xLabel="X",yLabel="f(X)",maxx=10,minx=0,maxy=10,miny=0,title="Histogram of unknown function f"):
@@ -59,9 +55,7 @@ def plotHist(xArray,xLabel="X",yLabel="f(X)",maxx=10,minx=0,maxy=10,miny=0,title
     plt.ylabel(yLabel)
     plt.xlim(minx,maxx)
     plt.ylim(miny,maxy)
-    answer = raw_input("Show this figure? Y/N\n")
-    if (answer == "Y"):
-        plt.show()
+    plt.show()
 
 #@labels is the array containing the labels of the pie (can go up to 14 different labels)
 #@sizes is the arrays of parts of the pie owned by the different labels
@@ -89,6 +83,4 @@ def plotPie(labels,sizes,title):
     plt.pie(sizes,explode=explode,labels=labels,colors=colors,autopct='%1.1f%%',shadow=True,startangle=140)
     plt.axis('equal')
     plt.title(title)
-    answer = raw_input("Show this figure? Y/N\n")
-    if (answer == "Y"):
-        plt.show()
+    plt.show()
