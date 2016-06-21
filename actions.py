@@ -444,7 +444,7 @@ def plottingAct(dataArray):
             plotGraph(xArray,yArray,xLabel=xLabel,yLabel=yLabel,maxx=maxx,minx=minix,maxy=maxy,miny=miniy,title="Plotting of type " + typeInput + " with values " + str(valuesInput1[:3]) + "...  and " + str(valuesInput2[:3]) + "...")
     elif creatingArrayOutput[0] == "pie":
         graphTypeInput,result,nodesGroup,sampleNameList,metadataList = creatingArrayOutput
-        plotPie(sampleNameList,result,"Assignments to the group of bacterias: " + str(nodesGroup) + " depending on samples"))
+        plotPie(sampleNameList,result,"Assignments to the group of bacterias: " + str(nodesGroup) + " depending on samples")
     else:
         print "\n/!\ ERROR: [BUG] [actions/plottingAct] Unknown type of graph."
         raise ValueError

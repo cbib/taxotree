@@ -38,7 +38,11 @@ def expectMatrix(matrix,n,m):
         raise ValueError
     for i in range(n):
         for j in range(m):
-            if not (matrix[i][j] == "+inf"):
+            #All values are theoretically non-negative
+            #Since we have to deal only with integers (numpy module in Python...)
+            #-1 signifies infinite value (see computeDiscriminatoryDistance.py)
+            #We ignore these infinite values in the calculus of the expectation
+            if not (matrix[i][j] == -1):
                 exp += matrix[i][j]/(n*m)
     return exp
 
@@ -59,7 +63,12 @@ def normalizeSymmetricMatrix(valueMatrix):
     normMatrix = np.zeros((n,m))
     for i in range(n):
         for j in range(i,m):
-            normMatrix[i][j] = (valueMatrix[i][j]-exp)/stDeviation
-            normMatrix[j][i] = (valueMatrix[i][j]-exp)/stDeviation
+            #Same remark as before
+            if valueMatrix[i][j] == -1:
+                normMatrix[i][j] = -1
+                normMatrix[i][j] = -1
+            else:
+                normMatrix[i][j] = (valueMatrix[i][j]-exp)/stDeviation
+                normMatrix[j][i] = (valueMatrix[i][j]-exp)/stDeviation
     return normMatrix
             

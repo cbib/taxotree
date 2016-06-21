@@ -8,6 +8,15 @@ from normalization import normalizeSymmetricMatrix
 #computes weighted sum of some of the previous calculi: total ratio, pattern ratio and similarity coefficient, between two samples
 #Returns a matrix M such as M[i][j] = M[j][i] is the similarity coefficient (S-E(S))/sqrt(V(S)) where S = total ratio + pattern ratio + metadata similarity coefficient [to compute E(S) and V(S), we do not take into account infinite values]
 #NB. Distance can be obtained with the formula: distance = 1/similarity
+
+#Adds finite non-negative values and infinite values
+#returns -1 when the result is infinite
+def sumOpInf(a,b,c):
+    if (a == "+inf") or (b == "+inf") or (c == "+inf"):
+        return -1
+    else:
+        return a+b+c
+
 def computeSimilarity(dataArray):
     sampleIDList = dataArray[8]
     n = len(sampleIDList)
@@ -32,7 +41,7 @@ def computeSimilarity(dataArray):
             #Get similarity coefficient
             print "Similarity coefficient"
             similarityCoefficient = m[i][j] #= m[j][i] (see similarityCoefficient.py)
-            s = float(pRatio) + float(similarityCoefficient) + float(tratio)
+            s = sumOpInf(pRatio,similarityCoefficient,tratio)
             matrix[i][j] = s
             matrix[j][i] = s
     return normalizeSymmetricMatrix(matrix)
@@ -79,6 +88,7 @@ def mostDifferentSamplesGroups(matrix,sampleIDList,sampleNameList):
     quartile = valuesSet[pos]
     for i in range(n):
         for j in range(i,n):
+            #The "=" is important, as we may hit the infinite part of the range ("-1")
             if (matrixGroup[i][j] <= quartile):
                 #See computeSimilarity below
                 result.append((sampleNameList[i],sampleNameList[j]))
