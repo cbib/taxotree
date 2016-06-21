@@ -326,12 +326,13 @@ def getValueBacteriaBacteria(samplesOccList,speciesList,sampleIDList,bacterias1,
     print "\n--- Number of assignments to the group of bacterias",bacterias2,"in all",len(xArray),"samples"
     print yArray
     answer = raw_input("\nWrite both Bacteria files? Y/N\n")
-    print "HEHZFHEOFEO?"
     if (answer == "Y"):
         print "Saving first file..."
         writeFile(xArray,"**** Values of assignments in all samples of nodes: " + str(bacterias1) + "\n\n","array")
         print "Saving second file..."
         writeFile(yArray,"**** Values of assignments in all samples of nodes: " + str(bacterias2) + "\n\n","array")
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
     return xArray,yArray
 
 #Returns xArray and yArray, where yArray contains the values of selected metadatum and xArray contains the number of assignments to a chosen group of bacterias depending on the value of the metadatum 
@@ -371,6 +372,7 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,sam
             raise ValueError
     #Initializing the set of values of the metadatum
     currValue = sample[i]
+    valueSet.append(currValue)
     #While it remains samples in the list
     while sampleSorted:
         valueSample = []
@@ -405,11 +407,13 @@ def getValueBacteriaMetadata(samplesInfoList,infoList,bacterias,sampleIDList,sam
     string = ""
     for x in yArray[:-1]:
         string += str(x[1]) + ", "
-    print (string + str(yArray[-1]))
+    print (string + str(yArray[-1][1]))
     answer = raw_input("\nWrite both Bacteria and Metadatum files? Y/N\n")
     if (answer == "Y"):
         print "Saving first file"
         writeFile(xArray,"**** Values of assignments in samples samples depending on the value of metadatum" + str(metadatum) + "of nodes: " + str(bacterias) + "\n\n","array")
         print "Saving second file"
         writeFile(yArray,"**** Values of metadatum: " + str(metadatum) + "\n\n","array")
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
     return xArray,yArray

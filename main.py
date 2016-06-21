@@ -48,8 +48,8 @@ def main():
             print "   4: Pearson correlation coefficient"
             print "   5: Similarity coefficients between patients"
             print "   6: Print the taxonomic tree"
-            print "   7: Plot a graph, or a histogram, or a pie (TODO)"
-            print "   8: Compute total distance between two samples (TODO)"
+            print "   7: Plot a graph, or a histogram, or a pie"
+            print "   8: Compute total distance between two samples"
             print "[To quit, write down exit]"
             answer = raw_input("Your answer?\n")
             if (answer =="1"):

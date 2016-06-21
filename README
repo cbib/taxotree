@@ -66,6 +66,7 @@ ___________________________________________________________________________
 
 - "Compute total distance between two samples":
 * Compute a normalized similarity coefficient between two samples, using previous calculi.
+* Also, provided a list of disjoint groups of samples, gives a list of pairs of sample group that are the most different
 
 -----------------------------------------------------------------------------------------------------------------
 

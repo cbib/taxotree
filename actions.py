@@ -217,6 +217,8 @@ def totalDiffRatioAct(dataArray):
             data += "selected on metadata: " + str(metadataList2) + "with extreme values: " + str(interval1List2) + " (lower bounds) and " + str(interval2List2) + " (upper bounds) \n"
         data += "\nTotal Ratio Distance is: " + str(tratio) + "\n normalized Total Ratio is: " + str(ntRatio) + "\nDiff Ratio Distance is: " + str(dratio) + "\n normalized Diff Ratio is: " + str(ndRatio) +"\n\nEND OF FILE ****"  
         writeFile(data,"","text")
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
 
 #____________________________________________________________________________
 
@@ -282,7 +284,9 @@ def patternRatioAct(dataArray):
             data += str(x) + "\n"
         data += "\nEND OF FILE ****"
         writeFile(data,"","text")
-
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
+        
 #____________________________________________________________________________
         
 def percentageAct(dataArray):
@@ -305,6 +309,8 @@ def percentageAct(dataArray):
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):  
         writeFile(data,"Percentage of assignments ****\nin the group of nodes: " + listNodes(nodesGroup) + listSampleInvolved(metadataList,interval1List,interval2List,sampleNameList),"array")
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
 
 #_____________________________________________________________________________
 
@@ -378,11 +384,15 @@ def pearsonAct(dataArray):
     if (answer == "Y"):
         data = "The " + pearsonType + " (" + typeInput + ") Pearson coefficient ****\nfor values: \n\n" + str(xArray) + "\ncorresponding to " + str(valueInput1) + "\n\n and\n\n" + str(yArray) + "\ncorresponding to " + str(valueInput2) + "\n\n is : " + str(pearson) + "\n\nEND OF FILE ****"
         writeFile(data,"","text")
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
     answer = raw_input("Plot the corresponding graph? Y/N\n")
     if (answer == "Y"):
         maxix,minix = getMaxMin(xArray)
         maxiy,miniy = getMaxMin(xArray)
         plotPearsonGraph(xArray,yArray,pearson,str(valueInput1[:3]),str(valueInput2[:3]),maxix,minix,maxiy,miniy,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both values")
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
 
 #_____________________________________________________________________________
 
@@ -394,6 +404,8 @@ def similarityAct(dataArray,iMatrix):
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):  
         writeFile(m,"Similarity coefficients between patients for file meta/" + iMatrix + ".csv:\n" + listNodes(dataArray[8]),"array")
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
     return m
 
 #____________________________________________________________________________
@@ -420,4 +432,6 @@ def distanceAct(dataArray):
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):  
         writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and similarity matrix\n","array")
-    return m
+    elif not (answer == "N"):
+        print "/!\ You should answer 'Y' or 'N'!"
+    answer = raw_input("Compute the most different groups of samples?")
