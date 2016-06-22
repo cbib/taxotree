@@ -3,7 +3,7 @@ import numpy as np
 import re
 
 from writeOnFiles import writeFile
-from parsingMatrix import parseMatrix
+from parsingMatrix import parseMatrix,importMatrix
 from parsingInfo import parseInfo
 from parsingTree import parseTree
 from taxoTree import TaxoTree,printTree
@@ -456,30 +456,50 @@ def plottingAct(dataArray):
 #____________________________________________________________________________
 
 def distanceAct(dataArray):
-    print "/!\ Computing similarity matrix..."
-    m = computeSimilarity(dataArray)
-    print "[Preview.]"
-    print m
-    answer = raw_input("Save the results? Y/N\n")
-    if (answer == "Y"):  
-        writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and similarity matrix\n\nNota Bene: 1e+14 stands for +inf\n","array")
-    elif not (answer == "N"):
-        print "/!\ You should answer 'Y' or 'N'!"
+    answer = raw_input("Import matrix? Y/N\n")
+    if answer == "Y":
+        filename = raw_input("Write down the file name where the matrix is stored [ without the extension .taxotree ].\n")
+        matrix = importMatrix(filename)
+    else:
+        if not (answer == "N"):
+            print "/!\ You should answer 'Y' or 'N'!"
+        print "/!\ Computing similarity matrix..."
+        m = computeSimilarity(dataArray)
+        print "[Preview.]"
+        print m
+        answer = raw_input("Save the results? Y/N\n")
+        if (answer == "Y"):  
+            writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and similarity matrix\n\nNota Bene: 1e+14 stands for +inf\n","array")
+        elif not (answer == "N"):
+            print "/!\ You should answer 'Y' or 'N'!"
     answer = raw_input("Compute the most different groups of samples?\n")
     if (answer == "Y"):
-            print dataArray[1]
-            metadatum = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
-            isInDatabase(metadatum,dataArray[1])
-            _,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum,dataArray[1],dataArray[0])
-            pairsList = mostDifferentSamplesGroups(m,dataArray[8],valueSampleMetadatum)
-            print "[ Preview. ]"
-            print "List of the most different sample groups according to the similarity coefficients computed:"
-            print pairsList
-            answer = raw_input("\nSave the results? Y/N\n")
-            if (answer == "Y"):
-                data = "Most different groups of samples ****\nsorted by values of metadatum: " + metadatum[0] + "\n\nGroups were: " + str(valueSampleMetadatum) + "\n\nAnd the most different ones are: " + str(pairsList) + "\n\nEND OF FILE ****"
-                writeFile(data,"","text")
-            elif not (answer == "N"):
-                print "/!\ You should answer 'Y' or 'N'!"
+        print dataArray[1]
+        metadatum = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+        isInDatabase(metadatum,dataArray[1])
+        _,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum,dataArray[1],dataArray[0])
+        valueSampleMetadatumNameOnly = []
+        for sampleGroup in valueSampleMetadatum:
+            sampleGroupNameOnly = []
+            for sample in sampleGroup:
+                sampleGroupNameOnly.append(sample[0])
+            valueSampleMetadatumNameOnly.append(sampleGroupNameOnly)
+        pairsList = mostDifferentSamplesGroups(matrix,dataArray[8],valueSampleMetadatumNameOnly)
+        print "[ Preview. ]"
+        print "List of the pairs of most different sample groups according to the similarity coefficients computed:"
+        for pair in pairsList:
+            print pair
+        answer = raw_input("\nSave the results? Y/N\n")
+        if (answer == "Y"):
+            stringSamples = ""
+            for group in valueSampleMetadatumNameOnly:
+                stringSamples += "*" + str(group) + "\n"
+            stringPairs = ""
+            for pair in pairsList:
+                stringPairs += "*" + str(pair) + "\n"
+            data = "Most different groups of samples ****\nsorted by values of metadatum: " + metadatum[0] + "\nGroups were:\n\n" + stringSamples + "\n\nAnd the most different ones are:\n\n" + stringPairs + "\n\nEND OF FILE ****"
+            writeFile(data,"","text")
+        elif not (answer == "N"):
+            print "/!\ You should answer 'Y' or 'N'!"
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"

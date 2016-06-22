@@ -3,11 +3,10 @@ import numpy as np
 from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
 from similarityCoefficient import similarity
-from normalization import normalizeSymmetricMatrix
 from misc import inf
 
 #computes weighted sum of some of the previous calculi: total ratio, pattern ratio and similarity coefficient, between two samples
-#Returns a matrix M such as M[i][j] = M[j][i] is the similarity coefficient (S-E(S))/sqrt(V(S)) where S = total ratio + pattern ratio + metadata similarity coefficient [to compute E(S) and V(S), we do not take into account infinite values]
+#Returns a matrix M such as M[i][j] = M[j][i] is the similarity coefficient: total ratio + pattern ratio + metadata similarity coefficient 
 #NB. Distance can be obtained with the formula: distance = 1/similarity
 
 #Adds finite non-negative values and infinite values
@@ -60,16 +59,17 @@ def mostDifferentSamplesGroups(matrix,sampleIDList,sampleNameList):
             s = 0
             for samplei in sampleNameList[i]:
                 for samplej in sampleNameList[j]:
-                    k = 0
-                    while k < m and not (samplei == sampleIDList[k]) and not (samplej == sampleIDList[k]):
+                    #Positions k, l are the positions of samples in sampleIDList
+                    k,l = 0,0
+                    while k < m and not (samplei == sampleIDList[k]):
                         k += 1
-                    l = k
-                    while l < m and not (samplei == sampleIDList[l]):
-                        l += 1
+                    if (k == m):
+                        print "\n/!\ ERROR: Sample",samplei,"not found."
+                        raise ValueError
                     while l < m and not (samplej == sampleIDList[l]):
                         l += 1
                     if l == m:
-                        print "\n/!\ ERROR: Samples",samplei,"and",samplej,"not found."
+                        print "\n/!\ ERROR: Sample",samplej,"not found."
                         raise ValueError
                     #matrix is symmetric
                     s += matrix[l][k]
@@ -89,6 +89,7 @@ def mostDifferentSamplesGroups(matrix,sampleIDList,sampleNameList):
         for j in range(i,n):
             #The "=" is important, as we may hit the infinite part of the range ("-1")
             if (matrixGroup[i][j] <= quartile):
-                #See computeSimilarity below
+                #See @computeSimilarity below
+                #sampleNameList[i] contains the whole line associated to the ith sample
                 result.append((sampleNameList[i],sampleNameList[j]))
     return result

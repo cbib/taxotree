@@ -6,13 +6,13 @@ from actions import totalDiffRatioAct,patternRatioAct,percentageAct,pearsonAct,s
 from misc import getSampleIDList
 
 def main():
-    tTree = raw_input("Write down the file name of the taxonomic tree in the folder \"meta\" (without the extension .tree)\n")
+    tTree = raw_input("Write down the file name of the taxonomic tree in the folder \"meta\" [ without the extension .tree ]\n")
     if (tTree == ""):
         tTree = "GGdb2015"
-    oMatrix = raw_input("Write down the CSV file name of the occurrence matrix in the folder \"meta\" (without the extension .csv)\n")
+    oMatrix = raw_input("Write down the CSV file name of the occurrence matrix in the folder \"meta\" [ without the extension .csv ]\n")
     if (oMatrix == ""):
         oMatrix = "MGAcount_complete"
-    iMatrix = raw_input("Write down the CSV file name of the data matrix in the folder \"meta\" (without the extension .csv)\n")
+    iMatrix = raw_input("Write down the CSV file name of the data matrix in the folder \"meta\" [ without the extension .csv ]\n")
     if (iMatrix == ""):
         iMatrix = "Info"
     print "/!\ Data getting parsed..."

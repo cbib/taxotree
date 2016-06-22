@@ -1,4 +1,6 @@
 import re
+import numpy as np
+
 from misc import sanitize
 
 integer = re.compile("[0-9]+")
@@ -57,3 +59,22 @@ def associatedData(nodesList,samplesList,name,rank):
                 #Memorizes (name of the sample, number associated to specie in this sample)
                 sampleHitList.append((sample[0],sample[i]))
         return sampleHitList
+
+#For matrices in folder /files
+def importMatrix(filename):
+    file_matrix = open("meta/" + filename + ".taxotree","r")
+    lines = file_matrix.readlines()[3:-3]
+    file_matrix.close()
+    n = len(lines)
+    matrix = np.zeros((n,n))
+    for i in range(n):
+        currRow = lines[i]
+        #Reversing the list
+        columns = currRow.split(" | ")[::-1]
+        j = 0
+        while columns:
+            currCol = columns.pop()
+            matrix[i][j] = float(currCol)
+            j += 1
+    return matrix
+    
