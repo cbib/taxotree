@@ -11,7 +11,7 @@ from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem,isInDatab
 
 from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
-from pearsonCorrelation import samplePearson,populationPearson,printProbabilityLawsList
+from pearsonCorrelation import samplePearson
 from percentage import percentageAssign,computeSamplesInGroup
 from similarityCoefficient import similarity
 from computeDiscriminatoryDistance import computeSimilarity,mostDifferentSamplesGroups
@@ -371,55 +371,25 @@ def creatingArray(dataArray,pearson=False):
 #_____________________________________________________________________________
 
 def pearsonAct(dataArray):
-    pearsonType = raw_input("Do you want to compute sample Pearson coefficient or population Pearson coefficient? sample/population \n")
-    if (pearsonType == "sample"):
-        xNArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
-        if typeInput == "BB":
-            xArray = xNArray
-            pearson = samplePearson(xArray,yArray)
-        #typeInput = "BM"
-        else:
-            #xNArray is a list of list of (sampleID,number of assignments in this sample) pairs
-            #We need thus to sum the numbers of assignments for a same value of the metadata
-            xArray = []
-            for ls in xNArray:
-                s = 0
-                for pair in ls:
-                    s += pair[1]
-                xArray.append((ls[0][0],s))
-            pearson = samplePearson(xArray,yArray)
-        print "\nPearson Sample coefficient is: " + str(pearson) + "\n"
-    elif (pearsonType == "population"):
-        xNArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
-        print "\nAvailable probability laws:\n"
-        probList = printProbabilityLawsList()
-        p1 = raw_input("\nEnter the law of probability for first values [among the ones above]\n")
-        isInDatabase([p1],probList)
-        p2 = raw_input("Enter the law of probability for second values [among the ones above]\n")
-        isInDatabase([p2],probList)
-        p3 = raw_input("Enter the law of probability for the product of first values with second values [among the ones above]\n")
-        isInDatabase([p3],probList)
-        if typeInput == "BB":
-            xArray = xNArray
-            pearson = populationPearson(xArray,yArray,p1,p2,p3)
-        #typeInput = "BM"
-        else:
-            #xNArray is a list of list of (sampleID,number of assignments in this sample) pairs
-            #We need thus to sum the numbers of assignments for a same value of the metadata
-            xArray = []
-            for ls in xNArray:
-                s = 0
-                for pair in ls:
-                    s += pair[1]
-                xArray.append((ls[0][0],s))
-            pearson = populationPearson(xArray,yArray,p1,p2,p3)
-        print "\nPearson Population coefficient is: " + str(pearson) + "\n"
+    xNArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
+    if typeInput == "BB":
+        xArray = xNArray
+        pearson = samplePearson(xArray,yArray)
+    #typeInput = "BM"
     else:
-        print "\n/!\ ERROR: You need to answer 'sample' or 'population', and not ",pearsonType
-        raise ValueError
+        #xNArray is a list of list of (sampleID,number of assignments in this sample) pairs
+        #We need thus to sum the numbers of assignments for a same value of the metadata
+        xArray = []
+        for ls in xNArray:
+            s = 0
+            for pair in ls:
+                s += pair[1]
+            xArray.append((ls[0][0],s))
+        pearson = samplePearson(xArray,yArray)
+    print "\nPearson coefficient is: " + str(pearson) + "\n"
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
-        data = "The " + pearsonType + " (" + typeInput + ") Pearson coefficient ****\nfor values: \n\n" + str([ x[1] for x in xArray]) + "\ncorresponding to " + str(valueInput1) + "\n\n and\n\n" + str([ y[1] for y in yArray ]) + "\ncorresponding to " + str(valueInput2) + "\n\n is : " + str(pearson) + "\n\nEND OF FILE ****"
+        data = "The (" + typeInput + ") Pearson coefficient ****\nfor values: \n\n" + str([ x[1] for x in xArray]) + "\ncorresponding to " + str(valueInput1) + "\n\n and\n\n" + str([ y[1] for y in yArray ]) + "\ncorresponding to " + str(valueInput2) + "\n\n is : " + str(pearson) + "\n\nEND OF FILE ****"
         writeFile(data,"","text")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
@@ -431,9 +401,9 @@ def pearsonAct(dataArray):
         maxiy,miniy = getMaxMin(cleanedyArray)
         #It is more interesting to generate a histogram in these cases
         if len(cleanedxArray) < 4:
-            plotHist(cleanedyArray,str(valueInput2[:3]) + "...",str(valueInput1[:3]) + "...",maxiy,miniy,maxix-1,minix+1,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both sets of values")
+            plotHist(cleanedyArray,str(valueInput2[:3]) + "...",str(valueInput1[:3]) + "...",maxiy,miniy,maxix-1,minix+1,"Plotting (" + typeInput + ") Pearson coefficient and the graph of both sets of values")
         else:
-            plotPearsonGraph(cleanedxArray,cleanedyArray,pearson,str(valueInput1[:3]) + "...",str(valueInput2[:3]) + "...",maxix,minix,maxiy,miniy,"Plotting " + pearsonType + " (" + typeInput + ") Pearson coefficient and the graph of both sets of values")
+            plotPearsonGraph(cleanedxArray,cleanedyArray,pearson,str(valueInput1[:3]) + "...",str(valueInput2[:3]) + "...",maxix,minix,maxiy,miniy,"Plotting (" + typeInput + ") Pearson coefficient and the graph of both sets of values")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
 
@@ -492,14 +462,15 @@ def distanceAct(dataArray):
     print m
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):  
-        writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and similarity matrix\n","array")
+        writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and similarity matrix\n\nNota Bene: 1e+14 stands for +inf\n","array")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
     answer = raw_input("Compute the most different groups of samples?\n")
     if (answer == "Y"):
             print dataArray[1]
-            valueInput = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
-            isInDatabase(valueInput,dataArray[1])
+            metadatum = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+            isInDatabase(metadatum,dataArray[1])
+            print metadatum[0]
             _,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum,dataArray[1],dataArray[0])
             pairsList = mostDifferentSamplesGroups(matrix,sampleIDList,sampleNameList)
             print "[ Preview. ]"
