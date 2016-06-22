@@ -390,17 +390,29 @@ def pearsonAct(dataArray):
             pearson = samplePearson(xArray,yArray)
         print "\nPearson Sample coefficient is: " + str(pearson) + "\n"
     elif (pearsonType == "population"):
-        xArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
+        xNArray,yArray,typeInput,valueInput1,valueInput2 = creatingArray(dataArray,True)
         print "\nAvailable probability laws:\n"
-        printProbabilityLawsList()
-        probList = ["uniformProbability","uniformProbabilityProduct"]
+        probList = printProbabilityLawsList()
         p1 = raw_input("\nEnter the law of probability for first values [among the ones above]\n")
         isInDatabase([p1],probList)
         p2 = raw_input("Enter the law of probability for second values [among the ones above]\n")
         isInDatabase([p2],probList)
         p3 = raw_input("Enter the law of probability for the product of first values with second values [among the ones above]\n")
         isInDatabase([p3],probList)
-        pearson = populationPearson(xArray,yArray,p1,p2,p3)
+        if typeInput == "BB":
+            xArray = xNArray
+            pearson = populationPearson(xArray,yArray,p1,p2,p3)
+        #typeInput = "BM"
+        else:
+            #xNArray is a list of list of (sampleID,number of assignments in this sample) pairs
+            #We need thus to sum the numbers of assignments for a same value of the metadata
+            xArray = []
+            for ls in xNArray:
+                s = 0
+                for pair in ls:
+                    s += pair[1]
+                xArray.append((ls[0][0],s))
+            pearson = populationPearson(xArray,yArray,p1,p2,p3)
         print "\nPearson Population coefficient is: " + str(pearson) + "\n"
     else:
         print "\n/!\ ERROR: You need to answer 'sample' or 'population', and not ",pearsonType
@@ -483,7 +495,7 @@ def distanceAct(dataArray):
         writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and similarity matrix\n","array")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
-    answer = raw_input("Compute the most different groups of samples?")
+    answer = raw_input("Compute the most different groups of samples?\n")
     if (answer == "Y"):
             print dataArray[1]
             valueInput = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))

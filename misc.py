@@ -4,7 +4,20 @@ import re
 
 from writeOnFiles import writeFile
 
+inf=100000000000000
+
 integer = re.compile("[0-9]+")
+
+def truncate(number, digitNumber):
+    #Splitting the decimal and the integer parts of @number
+    numberStringed = str(number).split('.')
+    decimal = numberStringed[-1]
+    integer = numberStringed[0]
+    #Care not to write the "." in the case where no decimal is required
+    if digitNumber >= len(decimal):
+        return int(integer)
+    else:
+        return float(integer + "." + decimal[:digitNumber])
 
 #gets maximum and minimum of an array with pairs (name,number)
 def getMaxMin(array):

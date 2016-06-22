@@ -34,6 +34,7 @@ Details about main.py:
 
 - "Pearson correlation coefficient": 
 * Computes the Pearson correlation coefficient r between a number of assignments to a group of bacterias and a group of metadatas or between the numbers of assignments to two groups of bacterias under a certain probability law. [ Returns an error if this coefficient is not comprised between -1 and 1 ]
+* Computing the Pearson correlation coefficient between two variables with only a few values does not really make sense.
 --- INTERPRETATION: Be careful about the interpretation of this coefficient, as a coefficient close to 0 could mean no linear relationship. It is important to compare r with the graph associated to the same values to see if the correlation found does mean something [This option is available after computation of the Pearson coefficient]. As a general rule, you can assume the existence of a somehow linear correlation between two variables when |r| > 0.5. For x and y variables considered:
 **** If r = –1. There is a perfect linear relationship between x and y: when x is increasing, y is decreasing, and the other way around.
 **** If r = 0. There is no linear relationship between x and y.
@@ -135,10 +136,14 @@ Stores written files using writeOnFiles functions.
 
 Comments:
 
+*** Note on TANGO results ***
+- Please be aware the choice of parameter q in TANGO is of paramount importance in the assignments to nodes, and can greatly influence the results of the different comparison functions here. Choosing the same q from assignments of every sample must be considered therefore mandatory.
+
 *** Prior to the parsing operations, numbers have been normalized this way: ***
 - Variables that will not likely be useful (e.g. number of assignments too small) are identified and removed
 - Assignment numbers have been normalized relatively to the total number of reads assigned in the taxonomic tree
 - Then numbers have been centered and reduced
+- In case numbers were not normalized before, please use the functions in normalization.py
 
 *** Selection of samples ***
 - In most of the possible actions, you can either choose one by one the samples involved in the action or give a list of metadatum with lower (e1) and upper (e2) bounds for each of them. In this case, every sample considered must have a required value n for a certain metadatum comprised between e1 and e2, where e1 and e2 are asked to the user. [For strings, use e1 = e2; for open intervals, use e1 = -inf or e2 = +inf]

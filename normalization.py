@@ -1,6 +1,8 @@
 #Centralization-reduction for a list of values
 import numpy as np
 
+from misc import inf
+
 #Hypothesis of uniform probability for the occurrence of any bacteria whatever the clinic data may be (which is a strong hypothesis...)
 def expectList(vArray):
     n = len(vArray)
@@ -40,13 +42,22 @@ def expectMatrix(matrix,n,m):
         raise ValueError
     for i in range(n):
         for j in range(m):
+            try:
             #All values are theoretically non-negative
             #Since we have to deal only with integers (numpy module in Python...)
             #-1 signifies infinite value (see computeDiscriminatoryDistance.py)
             #We ignore these infinite values in the calculus of the expectation
-            if not (i == 0 and j == 0):
-                if not (matrix[i][j] == -1):
+                if not (matrix[i][j] == inf):
                     exp += matrix[i][j]/(n*m)
+            except IndexError:
+                print "BUG"
+                print matrix[i],matrix[j]
+                from misc import getSampleIDList
+                from parsingInfo import parseInfo
+                sampleInfoList,_ = parseInfo("Info")
+                sampleIDList = getSampleIDList(sampleInfoList)
+                print sampleIDList[i],sampleIDList[j]
+                print "END BUG"
     return exp
 
 def standardDeviationMatrix(matrix,n,m):
@@ -67,9 +78,9 @@ def normalizeSymmetricMatrix(valueMatrix):
     for i in range(n):
         for j in range(i,m):
             #Same remark as before
-            if valueMatrix[i][j] == -1:
-                normMatrix[i][j] = -1
-                normMatrix[i][j] = -1
+            if valueMatrix[i][j] == inf:
+                normMatrix[i][j] = inf
+                normMatrix[i][j] = inf
             else:
                 normMatrix[i][j] = (valueMatrix[i][j]-exp)/stDeviation
                 normMatrix[j][i] = (valueMatrix[i][j]-exp)/stDeviation

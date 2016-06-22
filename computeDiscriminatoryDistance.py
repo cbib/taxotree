@@ -4,6 +4,7 @@ from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRa
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
 from similarityCoefficient import similarity
 from normalization import normalizeSymmetricMatrix
+from misc import inf
 
 #computes weighted sum of some of the previous calculi: total ratio, pattern ratio and similarity coefficient, between two samples
 #Returns a matrix M such as M[i][j] = M[j][i] is the similarity coefficient (S-E(S))/sqrt(V(S)) where S = total ratio + pattern ratio + metadata similarity coefficient [to compute E(S) and V(S), we do not take into account infinite values]
@@ -13,38 +14,36 @@ from normalization import normalizeSymmetricMatrix
 #returns -1 when the result is infinite
 def sumOpInf(a,b,c):
     if (a == "+inf") or (b == "+inf") or (c == "+inf"):
-        return -1
+        return inf
     else:
         return a+b+c
 
 def computeSimilarity(dataArray):
+    print "/!\ [It may take a few minutes to process...]"
     sampleIDList = dataArray[8]
     n = len(sampleIDList)
     matrix = np.zeros((n,n))
     m = similarity(dataArray[0],dataArray[1])
     for i in range(n):
         for j in range(i,n):
-            print "Processed sample pair:",sampleIDList[i],sampleIDList[j]
+            print "/!\ Processed sample pair:",sampleIDList[i],sampleIDList[j]
             #Total ratio computation
-            print "Total ratio computation"
             common,in1,in2,_,_,_,_,_ = compute(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             commonA = countAssignmentsInCommon(common,[sampleIDList[i]],[sampleIDList[j]])
             numberA1 = countAssignments(in1,[sampleIDList[i]])
             numberA2 = countAssignments(in2,[sampleIDList[j]])
             tratio = totalRatio(commonA,numberA1,numberA2)
             #Pattern ratio computation
-            print "Pattern ratio computation"
             commonPatternsList = enumerateCommonPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             specificPatternsList1 = enumerateSpecificPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             specificPatternsList2 = enumerateSpecificPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             pRatio = patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2)
             #Get similarity coefficient
-            print "Similarity coefficient"
             similarityCoefficient = m[i][j] #= m[j][i] (see similarityCoefficient.py)
             s = sumOpInf(pRatio,similarityCoefficient,tratio)
             matrix[i][j] = s
             matrix[j][i] = s
-    return normalizeSymmetricMatrix(matrix)
+    return matrix
 
 #@sampleNameList is a list of disjoint groups of samples (groups induced by metadata for example, see @computeSampleInGroup in misc).
 #Gives the pairs of most different groups of samples (that is, those whose similarity coefficient is inferior to the one of the first quartile)
