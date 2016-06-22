@@ -470,15 +470,14 @@ def distanceAct(dataArray):
             print dataArray[1]
             metadatum = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
             isInDatabase(metadatum,dataArray[1])
-            print metadatum[0]
             _,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum,dataArray[1],dataArray[0])
-            pairsList = mostDifferentSamplesGroups(matrix,sampleIDList,sampleNameList)
+            pairsList = mostDifferentSamplesGroups(m,dataArray[8],valueSampleMetadatum)
             print "[ Preview. ]"
             print "List of the most different sample groups according to the similarity coefficients computed:"
             print pairsList
             answer = raw_input("\nSave the results? Y/N\n")
             if (answer == "Y"):
-                data = "Most different groups of samples ****\nsorted by values of metadatum: " + metadatum + "\n\nGroups were: " + str(valueSampleMetadatum) + "\n\nAnd the most different ones are: " + str(pairsList) + "\n\nEND OF FILE ****"
+                data = "Most different groups of samples ****\nsorted by values of metadatum: " + metadatum[0] + "\n\nGroups were: " + str(valueSampleMetadatum) + "\n\nAnd the most different ones are: " + str(pairsList) + "\n\nEND OF FILE ****"
                 writeFile(data,"","text")
             elif not (answer == "N"):
                 print "/!\ You should answer 'Y' or 'N'!"
