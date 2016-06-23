@@ -159,3 +159,6 @@ Comments:
 
 *** New distance ***
 - The matrix with the new similarity coefficients for the samples in Info.csv has already been computed in matrix.taxotree. Please import it when function 8 is selected. (Because re-computing it is really long)
+
+*** Testing the construction of taxonomic tree on other trees than GreenGenes's ***
+- Be careful that the algorithm of construction of a taxonomic tree only works on complete phylogenies, that is having elements for every rank R,K,P, ..., S, which is the case of GreenGenes's tree. If you want to run the program on smaller phylogenies, you need to modify the default ranks array [S,...,P,K,R] in argument in taxoTree.py file to the current ranks array (ordered from the greatest rank to the smaller). If you want to use NCBI's tree, since the ranks are different, you will also need to update the default ranks array such as it fits the taxonomic ranks of NCBI (and the comparison function compare in misc.py).

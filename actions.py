@@ -9,7 +9,7 @@ from parsingTree import parseTree
 from taxoTree import TaxoTree,printTree
 from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem,isInDatabase,getMaxMin,partitionSampleByMetadatumValue
 
-from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
+from totalRatio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
 from pearsonCorrelation import samplePearson
 from percentage import percentageAssign,computeSamplesInGroup
@@ -464,6 +464,7 @@ def distanceAct(dataArray):
         if not (answer == "N"):
             print "/!\ You should answer 'Y' or 'N'!"
         print "/!\ Computing similarity matrix..."
+        print "[ You may have to wait for a few minutes... ]"
         m = computeSimilarity(dataArray)
         print "[Preview.]"
         print m

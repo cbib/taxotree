@@ -66,7 +66,8 @@ def importMatrix(filename):
     lines = file_matrix.readlines()[3:-3]
     file_matrix.close()
     n = len(lines)
-    matrix = np.zeros((n,n))
+    m = len(lines[0].split(" | "))
+    matrix = np.zeros((n,m))
     for i in range(n):
         currRow = lines[i]
         #Reversing the list

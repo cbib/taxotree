@@ -140,39 +140,15 @@ def getSampleIDList(samplesList):
     return sorted(sampleIDList,key=lambda x:x)
 
 #For sorting lists of nodes (name,rank) by decreasing order S > G > F > O > C > P > K > R. Returns 1 if rank1 => rank2, -1 if rank1 < rank2
-def compare(rank1,rank2):
-    if (rank2 == "S"):
-        return 1
-    elif (rank1 == "S"):
-        return -1
-    elif (rank2 == "G"):
-        return 1
-    elif (rank1 == "G"):
-        return -1
-    elif (rank2 == "F"):
-        return 1
-    elif (rank1 == "F"):
-        return -1
-    elif (rank2 == "O"):
-        return 1
-    elif (rank1 == "O"):
-        return -1
-    elif (rank2 == "C"):
-        return 1
-    elif (rank1 == "C"):
-        return -1
-    elif (rank2 == "P"):
-        return 1
-    elif (rank1 == "P"):
-        return -1
-    elif (rank2 == "K"):
-        return 1
-    elif (rank1 == "K"):
-        return -1
-    elif (rank2 == "R"):
-        return 1
-    elif (rank1 == "R"):
-        return -1
+#You can modify the ranks and the order by modifying the default rank array
+def compare(rank1,rank2,ranks=['S','G','F','O','C','P','K','R'],ranksArrayLength=8):
+    for i in range(ranksArrayLength):
+        if (rank2 == ranks[i]):
+            return 1
+        elif (rank1 == ranks[i]):
+            return -1
+    print "\n/!\ ERROR: Unknown rank. Did you modify the default rank array?"
+    raise ValueError
 
 def sanitize(name):
     ls = name.split(" ")

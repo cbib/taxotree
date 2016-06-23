@@ -1,6 +1,7 @@
 import numpy as np
+from time import time
 
-from totalratio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized
+from totalRatio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
 from similarityCoefficient import similarity
 from misc import inf
@@ -18,14 +19,13 @@ def sumOpInf(a,b,c):
         return a+b+c
 
 def computeSimilarity(dataArray):
-    print "/!\ [It may take a few minutes to process...]"
+    start = time()
     sampleIDList = dataArray[8]
     n = len(sampleIDList)
     matrix = np.zeros((n,n))
     m = similarity(dataArray[0],dataArray[1])
     for i in range(n):
         for j in range(i,n):
-            print "/!\ Processed sample pair:",sampleIDList[i],sampleIDList[j]
             #Total ratio computation
             common,in1,in2,_,_,_,_,_ = compute(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             commonA = countAssignmentsInCommon(common,[sampleIDList[i]],[sampleIDList[j]])
@@ -42,6 +42,8 @@ def computeSimilarity(dataArray):
             s = sumOpInf(pRatio,similarityCoefficient,tratio)
             matrix[i][j] = s
             matrix[j][i] = s
+    end = time()
+    print "TIME:",(end-start)
     return matrix
 
 #@sampleNameList is a list of disjoint groups of samples (groups induced by metadata for example, see @computeSampleInGroup in misc).

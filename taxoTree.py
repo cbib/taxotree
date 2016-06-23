@@ -85,7 +85,7 @@ class TaxoTree(object):
         print "---"
     #
     #
-    def addNodePreProcess(self,paths,nodesList,samplesList):
+    def addNodePreProcess(self,paths,nodesList,samplesList,ranks):
         #Firstly, sorting nodes by decreasing rank: R < K < P < C < O < F < G < S
         sortedNodesList = sorted(nodesList,cmp=lambda x,y: compare(x[1],y[1]))
         nodesNumber = len(sortedNodesList)
@@ -100,7 +100,6 @@ class TaxoTree(object):
         pathsNodesLength = len(pathsNodes)
         sampleHitListNodes = [ associatedData(nodesList,samplesList,node[0],node[1]) for node in sortedNodesList ]
         #Thirdly, clustering brothers (of same rank) into lists for each rank in @allBrotherList
-        ranks = ["S","G","F","O","C","P","K","R"]
         #Index of current node in sortedNodesList
         currNodeIdent = 0
         #@allBrotherList will contain lists of lists of nodes having the same father (and having same rank)
@@ -153,10 +152,9 @@ class TaxoTree(object):
     #(2) if n has no child (we can check this through @hashFatherList: if hashFatherList[n] is to None, then the corresponding node sortedNodesList[n] does not own any child): then construct its tree and store it in @constructedTree (@constructedTree[i] matches node @sortedNodesList[i])
     #(3) else: get n's children identifiers through @hashFatherList[n], get the children's trees, construct the tree associated to n, and store it in @constructedTree[n]
     #(4) Repeat loop2 until rank R and return tree associated to Root
-    def addNodeAux(self,paths,sortedNodesList,pathsNodes,samplesHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber):
+    def addNodeAux(self,paths,sortedNodesList,pathsNodes,samplesHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber,ranks):
         #Initializing @constructedTree
         constructedTree = [ None ] * nodesNumber
-        ranks = ["S","G","F","O","C","P","K","R"]
         sLs = sortedNodesList[:: -1]
         ident = 0
         #loop1
@@ -169,8 +167,11 @@ class TaxoTree(object):
                 ident += 1
                 if sLs:
                     name,rank = sLs.pop()
+            #Last node to be popped  has not the same rank as other
+            #(if rank != r, then it is obvious, and if sLs is empty, it means root has been popped)
             sLs.append((name,rank))
             if (r == "R"):
+                #Root is the only node of rank R
                 sameRankedNodes.append((name,rank,ident))
             #loop2:
             while sameRankedNodes:
@@ -190,11 +191,11 @@ class TaxoTree(object):
         return constructedTree[-1]
     #
     #
-    def addNode(self,paths,nodesList,samplesList):
+    def addNode(self,paths,nodesList,samplesList,ranks=["S","G","F","O","C","P","K","R"]):
         from time import time
         start = time()
-        sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber = self.addNodePreProcess(paths,nodesList,samplesList)
-        finalTree = self.addNodeAux(paths,sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber)
+        sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber = self.addNodePreProcess(paths,nodesList,samplesList,ranks)
+        finalTree = self.addNodeAux(paths,sortedNodesList,pathsNodes,sampleHitListNodes,allBrotherList,hashBrotherList,hashFatherList,pathsNodesLength,nodesNumber,ranks)
         end = time()
         print "TIME:",(end-start),"sec"
         return finalTree
