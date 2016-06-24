@@ -83,9 +83,6 @@ Details about the files:
 **** computeDiscriminatoryDistance.py ****
 Compares groups of samples using the different criteria.
 
-**** exceptions.py ****
-Contains the user-defined exceptions.
-
 **** main.py ****
 Interface with the user.
 
