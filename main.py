@@ -1,3 +1,5 @@
+import sys as s
+
 from parsingTree import parseTree
 from parsingMatrix import parseMatrix
 from parsingInfo import parseInfo
@@ -21,16 +23,19 @@ def main():
         sampleIDList = getSampleIDList(samplesInfoList)
     except IOError:
         print "\nERROR: Maybe the filename you gave does not exist in \"meta\" folder\n"
+        s.exit(0)
     print "..."
     try:
         samplesOccList,speciesList = parseMatrix(oMatrix)
     except IOError:
         print "\nERROR: Maybe the filename you gave does not exist in \"meta\" folder\n"
+        s.exit(0)
     print "..."
     try:
         paths,n,nodesList = parseTree(tTree)
     except IOError:
         print "\nERROR: Maybe the filename you gave does not exist in \"meta\" folder\n"
+        s.exit(0)
     print "-- End of parsing\n"
     print "/!\ Constructing the whole annotated taxonomic tree"
     print "[ You may have to wait for a few seconds... ]"
