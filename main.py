@@ -22,19 +22,19 @@ def main():
         samplesInfoList,infoList = parseInfo(iMatrix)
         sampleIDList = getSampleIDList(samplesInfoList)
     except IOError:
-        print "\nERROR: Maybe the filename you gave does not exist in \"meta\" folder\n"
+        print "\nERROR: Maybe the filename",iMatrix,".csv does not exist in \"meta\" folder\n"
         s.exit(0)
     print "..."
     try:
         samplesOccList,speciesList = parseMatrix(oMatrix)
     except IOError:
-        print "\nERROR: Maybe the filename you gave does not exist in \"meta\" folder\n"
+        print "\nERROR: Maybe the filename",oMatrix,".csv does not exist in \"meta\" folder\n"
         s.exit(0)
     print "..."
     try:
         paths,n,nodesList = parseTree(tTree)
     except IOError:
-        print "\nERROR: Maybe the filename you gave does not exist in \"meta\" folder\n"
+        print "\nERROR: Maybe the filename",tTree,".tree does not exist in \"meta\" folder\n"
         s.exit(0)
     print "-- End of parsing\n"
     print "/!\ Constructing the whole annotated taxonomic tree"
