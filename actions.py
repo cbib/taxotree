@@ -410,8 +410,11 @@ def pearsonAct(dataArray):
 #_____________________________________________________________________________
 
 def similarityAct(dataArray,iMatrix):
+    print dataArray[1]
+    metadataList = parseList(raw_input("Input the list of metadata you want to consider among those written above. [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+    isInDatabase(metadataList,dataArray[1])
     print "/!\ Computing similarity matrix..."
-    m = similarity(dataArray[0],dataArray[1])
+    m = similarity(dataArray[0],dataArray[1],metadataList)
     print "[Preview.]"
     print m
     answer = raw_input("Save the results? Y/N\n")

@@ -2,6 +2,7 @@
 
 *** Use main.py to interact gently with the program. ***
 
+LINUX:
 In Emacs:
 - open main.py
 - C-c C-p to open interpreter
@@ -14,6 +15,11 @@ In the terminal:
 - write down "from main import main"
 - write down "main()"
 - to exit Python, write down "exit()"
+
+WINDOWS:
+In Pyzo/Anaconda:
+- open file "main.py"
+- write down "main()" in the interpreter
 
 -----------------------------------------------------------------------------------------------------------------
 
@@ -155,9 +161,6 @@ Comments:
 
 *** Plotting ***
 - If you do not succeed in creating a graph, because Python cannot import matplotlib.pyplot, then (if you are on Linux and own Python 3) write down in a terminal "sudo apt-get install python-matplotlib", and follow the instructions. Now it should work. If you cannot install, try download and install the latest updates of your programs ("sudo apt update" and then "sudo apt upgrade").
-
-*** New distance ***
-- The matrix with the new similarity coefficients for the samples in Info.csv has already been computed in matrix.taxotree. Please import it when function 8 is selected. (Because re-computing it is really long)
 
 *** Testing the construction of taxonomic tree on other trees than GreenGenes's ***
 - Be careful that the algorithm of construction of a taxonomic tree only works on complete phylogenies, that is having elements for every rank R,K,P, ..., S, which is the case of GreenGenes's tree. If you want to run the program on smaller phylogenies, you need to modify the default ranks array [S,...,P,K,R] in argument in taxoTree.py file to the current ranks array (ordered from the smallest rank to the greatest one). If you want to use NCBI's tree, since the ranks are different, you will also need to update the default ranks array such as it fits the taxonomic ranks of NCBI (and the comparison function compare in misc.py).
