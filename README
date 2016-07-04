@@ -48,6 +48,9 @@ Details about main.py:
 **** If r = 0. There is no linear relationship between x and y.
 **** If r = +1. There is a perfect linear relationship between x and y: when x is increasing, y is increasing, and the other way around.
 
+- "Microbial diversity in samples":
+* Computes the ratio |assigned nodes in the selected set of samples * their number of assignments|/|nodes in the whole taxonomic tree*((number of assignments)/number of assigned nodes)|. [Returns -inf if the tree is empty] The more this coefficient is close to 1, the more diverse the population of bacterias is.
+
 - "Similarity coefficients between patients": 
 * Measures the level of similarity between two patients (or two groups of patients) according to metadata: for N patients/groups, returns a NxN matrix M where M(i,j) is the similarity coefficient between patient i/group i and patient j/group j. Formula for such a coefficient is M(i,j) = M(j,i) = sum{for ni value in line i in the metadata matrix where nj != unknown and ni != unknown} |ni - nj| (distance).
 

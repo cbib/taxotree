@@ -38,7 +38,7 @@ def isInInterval(value,interval1,interval2):
         return (value <= interval2 and value >= interval1)
 
 #Computes the samples that match the requirements for the metadata group
-#@samplesListInGroup is the list of lists of sample ID that match the requirements for a certain metadatum
+#@samplesListInGroup is the list of lists of sample ID that match the requirements for a certain metadatum, that is @samplesListInGroup[i] is the list of sample ID that match the requirements for metadatum @metadataList[infoPositions[i]]
 #@interval1List and @interval2List are the lists of lower and upper interval bounds for the metadata
 def computeSamplesInGroup(samplesInfoList,infoList,metadataList,interval1List,interval2List):
     samplesListInGroup = []
@@ -58,19 +58,63 @@ def computeSamplesInGroup(samplesInfoList,infoList,metadataList,interval1List,in
                 #If the requirements are fulfilled
                 if (sample[infoPos] == "N" and interval1List[datumPos] == "N" and interval2List[datumPos] == "N"):
                     #Adds the sampleID to the list
-                    samplesInGroup += [sample[0]]
+                    samplesInGroup.append(sample[0])
                 #if sample[infoPos] == interval1List[datumPos] == interval2List[datumPos]
                 elif not (sample[infoPos] == "N") and (int(sample[infoPos]) == interval1List[datumPos]):
                     #Adds the sampleID to the list
-                    samplesInGroup += [sample[0]]
+                    samplesInGroup.append(sample[0])
                 #In any other case, the sample is not added
             #If the length of interval of acceptable values is non-zero
             else:
                 if integer.match(sample[infoPos]) and isInInterval(int(sample[infoPos]),interval1List[datumPos],interval2List[datumPos]):
-                    samplesInGroup += [sample[0]]
+                    samplesInGroup.append(sample[0])
         datumPos += 1
         samplesListInGroup.append(samplesInGroup)
     return samplesListInGroup
+
+#Returns the list of samples that match every requirement for each metadatum of @metadataList
+def getCorrespondingID(sample,samplesInfoList,samplesInfoListLength):
+    i = 0
+    while i < samplesInfoListLength and not (sample == samplesInfoList[i][0]):
+        i += 1
+    if i == samplesInfoListLength:
+        print "\n/!\ ERROR: Sample",sample,"not found in samples."
+        raise ValueError
+    return i
+
+def computeSamplesInAllMetadatum(samplesInfoList,infoList,metadataList,interval1List,interval2List):
+    samplesList = [sample[0] for sample in samplesInfoList]
+    infoPositions = memPositionsInfo(infoList,metadataList)[::-1]
+    #@datumPos matches the position of datum corresponding to the information at @infoPos
+    datumPos = 0
+    n = len(samplesInfoList)
+    while infoPositions:
+        samplesGroupForThisMetadatum = []
+        infoPos = infoPositions.pop()
+        assert (datumPos < len(interval1List))
+        while samplesList:
+            sample = samplesInfoList[getCorrespondingID(samplesList.pop(),samplesInfoList,n)]
+            assert (infoPos < len(sample))
+            #asserted in parseInfo that len(sample) == len(infoList)
+            #if strict equality with the default value is required
+            if (interval1List[datumPos] == interval2List[datumPos]):
+                #If the requirements are fulfilled
+                if (sample[infoPos] == "N" and interval1List[datumPos] == "N" and interval2List[datumPos] == "N"):
+                    #Adds the sampleID to the list
+                    samplesGroupForThisMetadatum.append(sample[0])
+                #if sample[infoPos] == interval1List[datumPos] == interval2List[datumPos]
+                elif not (sample[infoPos] == "N") and (int(sample[infoPos]) == interval1List[datumPos]):
+                    #Adds the sampleID to the list
+                    samplesGroupForThisMetadatum.append(sample[0])
+                #In any other case, the sample is not added
+            #If the length of interval of acceptable values is non-zero
+            else:
+                if integer.match(sample[infoPos]) and isInInterval(int(sample[infoPos]),interval1List[datumPos],interval2List[datumPos]):
+                    samplesGroupForThisMetadatum.append(sample[0])
+        datumPos += 1
+        samplesList = [x for x in samplesGroupForThisMetadatum]
+    return samplesList
+
 
 #___________________________________________________________
 
@@ -128,9 +172,9 @@ def computePercentageAssignmentNodes(samplesListInGroup,nodesGroup,samplesList,s
                 #if @sampleHitList is non-empty
                 if nodePos < len(sampleHitList):
                     assignmentsInGroup += sampleHitList[nodePos]
-                else:
-                    print "\n/!\ ERROR: [BUG] [percentage/computePercentageAssignmentNodes] List out of range: nodePos:",nodePos,"length of sampleHitList:",len(sampleHitList),"sampleHitList:",sampleHitList
-                    raise ValueError
+                #else:
+                #    print "\n/!\ ERROR: [BUG] [percentage/computePercentageAssignmentNodes] List out of range: nodePos:",nodePos,"length of sampleHitList:",len(sampleHitList),"sampleHitList:",sampleHitList
+                #    raise ValueError
         if totalAssignments:
             percentageList.append(100*assignmentsInGroup/totalAssignments)
         else:

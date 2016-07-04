@@ -4,7 +4,7 @@ from parsingTree import parseTree
 from parsingMatrix import parseMatrix
 from parsingInfo import parseInfo
 from taxoTree import TaxoTree
-from actions import totalDiffRatioAct,patternRatioAct,percentageAct,pearsonAct,similarityAct,printTreeAct,plottingAct,distanceAct
+from actions import totalDiffRatioAct,patternRatioAct,percentageAct,pearsonAct,similarityAct,printTreeAct,plottingAct,distanceAct,diversityAct
 from misc import getSampleIDList
 
 def main():
@@ -51,10 +51,11 @@ def main():
             print "   2: Pattern ratio"
             print "   3: Percentage of assignments in a certain group of bacterias depending on metadata"
             print "   4: Pearson correlation coefficient"
-            print "   5: Similarity coefficients between patients"
-            print "   6: Print the taxonomic tree"
-            print "   7: Plot a graph, or a pie"
-            print "   8: Compute total distance between two samples"
+            print "   5: Microbial diversity in samples"
+            print "   6: Similarity coefficients between patients"
+            print "   7: Print the taxonomic tree"
+            print "   8: Plot a graph, or a pie"
+            print "   9: Compute total distance between two samples"
             print "[To quit, write down exit]"
             answer = raw_input("Your answer?\n")
             if (answer =="1"):
@@ -70,20 +71,23 @@ def main():
                 pearsonAct(dataArray)
                 print "-- End \n"
             elif (answer == "5"):
+                diversityAct(dataArray)
+                print "-- End\n"
+            elif (answer == "6"):
                 matrixSim = similarityAct(dataArray,iMatrix)
                 dataArray.append(matrixSim)
                 print "-- End \n"
-            elif (answer == "6"):
+            elif (answer == "7"):
                 printTreeAct(dataArray)
                 print "-- End \n"
-            elif (answer == "7"):
+            elif (answer == "8"):
                 plottingAct(dataArray)
                 print "-- End \n"
-            elif (answer == "8"):
+            elif (answer == "9"):
                 distanceAct(dataArray)
                 print "-- End \n"
             elif not ((answer == "exit") or (answer == "exit()") or (answer == "quit")):
-                print "/!\ ERROR: Please enter a number between 1 and 8 included, or 'exit' if you want to quit."
+                print "/!\ ERROR: Please enter a number between 1 and 9 included, or 'exit' if you want to quit."
                 raise ValueError
         except ValueError:
             print "/!\ ERROR: Please look at the line above."

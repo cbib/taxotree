@@ -60,14 +60,19 @@ def plotHist(xArray,xLabel="X",yLabel="f(X)",maxx=10,minx=0,maxy=10,miny=0,title
 #@labels is the array containing the labels of the pie (can go up to 14 different labels)
 #@sizes is the arrays of parts of the pie owned by the different labels
 def plotPie(labels,sizes,title):
-    initColors = ['gold','yellowgreen','lightcoral','lightskyblue','violet','blue','pink','red','orange','green','gray','black','brown','yellow']
+    initColors = ['gold','yellowgreen','lightcoral','lightskyblue','violet','blue','pink','red','orange','green','gray','brown','yellow','chartreuse','burlywood','cyan','magenta','white']
     n = len(labels)
     if not (n == len(sizes)):
         print "\n/!\ ERROR: Different lengths ",len(labels),"and",len(sizes)
         raise ValueError
-    if n > 14:
-        print "\n/!\ ERROR: Not enough colors! Please modify plottingValues.py and restart Python"
-        raise ValueError
+    if n > 18:
+        #Only displaying the most important elements
+        array = sorted([(labels[i],sizes[i]) for i in range(n)],key=lambda x:x[1])[:18]
+        labels,sizes = [],[]
+        for x in array:
+            labels.append(x[0])
+            sizes.append(x[1])
+        n = len(sizes)
     #explode maximum percentage
     iMax = 0
     maximum = 0
