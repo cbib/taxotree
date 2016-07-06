@@ -3,6 +3,7 @@ from time import time
 
 from totalRatio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
+from diversityCoefficient import computeDiversityCoefficient
 from similarityCoefficient import similarity
 from misc import inf
 
@@ -18,6 +19,8 @@ def sumOpInf(a,b,c):
     else:
         return a+b+c
 
+#@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList,#similarityMatrix]
+    
 def computeSimilarity(dataArray):
     start = time()
     sampleIDList = dataArray[8]
@@ -37,9 +40,15 @@ def computeSimilarity(dataArray):
             specificPatternsList1 = enumerateSpecificPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             specificPatternsList2 = enumerateSpecificPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             pRatio = patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2)
+            dRatio1,_ = computeDiversityCoefficient(dataArray[5],[sampleIDList[i]],dataArray)
+            dRatio2,_ = computeDiversityCoefficient(dataArray[5],[sampleIDList[j]],dataArray)
+            subdRatio = abs(dRatio1 - dRatio2)
             #Get similarity coefficient
             similarityCoefficient = m[i][j] #= m[j][i] (see similarityCoefficient.py)
-            s = sumOpInf(pRatio,similarityCoefficient,tratio)
+            if subdRatio:
+                s = sumOpInf(pRatio,similarityCoefficient,tratio) - subdRatio
+            else:
+                s = sumOpInf(pRatio,similarityCoefficient,tratio)
             matrix[i][j] = s
             matrix[j][i] = s
     end = time()
