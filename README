@@ -28,7 +28,7 @@ Details about main.py:
 -- "Total Ratio" : 
 * Provided two groups 1 and 2 of samples, if n is the number of assignments to common nodes in both groups (i.e. the sum of assignments in common nodes in each group), and n1 et n2 respectively the number of assignments in these two groups in non-common nodes, then Total ratio Distance is (n1 + n2 + n) - n = n1 + n2. 
 --- INTERPRETATION: The more small totalRatio "Distance" is, the more alike are the samples in terms of node population. 
-* It is also given in a normalized form: n/(n1 + n2 + n). [Returns +inf if n1 = n2 = 0]. 
+* It is also given in a normalized form: n/(n1 + n2 + n). [Returns +inf if n1 = n2 = n = 0]. 
 --- INTERPRETATION: The more totalRatio is close to 1, the more alike are the samples in terms of node population. 
 -- "DiffRatio" : it is the symmetric of Total Ratio, that is: Diff ratio + Total ratio = 1.
 
