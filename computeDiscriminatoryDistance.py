@@ -4,7 +4,6 @@ from time import time
 from totalRatio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
 from diversityCoefficient import computeDiversityCoefficient
-from similarityCoefficient import similarity
 from misc import inf
 
 #computes weighted sum of some of the previous calculi: total ratio, pattern ratio and similarity coefficient, between two samples
@@ -13,11 +12,11 @@ from misc import inf
 
 #Adds finite non-negative values and infinite values
 #returns -1 when the result is infinite
-def sumOpInf(a,b,c):
-    if (a == "+inf") or (b == "+inf") or (c == "+inf"):
+def sumOpInf(a,b):
+    if (a == "+inf") or (b == "+inf"):
         return inf
     else:
-        return a+b+c
+        return a+b
 
 #@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList,#similarityMatrix]
     
@@ -26,7 +25,6 @@ def computeSimilarity(dataArray):
     sampleIDList = dataArray[8]
     n = len(sampleIDList)
     matrix = np.zeros((n,n))
-    m = similarity(dataArray[0],dataArray[1])
     for i in range(n):
         for j in range(i,n):
             #Total ratio computation
@@ -43,12 +41,10 @@ def computeSimilarity(dataArray):
             dRatio1,_ = computeDiversityCoefficient(dataArray[5],[sampleIDList[i]],dataArray)
             dRatio2,_ = computeDiversityCoefficient(dataArray[5],[sampleIDList[j]],dataArray)
             subdRatio = abs(dRatio1 - dRatio2)
-            #Get similarity coefficient
-            similarityCoefficient = m[i][j] #= m[j][i] (see similarityCoefficient.py)
             if subdRatio:
-                s = sumOpInf(pRatio,similarityCoefficient,tratio) - subdRatio
+                s = sumOpInf(pRatio,tratio) - subdRatio
             else:
-                s = sumOpInf(pRatio,similarityCoefficient,tratio)
+                s = sumOpInf(pRatio,tratio)
             matrix[i][j] = s
             matrix[j][i] = s
     end = time()
