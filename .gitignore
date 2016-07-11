@@ -9,6 +9,8 @@ TODO.txt
 *.tree~
 *.taxotree
 *.taxotree~
+*.png
+*.png~
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
