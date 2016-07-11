@@ -101,7 +101,7 @@ def listSampleInvolved(metadataList,interval1List,interval2List,sampleNameList):
         string += "\ndepending on the group of samples: "
         for sl in sampleNameList[:-1]:
             string += str(sl) + ", "
-        string += str(sampleNameList[-1])
+        string += str(sampleNameList[-1]) + "\n"
     #If samples were selected according to metadata values (len(metadataList) = len(interval1List) = len(interval2List))
     if metadataList:
         string += "\nselected on metadata (for each line): "
@@ -154,7 +154,7 @@ def createSampleNameList(dataArray,percentage=False):
                     print "\n/!\ ERROR: You need to enter the same number of upper bounds than of metadata!"
                     raise ValueError
                 #There is only one list in the result of @computeSamplesInGroup
-                sampleNameList11 = computeSamplesInGroup(dataArray[0],dataArray[1],metadataList,interval1List,interval2List)[0]
+                sampleNameList11 = computeSamplesInAllMetadatum(dataArray[0],dataArray[1],metadataList,interval1List,interval2List)
             else:
                 print "\n/!\ ERROR: You need to answer either 'one' or 'matching' and not: \"",answer,"\"."
                 raise ValueError
@@ -211,12 +211,12 @@ def totalDiffRatioAct(dataArray):
     print "[If you have obtained +inf (resp. -inf), it could mean you have selected no sample.]\n"
     answer = raw_input("Save the results? Y/N\n")
     if (answer == "Y"):
-        data = "Total Ratio Results ****\n for lists " + str(sampleNameList1) + "\n"
+        data = "Total Ratio Results ****\n for " + str(sampleNameList1) + "\n"
         if metadataList1:
-            data += "selected on metadata: " + str(metadataList1) + "with extreme values: " + str(interval1List1) + " (lower bounds) and " + str(interval2List1) + " (upper bounds) \n"
+            data += "selected on metadata: " + str(metadataList1) + " with extremum values: " + str(interval1List1) + " (lower bounds) and " + str(interval2List1) + " (upper bounds) \n"
         data += " and " + str(sampleNameList2) + "\n"
         if metadataList2:
-            data += "selected on metadata: " + str(metadataList2) + "with extreme values: " + str(interval1List2) + " (lower bounds) and " + str(interval2List2) + " (upper bounds) \n"
+            data += "selected on metadata: " + str(metadataList2) + " with extremum values: " + str(interval1List2) + " (lower bounds) and " + str(interval2List2) + " (upper bounds) \n"
         data += "\nTotal Ratio Distance is: " + str(tratio) + "\n normalized Total Ratio is: " + str(ntRatio) + "\nDiff Ratio Distance is: " + str(dratio) + "\n normalized Diff Ratio is: " + str(ndRatio) +"\n\nEND OF FILE ****"  
         writeFile(data,"","text")
     elif not (answer == "N"):
