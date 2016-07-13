@@ -153,7 +153,6 @@ def createSampleNameList(dataArray,percentage=False):
                 if not (len(interval2List) == len(metadataList)):
                     print "\n/!\ ERROR: You need to enter the same number of upper bounds than of metadata!"
                     raise ValueError
-                #There is only one list in the result of @computeSamplesInGroup
                 sampleNameList11 = computeSamplesInAllMetadatum(dataArray[0],dataArray[1],metadataList,interval1List,interval2List)
             else:
                 print "\n/!\ ERROR: You need to answer either 'one' or 'matching' and not: \"",answer,"\"."
@@ -196,10 +195,8 @@ def totalDiffRatioAct(dataArray):
     sampleNameList1,metadataList1,interval1List1,interval2List1 = createSampleNameList(dataArray)
     print "Second list of samples."
     sampleNameList2,metadataList2,interval1List2,interval2List2 = createSampleNameList(dataArray)
-    common,in1,in2,_,_,_,_,_ = compute(dataArray[7],sampleNameList1,sampleNameList2)
+    common,in1,in2,numberA1,numberA2,_,_,_ = compute(dataArray[7],sampleNameList1,sampleNameList2)
     commonA = countAssignmentsInCommon(common,sampleNameList1,sampleNameList2)
-    numberA1 = countAssignments(in1,sampleNameList1)
-    numberA2 = countAssignments(in2,sampleNameList2)
     tratio = totalRatio(commonA,numberA1,numberA2)
     ntRatio = totalRatioNormalized(commonA,numberA1,numberA2)
     dratio = diffRatio(commonA)
