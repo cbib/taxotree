@@ -4,7 +4,7 @@ from misc import takeNodesInTree
 #Returns the diversity coefficient and the list of (node (name,rank),number of assignations in this group of samples) pairs
 def computeDiversityCoefficient(numberNodesInTree,sampleNameList,dataArray):
     #@sample is a list of (name of node,rank of node,sampleHitList)
-    sample,numberTotalAssignments,numberNodes = takeNodesInTree(dataArray[7],sampleNameList)
+    sample,_,numberNodes = takeNodesInTree(dataArray[7],sampleNameList)
     resultNodes = []
     for node in sample:
         assignments = 0
@@ -18,10 +18,7 @@ def computeDiversityCoefficient(numberNodesInTree,sampleNameList,dataArray):
                 raise ValueError
             assignments += hit[1]
         resultNodes.append(((name,rank),assignments))
-    if not numberNodes:
-        return 0,resultNodes
-    assignmentsMean = numberTotalAssignments/numberNodes
-    if not numberNodesInTree or not numberNodes or not assignmentsMean:
-        print "\n/!\ ERROR: Taxonomic Tree is empty: whole tree:",numberNodesInTree,"reduced tree:",numberNodes,"assignmentsMean:",assignmentsMean,"."
+    if not numberNodesInTree:
+        print "\n/!\ ERROR: Taxonomic Tree is empty: whole tree:",numberNodesInTree,"."
         raise ValueError
-    return numberTotalAssignments/(numberNodesInTree*assignmentsMean),resultNodes
+    return (numberNodes/numberNodesInTree),resultNodes
