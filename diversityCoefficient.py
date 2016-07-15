@@ -19,8 +19,7 @@ def computeDiversityCoefficient(numberNodesInTree,sampleNameList,dataArray):
             assignments += hit[1]
         resultNodes.append(((name,rank),assignments))
     if not numberNodes:
-        print "\n/!\ ERROR: numberNodes is null."
-        raise ValueError
+        return 0,resultNodes
     assignmentsMean = numberTotalAssignments/numberNodes
     if not numberNodesInTree or not numberNodes or not assignmentsMean:
         print "\n/!\ ERROR: Taxonomic Tree is empty: whole tree:",numberNodesInTree,"reduced tree:",numberNodes,"assignmentsMean:",assignmentsMean,"."

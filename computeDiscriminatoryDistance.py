@@ -38,6 +38,7 @@ def computeSimilarity(dataArray):
             specificPatternsList1 = enumerateSpecificPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             specificPatternsList2 = enumerateSpecificPatterns(dataArray[7],[sampleIDList[i]],[sampleIDList[j]])
             pRatio = patternRatio(commonPatternsList,specificPatternsList1,specificPatternsList2)
+            #Diversity coefficient
             dRatio1,_ = computeDiversityCoefficient(dataArray[5],[sampleIDList[i]],dataArray)
             dRatio2,_ = computeDiversityCoefficient(dataArray[5],[sampleIDList[j]],dataArray)
             subdRatio = abs(dRatio1 - dRatio2)

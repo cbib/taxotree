@@ -162,6 +162,9 @@ Comments:
 *** Selection of values (in Pearson coefficient computing function) ***
 - After being asked whether you want to compute sample Pearson or population Pearson coefficient, you can choose the nature of the two variables x and y = f(x) that you want to compare. You can compute two cases: y being the number of assignments to a chosen group of bacterias in a given sample S depending on x, number of assignments to another chosen group of bacterias in S; or y being the number of assignments to a chosen group of bacterias depending on x, value of one metadatum (unknown value are ignored). You can choose to display the graph of these two values, and the straight line which slope is the Pearson correlation coefficient.
 
+*** Computation of distance ***
+- Since the computation of the distance matrix takes some time (approx. 10 minutes), you can directly import it from the file "meta/matrix.taxotree". When asked to import, answer "Y" and write down "matrix".
+
 *** Plotting ***
 - If you do not succeed in creating a graph, because Python cannot import matplotlib.pyplot, then (if you are on Linux and own Python 3) write down in a terminal "sudo apt-get install python-matplotlib", and follow the instructions. Now it should work. If you cannot install, try download and install the latest updates of your programs ("sudo apt update" and then "sudo apt upgrade").
 

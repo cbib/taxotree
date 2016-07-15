@@ -492,12 +492,12 @@ def distanceAct(dataArray):
             print "/!\ You should answer 'Y' or 'N'!"
         print "/!\ Computing similarity matrix..."
         print "[ You may have to wait for a few minutes... ]"
-        m = computeSimilarity(dataArray)
+        matrix = computeSimilarity(dataArray)
         print "[Preview.]"
         print m
         answer = raw_input("Save the results? Y/N\n")
         if (answer == "Y"):  
-            writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and similarity matrix\n\nNota Bene: 1e+14 stands for +inf\n","array")
+            writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and diversity coefficient\n\nNota Bene: 1e+14 stands for +inf\n","array")
         elif not (answer == "N"):
             print "/!\ You should answer 'Y' or 'N'!"
     answer = raw_input("Compute the most different groups of samples? Y/N\n")
