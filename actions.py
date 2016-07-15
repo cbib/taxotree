@@ -494,40 +494,48 @@ def distanceAct(dataArray):
         print "[ You may have to wait for a few minutes... ]"
         matrix = computeSimilarity(dataArray)
         print "[Preview.]"
-        print m
+        print matrix
         answer = raw_input("Save the results? Y/N\n")
         if (answer == "Y"):  
             writeFile(m,"Similarity coefficients between patients using previous calculi on total ratio, pattern ratio and diversity coefficient\n\nNota Bene: 1e+14 stands for +inf\n","array")
         elif not (answer == "N"):
-            print "/!\ You should answer 'Y' or 'N'!"
+            print "\n/!\ You should answer 'Y' or 'N'!"
     answer = raw_input("Compute the most different groups of samples? Y/N\n")
     if (answer == "Y"):
-        print dataArray[1]
-        metadatum = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
-        isInDatabase(metadatum,dataArray[1])
-        _,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum,dataArray[1],dataArray[0])
-        valueSampleMetadatumNameOnly = []
-        for sampleGroup in valueSampleMetadatum:
-            sampleGroupNameOnly = []
-            for sample in sampleGroup:
-                sampleGroupNameOnly.append(sample[0])
-            valueSampleMetadatumNameOnly.append(sampleGroupNameOnly)
-        pairsList = mostDifferentSamplesGroups(matrix,dataArray[8],valueSampleMetadatumNameOnly)
+        answer = raw_input("Do you want to select samples by metadata or to select all samples? metadata/all")
+        if (answer == "metadata"):
+            print dataArray[1]
+            metadatum = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
+            isInDatabase(metadatum,dataArray[1])
+            _,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum,dataArray[1],dataArray[0])
+            valueSampleMetadatumNameOnly = []
+            for sampleGroup in valueSampleMetadatum:
+                sampleGroupNameOnly = []
+                for sample in sampleGroup:
+                    sampleGroupNameOnly.append(sample[0])
+                valueSampleMetadatumNameOnly.append(sampleGroupNameOnly)
+            pairsList = mostDifferentSamplesGroups(matrix,dataArray[8],valueSampleMetadatumNameOnly)
+        if (answer == "all"):
+            pairsList = mostDifferentSamplesGroups(matrix,dataArray[8],[[sample] for sample in dataArray[8]])
+        else:
+            print "\n/!\ ERROR: You should answer 'metadata' or 'all'."
+            raise ValueError
         print "[ Preview. ]"
         print "List of the pairs of most different sample groups according to the similarity coefficients computed:"
         for pair in pairsList:
             print pair
-        answer = raw_input("\nSave the results? Y/N\n")
-        if (answer == "Y"):
-            stringSamples = ""
-            for group in valueSampleMetadatumNameOnly:
-                stringSamples += "*" + str(group) + "\n"
+        answer2 = raw_input("\nSave the results? Y/N\n")
+        if (answer2 == "Y"):
             stringPairs = ""
             for pair in pairsList:
                 stringPairs += "*" + str(pair) + "\n"
-            data = "Most different groups of samples ****\nsorted by values of metadatum: " + metadatum[0] + "\nGroups were:\n\n" + stringSamples + "\n\nAnd the most different ones are:\n\n" + stringPairs + "\n\nEND OF FILE ****"
+            if (answer == "metadata"):
+                stringSamples = ""
+                for group in valueSampleMetadatumNameOnly:
+                    stringSamples += "*" + str(group) + "\n"
+                data = "Most different groups of samples ****\nsorted by values of metadatum: " + metadatum[0] + "\nGroups were:\n\n" + stringSamples + "\n\nAnd the most different ones are:\n\n" + stringPairs + "\n\nEND OF FILE ****"
+            else:
+                data = "Most different groups of samples ****\n\nThe most different ones are:\n\n" + stringPairs + "\n\nEND OF FILE ****"
             writeFile(data,"","text")
-        elif not (answer == "N"):
+        elif not (answer2 == "N"):
             print "/!\ You should answer 'Y' or 'N'!"
-    elif not (answer == "N"):
-        print "/!\ You should answer 'Y' or 'N'!"

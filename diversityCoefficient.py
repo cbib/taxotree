@@ -18,6 +18,11 @@ def computeDiversityCoefficient(numberNodesInTree,sampleNameList,dataArray):
                 raise ValueError
             assignments += hit[1]
         resultNodes.append(((name,rank),assignments))
+    if not numberNodes:
+        if not (len(sample)):
+            print "\n/!\ ERROR: [BUG] [percentage/computeSamplesInAllMetadatum] Empty set of samples."
+            raise ValueError
+        return 0,resultNodes
     if not numberNodesInTree:
         print "\n/!\ ERROR: Taxonomic Tree is empty: whole tree:",numberNodesInTree,"."
         raise ValueError

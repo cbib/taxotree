@@ -103,13 +103,13 @@ def computeSamplesInAllMetadatum(samplesInfoList,infoList,metadataList,interval1
                     #Adds the sampleID to the list
                     samplesGroupForThisMetadatum.append(sample[0])
                 #if sample[infoPos] == interval1List[datumPos] == interval2List[datumPos]
-                elif not (sample[infoPos] == "N") and (int(sample[infoPos]) == interval1List[datumPos]):
+                elif not (sample[infoPos] == "N") and integer.match(sample[infoPos]) and (int(sample[infoPos]) == interval1List[datumPos]):
                     #Adds the sampleID to the list
                     samplesGroupForThisMetadatum.append(sample[0])
                 #In any other case, the sample is not added
             #If the length of interval of acceptable values is non-zero
             else:
-                if integer.match(sample[infoPos]) and isInInterval(int(sample[infoPos]),interval1List[datumPos],interval2List[datumPos]):
+                if integer.match(sample[infoPos]) and integer.match(sample[infoPos]) and isInInterval(int(sample[infoPos]),interval1List[datumPos],interval2List[datumPos]):
                     samplesGroupForThisMetadatum.append(sample[0])
         datumPos += 1
         samplesList = [x for x in samplesGroupForThisMetadatum]

@@ -146,6 +146,7 @@ Comments:
 
 *** Before starting TAXOTREE ***
 - Create a folder entitled "files" to store your results.
+- Data matrix should only contain "N" for unknown values and otherwise integers.
 
 *** Note on TANGO results ***
 - Please be aware the choice of parameter q in TANGO is of paramount importance in the assignments to nodes, and can greatly influence the results of the different comparison functions here. Choosing the same q from assignments of every sample must be considered therefore mandatory.
