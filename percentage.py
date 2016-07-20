@@ -2,7 +2,6 @@ from __future__ import division
 import numpy as np
 import re
 
-from misc import mem
 from taxoTree import TaxoTree
 from parsingInfo import parseInfo
 from parsingTree import parseTree
@@ -202,7 +201,7 @@ def countAssignmentsInTree(tree,samplesInGroup):
         node = queue.pop()
         for sample in node.sampleHitList:
             totalNumber += sample[1]
-            if mem(sample[0],samplesInGroup):
+            if (sample[0] in samplesInGroup):
                 assignmentsNumber += sample[1]
         queue = []
         for ch in node.children:

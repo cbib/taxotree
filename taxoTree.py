@@ -14,7 +14,7 @@
 
 from parsingTree import parseTree
 from parsingMatrix import parseMatrix,associatedData
-from misc import containsSpecie,mem,selectPath,compare
+from misc import containsSpecie,selectPath,compare
 
 class TaxoTree(object):
     #

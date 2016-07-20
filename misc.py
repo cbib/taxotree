@@ -134,7 +134,7 @@ def memAndSampleHitList(x,nodeList):
 def getSampleIDList(samplesList):
     sampleIDList = []
     for sample in samplesList:
-        if not mem(sample[0],sampleIDList):
+        if not (sample[0] in sampleIDList):
             sampleIDList.append(sample[0])
     #Sorts sample IDs in alphabetical order
     return sorted(sampleIDList,key=lambda x:x)
@@ -163,14 +163,6 @@ def sanitize(name):
         sName = sName + l + " "
     sName = sName + sLs[-1]
     return sName.split("\n")[0]
-
-#is member function
-def mem(x,ls):
-    n = len(ls)
-    for i in range(n):
-        if (x == ls[i]):
-            return True
-    return False
 
 def containsSpecie(path,name,rank):
     for x in path:
@@ -239,7 +231,7 @@ def taxoLCA(paths,name1,rank1,name2,rank2,allNodes=False):
 #Checks if the elements in @parselist belong to @datalist else returns an error
 def isInDatabase(parseList,dataList):
     for pl in parseList:
-        if not mem(pl,dataList):
+        if not (pl in dataList):
             n = len(dataList)
             if not n:
                 print "\n/!\ ERROR: [BUG] [actions/isInDatabase] Empty list."
@@ -254,7 +246,7 @@ def getPositionBacteria(bacteriaList,speciesList):
     positions = []
     n = len(speciesList)
     while i < n:
-        if mem(speciesList[i],bacteriaList):
+        if (speciesList[i] in bacteriaList):
             positions.append(i)
         i += 1
     return positions

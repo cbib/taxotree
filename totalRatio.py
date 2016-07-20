@@ -3,7 +3,7 @@ from __future__ import division
 from taxoTree import TaxoTree,printTree
 from parsingMatrix import parseMatrix
 from parsingTree import parseTree
-from misc import mem,inSample,takeNodesInTree,memAndSampleHitList
+from misc import inSample,takeNodesInTree,memAndSampleHitList
 
 #Returns @common,@in1,@in2,@numberA1,@numberA2
 #@numberA1 is the number of assignments in the tree reduced to nodes assigned in sampleList #1 (same goes for @numberA2)
@@ -39,7 +39,7 @@ def countAssignments(in12,sampleNameList):
     for node in in12:
         sampleHitList = node[2]
         for sampleHit in sampleHitList:
-            if mem(sampleHit[0],sampleNameList):
+            if (sampleHit[0] in sampleNameList):
                 s += sampleHit[1]
     return s
 
@@ -49,10 +49,10 @@ def countAssignmentsInCommon(common,sampleNameList1,sampleNameList2):
         sampleHitList1 = node[2]
         sampleHitList2 = node[3]
         for sampleHit in sampleHitList1:
-            if mem(sampleHit[0],sampleNameList1):
+            if (sampleHit[0] in sampleNameList1):
                 s += sampleHit[1]
         for sampleHit in sampleHitList2:
-            if mem(sampleHit[0],sampleNameList2):
+            if (sampleHit[0] in sampleNameList2):
                 s += sampleHit[1]
     return s
 

@@ -2,7 +2,6 @@ from __future__ import division
 import numpy as np
 import re
 
-from misc import mem
 from parsingInfo import parseInfo
 
 integer = re.compile("[0-9]+")
@@ -22,7 +21,7 @@ def similarity(samplesList,infoList,metadataList):
             s = 0
             for k in range(2,m):
                 #If this metadatum belongs to the list of interest
-                if mem(infoList[k],metadataList):
+                if (infoList[k] in metadataList):
                     #for all i, len(samplesList[i]) == len(infoList) as asserted in parsingInfo
                     if (integer.match(samplesList[i][k]) and integer.match(samplesList[j][k])):
                         s += abs(int(samplesList[i][k]) - int(samplesList[j][k]))

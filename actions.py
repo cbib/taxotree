@@ -7,7 +7,7 @@ from parsingMatrix import parseMatrix,importMatrix
 from parsingInfo import parseInfo
 from parsingTree import parseTree
 from taxoTree import TaxoTree,printTree
-from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,mem,isInDatabase,getMaxMin,partitionSampleByMetadatumValue
+from misc import getValueBacteriaBacteria,getValueBacteriaMetadata,isInDatabase,getMaxMin,partitionSampleByMetadatumValue
 
 from totalRatio import compute,countAssignmentsInCommon,countAssignments,totalRatio,totalRatioNormalized,diffRatio,diffRatioNormalized
 from patternRatio import patternRatio,enumerateCommonPatterns,enumerateSpecificPatterns
