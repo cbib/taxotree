@@ -15,6 +15,7 @@ In the terminal:
 - write down "from main import main"
 - write down "main()"
 - to exit Python, write down "exit()"
+- If you stop to stop prematurely Python: Ctrl-Z
 
 WINDOWS:
 In Pyzo/Anaconda:
@@ -143,6 +144,10 @@ Stores written files using writeOnFiles functions.
 -----------------------------------------------------------------------------------------------------------------
 
 Comments:
+
+*** To clean the folder of unnecessary files ***
+- Run ./clean.sh
+- In case it would not execute, write in the terminal "chmod +rwx clean.sh"
 
 *** Before starting TAXOTREE ***
 - Create a folder entitled "files" to store your results.
