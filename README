@@ -15,7 +15,7 @@ In the terminal:
 - write down "from main import main"
 - write down "main()"
 - to exit Python, write down "exit()"
-- If you stop to stop prematurely Python: Ctrl-Z
+- If you stop to stop prematurely Python: Ctrl-C
 
 WINDOWS:
 In Pyzo/Anaconda:
