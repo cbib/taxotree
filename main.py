@@ -54,7 +54,7 @@ def main():
             print "   5: Microbial diversity in samples"
             print "   6: Similarity coefficients between patients"
             print "   7: Print the taxonomic tree"
-            print "   8: Plot a graph, or a pie"
+            print "   8: Plot a graph, or a pie chart"
             print "   9: Compute total distance between two samples"
             print "[To quit, write down exit]"
             answer = raw_input("Your answer?\n")

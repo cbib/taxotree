@@ -74,11 +74,11 @@ End
 ___________________________________________________________________________
 
 
-- "Plot a graph, or a histogram, or a pie":
+- "Plot a graph, or a histogram, or a pie chart":
 * Given a few sets of values, construct a figure. 
 *** GRAPH: You can only construct the function giving the number of assignments to a certain group of bacterias depending on the number of assignments to another group of bacterias (in all samples), or the number of assignments to a certain group of bacterias depending on the value of a certain metadatum.
 *** HISTOGRAM: (TODO)
-*** PIE: You can only construct the percentage of assignment to a certain group of bacterias depending on metadata
+*** PIE CHART: You can only construct the percentage of assignment to a certain group of bacterias depending on metadata
 
 - "Compute total distance between two samples":
 * Compute a normalized similarity coefficient between two samples, using previous calculi. [/!\ It may take some time!]

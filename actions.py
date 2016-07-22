@@ -16,7 +16,7 @@ from diversityCoefficient import computeDiversityCoefficient
 from percentage import percentageAssign,computeSamplesInGroup,computeSamplesInAllMetadatum
 from similarityCoefficient import similarity
 from computeDiscriminatoryDistance import computeSimilarity,mostDifferentSamplesGroups
-from plottingValues import plotPearsonGraph,plotGraph,plotHist,plotPie
+from plottingValues import plotPearsonGraph,plotGraph,plotHist,plotPieChart
 
 #@dataArray = [samplesInfoList,infoList,samplesOccList,speciesList,paths,n,nodesList,taxoTree,sampleIDList,#similarityMatrix]
 
@@ -305,9 +305,9 @@ def diversityAct(dataArray):
         writeFile(data,"","text")
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
-    answer = raw_input("Do you want to display the pie of the assignments to the taxonomic tree in the selected samples? Y/N\n")
+    answer = raw_input("Do you want to display the pie chart of the assignments to the taxonomic tree in the selected samples? Y/N\n")
     if (answer == "Y"):
-        plotPie([sample1[0] for sample1 in sample],[sample1[1] for sample1 in sample],"Assignments to the taxonomic tree in " + str(sampleNameList[:3]))
+        plotPieChart([sample1[0] for sample1 in sample],[sample1[1] for sample1 in sample],"Assignments to the taxonomic tree in " + str(sampleNameList[:3]))
     elif not (answer == "N"):
         print "/!\ You should answer 'Y' or 'N'!"
 
@@ -366,7 +366,7 @@ def creatingArray(dataArray,pearson=False):
             raise ValueError
     #Available cases for only plotting graphs
     else:
-        graphTypeInput = raw_input("Do you want to plot a graph or a pie? graph/pie [Read README for details. Histograms will be available in later versions]\n")
+        graphTypeInput = raw_input("Do you want to plot a graph or a pie chart? graph/pie [Read README for details. Histograms will be available in later versions]\n")
         if graphTypeInput == "graph":
             typeInput = raw_input("Do you want to plot bacteria/bacteria or bacteria/metadatum? BB/BM [ Please read README for details. ]\n")
             if (typeInput == "BB"):
@@ -475,7 +475,7 @@ def plottingAct(dataArray):
             plotGraph(xArray,yArray,xLabel=xLabel,yLabel=yLabel,maxx=maxx+1,minx=minix-1,maxy=maxy+1,miny=miniy-1,title="Plotting of type " + typeInput + " with values " + str(valuesInput1[:3]) + "...  and " + str(valuesInput2[:3]) + "...")
     elif creatingArrayOutput[0] == "pie":
         graphTypeInput,result,nodesGroup,sampleNameList,metadataList = creatingArrayOutput
-        plotPie(sampleNameList,result,"Assignments to the group of bacterias: " + str(nodesGroup) + " depending on samples")
+        plotPieChart(sampleNameList,result,"Assignments to the group of bacterias: " + str(nodesGroup) + " depending on samples")
     else:
         print "\n/!\ ERROR: [BUG] [actions/plottingAct] Unknown type of graph."
         raise ValueError
