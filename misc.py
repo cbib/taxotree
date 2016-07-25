@@ -317,10 +317,7 @@ def getValueBacteriaBacteria(samplesOccList,speciesList,sampleIDList,bacterias1,
     return xArray,yArray
 
 #Given a set of samples, gives the list of disjoint groups of samples according to the value of the metadatum, and the set of values of the metadatum
-#@metadatum is a list (of one element) of metadata.
 def partitionSampleByMetadatumValue(metadatum,infoList,samplesInfoList):
-    #One metadatum only!
-    metadatum = metadatum[0]
     #computes the number of column which matches the metadatum in infoList
     i = 0
     n = len(infoList)
@@ -343,7 +340,7 @@ def partitionSampleByMetadatumValue(metadatum,infoList,samplesInfoList):
     if len(sample) < i:
         print "\n/!\ ERROR: [BUG] [misc/partitionSampleByMetadatumValue] Different lengths",len(sample),"and",i,"(1)"
         raise ValueError
-    #selects a sample where the value of the metadatum is known
+    #Selects a sample where the value of the metadatum is known
     while not integer.match(sample[i]):
         sample = sampleSorted.pop()
         if len(sample) < i:
@@ -351,11 +348,10 @@ def partitionSampleByMetadatumValue(metadatum,infoList,samplesInfoList):
             raise ValueError
     #Initializing the set of values of the metadatum
     currValue = sample[i]
-    valueSet.append((metadatum,int(currValue)))
+    valueSet.append(int(currValue))
     #While it remains samples in the list
     while sampleSorted:
         valueSample = []
-        isEmpty = False
         #Filling the list of samples with similar values of the metadatum
         while sampleSorted and (sample[i] == currValue):
             valueSample.append(sample)
@@ -363,16 +359,15 @@ def partitionSampleByMetadatumValue(metadatum,infoList,samplesInfoList):
             #gets the next sample where the value of the metadatum is known
             while not integer.match(sample[i]) and sampleSorted:
                 sample = sampleSorted.pop()
-            #If sampleSorted is empty
-            if not sampleSorted:
-                isEmpty = True
+            if len(sample) < i:
+                print "\n/!\ ERROR: [BUG] [misc/partitionSampleByMetadatumValue] Different lengths",len(sample),"and",i,"(3)"
+                raise ValueError
         #appends the newly created list to the main list
         valueSampleMetadatum.append(valueSample)
         #Initializing next loop with the new different value of the metadatum
         currValue = sample[i]
-        if isEmpty:
-            #Adding this value to the set
-            valueSet.append((metadatum,int(currValue)))
+        #Adding this value to the set
+        valueSet.append(int(currValue))
     return valueSet,valueSampleMetadatum
 
 #Returns xArray and yArray, where yArray contains the values of selected metadatum and xArray contains the number of assignments to a chosen group of bacterias depending on the value of the metadatum 

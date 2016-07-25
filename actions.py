@@ -507,7 +507,7 @@ def distanceAct(dataArray):
             print dataArray[1]
             metadatum = parseList(raw_input("Choose the metadatum among those printed above [ e.g. " + dataArray[1][0] + ";" + dataArray[1][-1] + " ]\n"))
             isInDatabase(metadatum,dataArray[1])
-            _,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum,dataArray[1],dataArray[0])
+            _,valueSampleMetadatum = partitionSampleByMetadatumValue(metadatum[0],dataArray[1],dataArray[0])
             valueSampleMetadatumNameOnly = []
             for sampleGroup in valueSampleMetadatum:
                 sampleGroupNameOnly = []
