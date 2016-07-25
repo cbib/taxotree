@@ -368,6 +368,8 @@ def partitionSampleByMetadatumValue(metadatum,infoList,samplesInfoList):
         currValue = sample[i]
         #Adding this value to the set
         valueSet.append(int(currValue))
+    #The previous procedure adds twice the last value
+    valueSet.pop()
     return valueSet,valueSampleMetadatum
 
 #Returns xArray and yArray, where yArray contains the values of selected metadatum and xArray contains the number of assignments to a chosen group of bacterias depending on the value of the metadatum 

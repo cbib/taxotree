@@ -87,7 +87,7 @@ def main():
                 distanceAct(dataArray)
                 print "-- End \n"
             elif not ((answer == "exit") or (answer == "exit()") or (answer == "quit")):
-                print "/!\ ERROR: Please enter a number between 1 and 9 included, or 'exit' if you want to quit."
+                print "\n/!\ ERROR: Please enter a number between 1 and 9 included, or 'exit' if you want to quit."
                 raise ValueError
         except ValueError:
             print "/!\ ERROR: Please look at the line above."
